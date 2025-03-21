@@ -1,0 +1,11 @@
+export const COLORS = {
+	white: "#ffffff",
+	offWhite: "#ebebeb",
+	paleYellow: "#cbd87d",
+	lightPurple: "#a6a0d2",
+	dark: "#282828",
+	deepDark: "#333333",
+	paleLightPurple: "#e8e5f8",
+	deepPaleBrown: "#4d4e45",
+	paleYellowGradient: ["#cbd87d", "#c7d28d"],
+};
