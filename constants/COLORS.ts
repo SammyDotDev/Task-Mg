@@ -2,6 +2,7 @@ export const COLORS = {
 	white: "#ffffff",
 	offWhite: "#ebebeb",
 	paleYellow: "#cbd87d",
+    lightPaleYellow: "#f4fce3",
 	lightPurple: "#a6a0d2",
 	dark: "#282828",
 	deepDark: "#333333",

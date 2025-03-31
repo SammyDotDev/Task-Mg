@@ -1,8 +1,15 @@
+import { rMS } from "@/utils/responsive_size";
 import * as React from "react";
 import Svg, { G, Line, Path } from "react-native-svg";
 /* SVGR has dropped some elements not supported by react-native-svg: title */
 const CalenderIcon = ({ color, ...props }: { color?: string | null }) => (
-	<Svg id="Calendar" width="24px" height="24px" viewBox="0 0 24 24" {...props}>
+	<Svg
+		id="Calendar"
+		width={`${rMS(23)}px`}
+		height={`${rMS(23)}px`}
+		viewBox="0 0 24 24"
+		{...props}
+	>
 		<G
 			id="Iconly/Two-tone/Calendar"
 			stroke="none"

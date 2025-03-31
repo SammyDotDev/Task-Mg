@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Tabs } from "expo-router";
-import { rMS } from "@/utils/responsive_size";
+import { rMS, rS } from "@/utils/responsive_size";
 import { SIZES } from "@/constants/SIZES";
 import { COLORS } from "@/constants/COLORS";
 import HomeIcon from "@/assets/svg/HomeIcon";
@@ -16,52 +16,42 @@ import Animated, {
 } from "react-native-reanimated";
 
 const Tablayout = () => {
+	const tabWidth = rS(50 * 4 + 40);
+
 	return (
 		<Tabs
 			screenOptions={({ route }) => ({
 				headerShown: false,
+				tabBarHideOnKeyboard: true,
 				tabBarStyle: {
 					position: "absolute",
-					height: rMS(62),
-					marginVertical: rMS(SIZES.h5),
+					bottom: rMS(SIZES.h5),
+					height: rS(60),
 					elevation: 0,
 					backgroundColor: COLORS.dark,
 					borderRadius: 999,
-					width: "60%",
+					width: tabWidth,
 					left: "50%",
-
-					transform: [{ translateX: (Dimensions.get("window").width * 0.6) / 3 }],
+					transform: [{ translateX: tabWidth/4  }], // Center using transform
 				},
 				tabBarItemStyle: {
 					justifyContent: "center",
 					alignItems: "center",
+					height: rS(60),
 				},
 				tabBarShowLabel: false,
 				tabBarButton: (props) => {
 					const isSelected = props?.accessibilityState?.selected;
-					const scale = useSharedValue(0.8);
 					const opacity = useSharedValue(1);
-
 					const animatedStyle = useAnimatedStyle(() => {
 						return {
-							// transform: [
-							// 	{ scale: withTiming(scale.value, { duration: 400 }) },
-							// ],
 							opacity: withTiming(opacity.value, { duration: 400 }),
 						};
 					});
-					const animatedTextStyle = useAnimatedStyle(() => {
-						return {
-							opacity: withTiming(opacity.value, { duration: 400 }),
-						};
-					});
-
 					useEffect(() => {
 						if (isSelected) {
-							// scale.value = 1.1;
 							opacity.value = 1;
 						} else {
-							// scale.value = 1;
 							opacity.value = 0.5;
 						}
 					}, [isSelected]);
@@ -94,16 +84,13 @@ const Tablayout = () => {
 						<Pressable
 							{...props}
 							style={[
-								// animatedStyle,
 								{
 									borderRadius: 99,
 									justifyContent: "center",
 									alignItems: "center",
 									backgroundColor: isSelected ? COLORS.white : COLORS.deepDark,
-									margin: rMS(SIZES.h13),
-									// padding: rMS(SIZES.h5),
-									height: rMS(50),
-									width: rMS(50),
+									height: rS(50),
+									width: rS(50),
 								},
 							]}
 						>
@@ -117,10 +104,8 @@ const Tablayout = () => {
 										backgroundColor: isSelected
 											? COLORS.white
 											: COLORS.deepDark,
-										margin: rMS(SIZES.h13),
-										// padding: rMS(SIZES.h5),
-										height: rMS(50),
-										width: rMS(50),
+										height: rS(50),
+										width: rS(50),
 									},
 								]}
 							>
@@ -144,5 +129,4 @@ const Tablayout = () => {
 		</Tabs>
 	);
 };
-
 export default Tablayout;
