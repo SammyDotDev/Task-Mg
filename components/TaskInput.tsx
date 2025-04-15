@@ -1,7 +1,6 @@
 import { View, Text, Pressable } from "react-native";
 import React from "react";
 import { TextInput } from "react-native-gesture-handler";
-import CalenderIcon from "@/assets/svg/CalenderIcon";
 import { rMS } from "@/utils/responsive_size";
 import { SIZES } from "@/constants/SIZES";
 import { COLORS } from "@/constants/COLORS";
@@ -13,6 +12,8 @@ interface TaskInputProps {
 	hasIcon?: boolean;
 	icon?: React.ReactNode;
 	isDescription?: boolean;
+	onIconPress?: () => void;
+	hasContainer?: boolean;
 }
 
 const TaskInput = ({
@@ -22,12 +23,14 @@ const TaskInput = ({
 	hasIcon,
 	icon,
 	isDescription = false,
+	onIconPress,
+	hasContainer = false,
 }: TaskInputProps) => {
 	return (
 		<View
 			style={{
 				gap: rMS(SIZES.h11),
-				width: hasIcon ? "45%" : "90%",
+				width: !hasContainer ? (hasIcon ? "45%" : "90%") : "100%",
 			}}
 		>
 			<Text
@@ -65,6 +68,7 @@ const TaskInput = ({
 				/>
 				{hasIcon && (
 					<Pressable
+						onPress={onIconPress}
 						style={{
 							width: "10%",
 						}}

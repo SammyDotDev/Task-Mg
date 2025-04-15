@@ -1,6 +1,7 @@
 import Loader from "@/components/Loader";
 import { COLORS } from "@/constants/COLORS";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
+import { store } from "@/store/store";
 import BottomSheet, {
 	BottomSheetModalProvider,
 	BottomSheetView,
@@ -9,6 +10,7 @@ import { Stack } from "expo-router";
 import { useCallback, useEffect, useRef } from "react";
 import { Text } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Provider } from "react-redux";
 
 export default function RootLayout() {
 	const { loading } = useAuthRedirect();
@@ -23,9 +25,10 @@ export default function RootLayout() {
 
 	useEffect(() => {
 		bottomSheetRef.current?.expand();
-	}, []);
+		console.log(loading);
+	}, [loading]);
 
-	if (loading) <Loader />;
+	if (loading) return <Loader />;
 	return (
 		<GestureHandlerRootView
 			style={{
@@ -33,12 +36,14 @@ export default function RootLayout() {
 				flex: 1,
 			}}
 		>
-			<BottomSheetModalProvider>
-				<Stack>
-					<Stack.Screen name="(auth)" options={{ headerShown: false }} />
-					<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-				</Stack>
-			</BottomSheetModalProvider>
+			<Provider store={store}>
+				<BottomSheetModalProvider>
+					<Stack>
+						<Stack.Screen name="(auth)" options={{ headerShown: false }} />
+						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+					</Stack>
+				</BottomSheetModalProvider>
+			</Provider>
 		</GestureHandlerRootView>
 	);
 }

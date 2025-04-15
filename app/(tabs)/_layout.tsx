@@ -14,89 +14,87 @@ import Animated, {
 	useSharedValue,
 	withTiming,
 } from "react-native-reanimated";
+import Loader from "@/components/Loader";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 const Tablayout = () => {
+	const logoutLoading = useSelector((state: RootState) => state.auth.loading);
+	// let loading = true;
 	const tabWidth = rS(50 * 4 + 40);
 
 	return (
-		<Tabs
-			screenOptions={({ route }) => ({
-				headerShown: false,
-				tabBarHideOnKeyboard: true,
-				tabBarStyle: {
-					position: "absolute",
-					bottom: rMS(SIZES.h5),
-					height: rS(60),
-					elevation: 0,
-					backgroundColor: COLORS.dark,
-					borderRadius: 999,
-					width: tabWidth,
-					left: "50%",
-					transform: [{ translateX: tabWidth/4  }], // Center using transform
-				},
-				tabBarItemStyle: {
-					justifyContent: "center",
-					alignItems: "center",
-					height: rS(60),
-				},
-				tabBarShowLabel: false,
-				tabBarButton: (props) => {
-					const isSelected = props?.accessibilityState?.selected;
-					const opacity = useSharedValue(1);
-					const animatedStyle = useAnimatedStyle(() => {
-						return {
-							opacity: withTiming(opacity.value, { duration: 400 }),
-						};
-					});
-					useEffect(() => {
-						if (isSelected) {
-							opacity.value = 1;
-						} else {
-							opacity.value = 0.5;
+		<>
+			{logoutLoading && <Loader />}
+			<Tabs
+				screenOptions={({ route }) => ({
+					headerShown: false,
+					tabBarHideOnKeyboard: true,
+					tabBarStyle: {
+						position: "absolute",
+						bottom: rMS(SIZES.h5),
+						height: rS(60),
+						elevation: 0,
+						backgroundColor: COLORS.dark,
+						borderRadius: 999,
+						width: tabWidth,
+						left: "50%",
+						transform: [{ translateX: tabWidth / 4 }], // Center using transform
+					},
+					tabBarItemStyle: {
+						justifyContent: "center",
+						alignItems: "center",
+						height: rS(60),
+					},
+					tabBarShowLabel: false,
+					tabBarButton: (props) => {
+						const isSelected = props?.accessibilityState?.selected;
+						const opacity = useSharedValue(1);
+						const animatedStyle = useAnimatedStyle(() => {
+							return {
+								opacity: withTiming(opacity.value, { duration: 400 }),
+							};
+						});
+						useEffect(() => {
+							if (isSelected) {
+								opacity.value = 1;
+							} else {
+								opacity.value = 0.5;
+							}
+						}, [isSelected]);
+						let icon;
+						switch (route.name) {
+							case "index":
+								icon = (
+									<HomeIcon color={isSelected ? COLORS.dark : COLORS.white} />
+								);
+								break;
+							case "tasks":
+								icon = (
+									<TaskIcon color={isSelected ? COLORS.dark : COLORS.white} />
+								);
+								break;
+							case "calender":
+								icon = (
+									<CalenderIcon
+										color={isSelected ? COLORS.dark : COLORS.white}
+									/>
+								);
+								break;
+							case "settings":
+								icon = (
+									<SettingsIcon
+										color={isSelected ? COLORS.dark : COLORS.white}
+									/>
+								);
+								break;
+							default:
+								break;
 						}
-					}, [isSelected]);
-					let icon;
-					switch (route.name) {
-						case "index":
-							icon = (
-								<HomeIcon color={isSelected ? COLORS.dark : COLORS.white} />
-							);
-							break;
-						case "tasks":
-							icon = (
-								<TaskIcon color={isSelected ? COLORS.dark : COLORS.white} />
-							);
-							break;
-						case "calender":
-							icon = (
-								<CalenderIcon color={isSelected ? COLORS.dark : COLORS.white} />
-							);
-							break;
-						case "settings":
-							icon = (
-								<SettingsIcon color={isSelected ? COLORS.dark : COLORS.white} />
-							);
-							break;
-						default:
-							break;
-					}
-					return (
-						<Pressable
-							{...props}
-							style={[
-								{
-									borderRadius: 99,
-									justifyContent: "center",
-									alignItems: "center",
-									backgroundColor: isSelected ? COLORS.white : COLORS.deepDark,
-									height: rS(50),
-									width: rS(50),
-								},
-							]}
-						>
-							<Animated.View
+						return (
+							<Pressable
+								{...props}
 								style={[
-									animatedStyle,
 									{
 										borderRadius: 99,
 										justifyContent: "center",
@@ -109,24 +107,40 @@ const Tablayout = () => {
 									},
 								]}
 							>
-								<View
-									style={{
-										margin: "auto",
-									}}
+								<Animated.View
+									style={[
+										animatedStyle,
+										{
+											borderRadius: 99,
+											justifyContent: "center",
+											alignItems: "center",
+											backgroundColor: isSelected
+												? COLORS.white
+												: COLORS.deepDark,
+											height: rS(50),
+											width: rS(50),
+										},
+									]}
 								>
-									{icon}
-								</View>
-							</Animated.View>
-						</Pressable>
-					);
-				},
-			})}
-		>
-			<Tabs.Screen name="index" />
-			<Tabs.Screen name="tasks" />
-			<Tabs.Screen name="calender" />
-			<Tabs.Screen name="settings" />
-		</Tabs>
+									<View
+										style={{
+											margin: "auto",
+										}}
+									>
+										{icon}
+									</View>
+								</Animated.View>
+							</Pressable>
+						);
+					},
+				})}
+			>
+				<Tabs.Screen name="index" />
+				<Tabs.Screen name="tasks" />
+				<Tabs.Screen name="calender" />
+				<Tabs.Screen name="settings" />
+			</Tabs>
+		</>
 	);
 };
 export default Tablayout;

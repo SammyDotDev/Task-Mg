@@ -2,6 +2,7 @@ import { View } from "react-native";
 import React from "react";
 import LottieView from "lottie-react-native";
 import { rMS } from "@/utils/responsive_size";
+import { StatusBar } from "expo-status-bar";
 
 const Loader = () => {
 	return (
@@ -15,7 +16,7 @@ const Loader = () => {
 				backgroundColor: "rgba(0,0,0,0.5)", // Semi-transparent background
 				justifyContent: "center",
 				alignItems: "center",
-				zIndex: 99999,
+				zIndex: 999999999,
 			}}
 		>
 			<View
@@ -34,6 +35,7 @@ const Loader = () => {
 					autoPlay
 					loop
 				/>
+				<StatusBar />
 			</View>
 		</View>
 	);

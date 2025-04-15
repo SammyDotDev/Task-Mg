@@ -3,15 +3,18 @@ import { useRouter } from "expo-router";
 import { supabase } from "../lib/supabase";
 
 const useAuthRedirect = () => {
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
 	const router = useRouter();
 
 	useEffect(() => {
+		let isMounted = true;
 		const checkSession = async () => {
 			const {
 				data: { session },
 			} = await supabase.auth.getSession();
 
+			// console.log(session, "SESSIONSSSS");
+			// if (!isMounted) return;
 			if (session) {
 				router.replace("/(tabs)"); // Redirect to home screen
 			} else {
@@ -32,6 +35,7 @@ const useAuthRedirect = () => {
 		);
 
 		return () => {
+			// isMounted = false;
 			authListener.subscription.unsubscribe();
 		};
 	}, []);

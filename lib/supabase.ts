@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient } from "@supabase/supabase-js";
 import { Redirect } from "expo-router";
 import { AppState } from "react-native";
+import "react-native-url-polyfill/auto";
 
 const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.EXPO_PUBLIC_SUPABASE_KEY;
@@ -23,12 +24,15 @@ AppState.addEventListener("change", (state) => {
 	}
 });
 const { data } = supabase.auth.onAuthStateChange((event, session) => {
-	console.log(event, session);
+	// console.log(event, session);
 	if (event === "INITIAL_SESSION") {
+        console.log("INITIAL SESSION")
 		// handle initial session
 	} else if (event === "SIGNED_IN") {
+        console.log("SIGNED IN")
 		// handle sign in event
 	} else if (event === "SIGNED_OUT") {
+        console.log("SIGNED IN")
 		// handle sign out event
 	} else if (event === "PASSWORD_RECOVERY") {
 		// handle password recovery event

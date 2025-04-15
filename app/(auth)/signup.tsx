@@ -10,7 +10,6 @@ import CustomButton from "@/components/CustomButton";
 import InputWrapper from "@/components/InputWrapper";
 import "react-native-url-polyfill/auto";
 import { supabase } from "@/lib/supabase";
-import LottieView from "lottie-react-native";
 import Loader from "@/components/Loader";
 
 const Signup = () => {
