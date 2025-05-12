@@ -47,8 +47,9 @@ const Signin = () => {
 			// 	Alert.alert("Please check your inbox for email verification!");
 		} catch (error) {
 			console.log(error);
+		} finally {
+			setIsLoading(false);
 		}
-		setIsLoading(false);
 	};
 
 	// forgot password handler

@@ -25,7 +25,7 @@ const Tablayout = () => {
 
 	return (
 		<>
-			{logoutLoading && <Loader />}
+			<Loader visible={logoutLoading}/>
 			<Tabs
 				screenOptions={({ route }) => ({
 					headerShown: false,

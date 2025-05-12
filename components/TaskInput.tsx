@@ -45,7 +45,7 @@ const TaskInput = ({
 			<View
 				style={{
 					flexDirection: "row",
-					alignItems: "center",
+					alignItems: isDescription ? "flex-start" : "center",
 					padding: rMS(SIZES.h11),
 					paddingVertical: isDescription ? 0 : rMS(SIZES.h10),
 					borderRadius: 30,

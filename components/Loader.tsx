@@ -1,12 +1,14 @@
-import { View } from "react-native";
+import { Modal, View } from "react-native";
 import React from "react";
 import LottieView from "lottie-react-native";
 import { rMS } from "@/utils/responsive_size";
 import { StatusBar } from "expo-status-bar";
 
-const Loader = () => {
+const Loader = ({ visible }: { visible: boolean }) => {
 	return (
-		<View
+		<Modal
+			transparent
+			visible={visible}
 			style={{
 				position: "absolute",
 				top: 0,
@@ -21,23 +23,34 @@ const Loader = () => {
 		>
 			<View
 				style={{
-					width: 80,
-					height: 80,
-					backgroundColor: "#fff",
-					borderRadius: 10,
+					flex: 1,
+					backgroundColor: "rgba(0,0,0,0.5)", // dim background
 					justifyContent: "center",
 					alignItems: "center",
 				}}
 			>
-				<LottieView
-					source={require("../assets/json/loader.json")}
-					style={{ width: rMS(90), height: rMS(90) }}
-					autoPlay
-					loop
-				/>
-				<StatusBar />
+				<View
+					style={{
+						width: 80,
+						height: 80,
+						backgroundColor: "#fff",
+						borderRadius: 10,
+						justifyContent: "center",
+						alignItems: "center",
+						margin: "auto",
+					}}
+				>
+					<LottieView
+						source={require("../assets/json/loader.json")}
+						style={{ width: rMS(90), height: rMS(90) }}
+						autoPlay
+						loop
+					/>
+					<StatusBar />
+				</View>
 			</View>
-		</View>
+			<StatusBar backgroundColor="rgba(0,0,0,0.5)" />
+		</Modal>
 	);
 };
 

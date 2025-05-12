@@ -31,11 +31,20 @@ import { RootState } from "@/store/store";
 import { setLoading } from "@/store/slices/authSlice";
 import { Calendar, CalendarList, Agenda } from "react-native-calendars";
 import { TouchableWithoutFeedback } from "react-native";
+import { setPostLoadingTasks } from "@/store/slices/taskSlice";
+
+interface TaskInfo {
+	taskName: string;
+	description: string;
+	date: string;
+	time: string;
+	priority: string;
+}
 
 const Home = () => {
 	const dispatch = useDispatch();
 	const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-	const [taskInfo, setTaskInfo] = useState({
+	const [taskInfo, setTaskInfo] = useState<TaskInfo>({
 		taskName: "",
 		description: "",
 		date: "",
@@ -48,6 +57,10 @@ const Home = () => {
 
 	const [selectedPriority, setSelectedPriority] = useState("");
 	const [showCalendar, setShowCalendar] = useState<boolean>(false);
+
+	const postLoadingTasks = useSelector(
+		(state: RootState) => state.tasks.postLoadingTasks
+	);
 
 	const isLowPriority = selectedPriority === "low";
 	const isMediumPriority = selectedPriority === "medium";
@@ -86,9 +99,9 @@ const Home = () => {
 			taskInfo.date.length === 0 ||
 			taskInfo.priority.length === 0
 		) {
-			setButtonSheetButtonDisabled(false);
-		} else {
 			setButtonSheetButtonDisabled(true);
+		} else {
+			setButtonSheetButtonDisabled(false);
 		}
 	}, [taskInfo]);
 
@@ -99,16 +112,19 @@ const Home = () => {
 		time: string,
 		date: string
 	) => {
-		const res = await supabase.from("tasks").insert([
-			{
-				taskTitle: title,
-				description: description,
-				priority: priority,
-				time: time,
-				date: date,
-			},
-		]);
-		console.log(res.data);
+		const res = await supabase
+			.from("tasks")
+			.insert([
+				{
+					tasktitle: title,
+					description: description,
+					priority: priority,
+					time: new Date().toTimeString().split(" ")[0],
+					date: new Date().toISOString().split("T")[0],
+				},
+			])
+			.select();
+		console.log(res);
 	};
 
 	const renderAddTaskBottomsheet = () => (
@@ -135,9 +151,7 @@ const Home = () => {
 				style={{
 					flex: 1,
 				}}
-				onPress={(event) => {
-
-				}}
+				onPress={(event) => {}}
 			>
 				<BottomSheetScrollView
 					style={{
@@ -239,7 +253,7 @@ const Home = () => {
 												Position: "absolute",
 												borderRadius: 25,
 											}}
-											onDayPress={(day:any) => {
+											onDayPress={(day: any) => {
 												// setSelected(day.dateString);
 											}}
 											// markedDates={{
@@ -315,14 +329,30 @@ const Home = () => {
 						</View>
 					</View>
 					<CustomButton
-						onPress={() => {
-							createTask(
-								taskInfo.taskName,
-								taskInfo.description,
-								taskInfo.priority,
-								taskInfo.date,
-								taskInfo.time
-							);
+						disabled={bottomSheetButtonDisabled}
+						onPress={async () => {
+							dispatch(setPostLoadingTasks(true));
+							try {
+								await createTask(
+									taskInfo.taskName,
+									taskInfo.description,
+									taskInfo.priority,
+									taskInfo.date,
+									taskInfo.time
+								);
+							} catch (error) {
+								console.log(error);
+							} finally {
+								dispatch(setPostLoadingTasks(false));
+								bottomSheetModalRef.current?.close();
+								setTaskInfo({
+									taskName: "",
+									description: "",
+									date: "",
+									time: "",
+									priority: "",
+								});
+							}
 						}}
 						title={"Create task"}
 						extendedStyles={{
@@ -344,6 +374,7 @@ const Home = () => {
 			}}
 			onPress={() => setShowCalendar(false)}
 		>
+			<Loader visible={postLoadingTasks} />
 			<ViewContainer>
 				<SafeAreaScrollView>
 					<Header handleNotification={() => {}} handleAddTask={handleAddTask} />
@@ -358,7 +389,6 @@ const Home = () => {
 					</Text>
 
 					<CustomButton
-						disabled={bottomSheetButtonDisabled}
 						title={"Log out"}
 						onPress={handleLogout}
 					/>
