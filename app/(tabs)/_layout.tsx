@@ -17,6 +17,7 @@ import Animated, {
 import Loader from "@/components/Loader";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
 
 const Tablayout = () => {
 	const logoutLoading = useSelector((state: RootState) => state.auth.loading);
@@ -25,21 +26,22 @@ const Tablayout = () => {
 
 	return (
 		<>
-			<Loader visible={logoutLoading}/>
+			<Loader visible={logoutLoading} />
 			<Tabs
 				screenOptions={({ route }) => ({
 					headerShown: false,
 					tabBarHideOnKeyboard: true,
 					tabBarStyle: {
 						position: "absolute",
-						bottom: rMS(SIZES.h5),
-						height: rS(60),
+						// bottom: rMS(SIZES.h5),
+						height: rS(70),
 						elevation: 0,
-						backgroundColor: COLORS.dark,
-						borderRadius: 999,
-						width: tabWidth,
-						left: "50%",
-						transform: [{ translateX: tabWidth / 4 }], // Center using transform
+						backgroundColor: COLORS.white,
+						borderTopWidth: 0,
+						// borderRadius: 999,
+						// width: tabWidth,
+						// left: "50%",
+						// transform: [{ translateX: tabWidth / 4 }], // Center using transform
 					},
 					tabBarItemStyle: {
 						justifyContent: "center",
@@ -50,42 +52,59 @@ const Tablayout = () => {
 					tabBarButton: (props) => {
 						const isSelected = props?.accessibilityState?.selected;
 						const opacity = useSharedValue(1);
-						const animatedStyle = useAnimatedStyle(() => {
-							return {
-								opacity: withTiming(opacity.value, { duration: 400 }),
-							};
-						});
-						useEffect(() => {
-							if (isSelected) {
-								opacity.value = 1;
-							} else {
-								opacity.value = 0.5;
-							}
-						}, [isSelected]);
+						// const animatedStyle = useAnimatedStyle(() => {
+						// 	return {
+						// 		opacity: withTiming(opacity.value, { duration: 400 }),
+						// 	};
+						// });
+						// useEffect(() => {
+						// 	if (isSelected) {
+						// 		opacity.value = 1;
+						// 	} else {
+						// 		opacity.value = 0.5;
+						// 	}
+						// }, [isSelected]);
 						let icon;
 						switch (route.name) {
 							case "index":
 								icon = (
-									<HomeIcon color={isSelected ? COLORS.dark : COLORS.white} />
+									<HomeIcon color={isSelected ? COLORS.dark : COLORS.dark} />
 								);
 								break;
 							case "tasks":
 								icon = (
-									<TaskIcon color={isSelected ? COLORS.dark : COLORS.white} />
+									<TaskIcon color={isSelected ? COLORS.dark : COLORS.dark} />
 								);
 								break;
 							case "calender":
 								icon = (
 									<CalenderIcon
-										color={isSelected ? COLORS.dark : COLORS.white}
+										color={isSelected ? COLORS.dark : COLORS.dark}
 									/>
 								);
 								break;
 							case "settings":
 								icon = (
 									<SettingsIcon
-										color={isSelected ? COLORS.dark : COLORS.white}
+										color={isSelected ? COLORS.dark : COLORS.dark}
 									/>
+								);
+								break;
+							case "createTask":
+								icon = (
+									<View
+										style={{
+											borderRadius: 999,
+											padding: rMS(SIZES.h7),
+											backgroundColor: COLORS.darkBlue,
+										}}
+									>
+										<Entypo
+											name="plus"
+											color={COLORS.white}
+											size={rMS(SIZES.h5)}
+										/>
+									</View>
 								);
 								break;
 							default:
@@ -99,9 +118,7 @@ const Tablayout = () => {
 										borderRadius: 99,
 										justifyContent: "center",
 										alignItems: "center",
-										backgroundColor: isSelected
-											? COLORS.white
-											: COLORS.deepDark,
+
 										height: rS(50),
 										width: rS(50),
 									},
@@ -109,14 +126,12 @@ const Tablayout = () => {
 							>
 								<Animated.View
 									style={[
-										animatedStyle,
+										// animatedStyle,
 										{
 											borderRadius: 99,
 											justifyContent: "center",
 											alignItems: "center",
-											backgroundColor: isSelected
-												? COLORS.white
-												: COLORS.deepDark,
+
 											height: rS(50),
 											width: rS(50),
 										},
@@ -137,6 +152,7 @@ const Tablayout = () => {
 			>
 				<Tabs.Screen name="index" />
 				<Tabs.Screen name="tasks" />
+				<Tabs.Screen name="createTask" />
 				<Tabs.Screen name="calender" />
 				<Tabs.Screen name="settings" />
 			</Tabs>

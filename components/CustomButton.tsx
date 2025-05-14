@@ -10,9 +10,16 @@ interface Props {
 	title: string | JSX.Element;
 	extendedStyles?: StyleProp<ViewStyle>;
 	disabled?: boolean;
+	task?: boolean;
 }
 
-const CustomButton = ({ onPress, title, extendedStyles, disabled }: Props) => {
+const CustomButton = ({
+	onPress,
+	title,
+	extendedStyles,
+	disabled,
+	task,
+}: Props) => {
 	return (
 		<Button
 			onPress={onPress}
@@ -22,7 +29,7 @@ const CustomButton = ({ onPress, title, extendedStyles, disabled }: Props) => {
 				StyleSheet.flatten(extendedStyles),
 				{
 					padding: rMS(SIZES.h6),
-					borderRadius: rMS(SIZES.h10),
+					borderRadius: task ? 999 : rMS(SIZES.h10),
 					width: "90%",
 					marginHorizontal: "auto",
 					backgroundColor: COLORS.darkBlue,

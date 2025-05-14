@@ -19,20 +19,21 @@ const PriorityButton = ({
 		<Pressable
 			onPress={onPress}
 			style={{
-				paddingVertical: rMS(SIZES.h6),
-				borderRadius: 99,
-				backgroundColor: isSelectedPriority ? COLORS.paleYellow : "transparent",
-				width: "30%",
+				paddingVertical: rMS(SIZES.h8),
+				borderRadius: rMS(SIZES.h10),
+				backgroundColor: isSelectedPriority ? COLORS.darkBlue : "transparent",
+				width: "32%",
 				justifyContent: "center",
 				alignItems: "center",
-				borderWidth: 2,
-				borderColor: isSelectedPriority ? "transparent" : COLORS.dark,
+				borderWidth: 1,
+				borderColor: isSelectedPriority ? "transparent" : COLORS.lightGray,
 			}}
 		>
 			<Text
 				style={{
 					fontSize: rMS(SIZES.h9),
 					fontWeight: "500",
+					color: isSelectedPriority ? COLORS.white : COLORS.darkBlue,
 				}}
 			>
 				{priorityText}

@@ -35,9 +35,9 @@ const TaskInput = ({
 		>
 			<Text
 				style={{
-					fontSize: rMS(SIZES.h8),
-					fontWeight: "500",
-					color: COLORS.dark,
+					fontSize: rMS(SIZES.h9),
+					fontWeight: "400",
+					color: COLORS.fadedBlue,
 				}}
 			>
 				{label}
@@ -48,8 +48,9 @@ const TaskInput = ({
 					alignItems: isDescription ? "flex-start" : "center",
 					padding: rMS(SIZES.h11),
 					paddingVertical: isDescription ? 0 : rMS(SIZES.h10),
-					borderRadius: 30,
-					backgroundColor: COLORS.white,
+					borderWidth: 1,
+					borderColor: COLORS.lightGray,
+					borderRadius: rMS(SIZES.h10),
 					width: "100%",
 					overflow: "hidden",
 				}}
@@ -60,11 +61,11 @@ const TaskInput = ({
 					style={{
 						width: hasIcon ? "80%" : "100%",
 						borderRadius: 30,
-						height: isDescription ? rMS(80) : null,
+						// minHeight: isDescription ? rMS(80) : null,
 						padding: isDescription ? rMS(SIZES.h11) : 0,
 					}}
 					multiline={isDescription}
-					numberOfLines={isDescription ? 4 : 1}
+					numberOfLines={isDescription ? 5 : 1}
 				/>
 				{hasIcon && (
 					<Pressable
