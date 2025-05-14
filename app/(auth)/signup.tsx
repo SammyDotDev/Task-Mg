@@ -11,6 +11,7 @@ import InputWrapper from "@/components/InputWrapper";
 import "react-native-url-polyfill/auto";
 import { supabase } from "@/lib/supabase";
 import Loader from "@/components/Loader";
+import LogoHeader from "@/components/LogoHeader";
 
 const Signup = () => {
 	const [userInputDetails, setUserInputDetails] = useState({
@@ -18,6 +19,8 @@ const Signup = () => {
 		emailAddress: "",
 		password: "",
 	});
+
+	const [confirmPassword, setConfirmPassword] = useState<string>("");
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
@@ -45,30 +48,37 @@ const Signup = () => {
 		<>
 			<SafeAreaContainer>
 				{isLoading && <Loader />}
+				<LogoHeader />
 				<View
 					style={{
 						justifyContent: "center",
 						alignItems: "center",
 						marginVertical: rMS(SIZES.h1),
+						marginTop: rMS(SIZES.h1),
 					}}
 				>
 					<Text
 						style={{
 							fontSize: rMS(SIZES.h3),
+							fontWeight: "600",
+							color: COLORS.darkBlue,
 						}}
 					>
-						Create your Account
+						Sign Up
+					</Text>
+
+					<Text
+						style={{
+							fontSize: rMS(SIZES.h8),
+							fontWeight: "400",
+							color: COLORS.fadedBlue,
+						}}
+					>
+						Create an account
 					</Text>
 				</View>
 				<View style={{ flex: 1 }}>
 					<InputWrapper backgroundColor={COLORS.paleYellow}>
-						<TextField
-							placeholder="Full name"
-							value={userInputDetails.fullName}
-							onChangeText={(text) =>
-								setUserInputDetails((prev) => ({ ...prev, fullName: text }))
-							}
-						/>
 						<TextField
 							placeholder="Email address"
 							value={userInputDetails.emailAddress}
@@ -85,29 +95,26 @@ const Signup = () => {
 							}
 							secureTextEntry
 						/>
+						<TextField
+							placeholder="Confirm Password"
+							value={confirmPassword}
+							onChangeText={(text) => setConfirmPassword(text)}
+							secureTextEntry
+						/>
 					</InputWrapper>
-					<CustomButton
-						title={"Sign in"}
-						onPress={handleSignUp}
-						extendedStyles={{
-							marginVertical: rMS(SIZES.h1 * 2),
-						}}
-					/>
 					<View
 						style={{
-							marginTop: "auto",
+							flexDirection: "row",
+							justifyContent: "space-between",
+							width: "90%",
 							marginHorizontal: "auto",
-							marginBottom: rMS(SIZES.h6),
-							backgroundColor: COLORS.paleLightPurple,
-							padding: rMS(SIZES.h9),
-							borderRadius: 45,
+							marginVertical: rMS(SIZES.h10),
 						}}
 					>
 						<Text
 							style={{
-								fontSize: rMS(SIZES.h8),
-								fontWeight: "500",
-								color: COLORS.deepPaleBrown,
+								fontSize: rMS(SIZES.h9),
+								color: COLORS.fadedBlue,
 								// textAlign: "center",
 							}}
 						>
@@ -123,6 +130,17 @@ const Signup = () => {
 							</Link>
 						</Text>
 					</View>
+					<CustomButton title={"Sign up"} onPress={handleSignUp} />
+					{/* <View
+						style={{
+							marginTop: "auto",
+							marginHorizontal: "auto",
+							marginBottom: rMS(SIZES.h6),
+							backgroundColor: COLORS.paleLightPurple,
+							padding: rMS(SIZES.h9),
+							borderRadius: 45,
+						}}
+					></View> */}
 				</View>
 			</SafeAreaContainer>
 		</>

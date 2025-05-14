@@ -12,9 +12,7 @@ const InputWrapper = ({
 	return (
 		<View
 			style={{
-				backgroundColor: backgroundColor + "39",
-				borderRadius: 45,
-				width: "90%",
+				width: "100%",
 				marginHorizontal: "auto",
 			}}
 		>

@@ -16,6 +16,7 @@ import { COLORS } from "@/constants/COLORS";
 import InputWrapper from "@/components/InputWrapper";
 import { supabase } from "@/lib/supabase";
 import Loader from "@/components/Loader";
+import LogoHeader from "@/components/LogoHeader";
 
 const Signin = () => {
 	const [userInputDetails, setUserInputDetails] = useState({
@@ -65,19 +66,33 @@ const Signin = () => {
 		>
 			<SafeAreaContainer>
 				{isLoading && <Loader />}
+				<LogoHeader />
 				<View
 					style={{
 						justifyContent: "center",
 						alignItems: "center",
 						marginVertical: rMS(SIZES.h1),
+						marginTop: rMS(SIZES.h1),
 					}}
 				>
 					<Text
 						style={{
 							fontSize: rMS(SIZES.h3),
+							fontWeight: "600",
+							color: COLORS.darkBlue,
 						}}
 					>
-						Welcome Back!
+						Sign Up
+					</Text>
+
+					<Text
+						style={{
+							fontSize: rMS(SIZES.h8),
+							fontWeight: "400",
+							color: COLORS.fadedBlue,
+						}}
+					>
+						Sign into your account
 					</Text>
 				</View>
 				<View style={{ flex: 1 }}>
@@ -99,46 +114,21 @@ const Signin = () => {
 							secureTextEntry
 						/>
 					</InputWrapper>
-					<Pressable
-						style={{
-							marginLeft: "auto",
-							marginRight: "5%",
-							marginVertical: rMS(SIZES.h6),
-						}}
-						onPress={handleForgotPassword}
-					>
-						<Text
-							style={{
-								fontSize: rMS(SIZES.h8),
-							}}
-						>
-							Forgot Password?
-						</Text>
-					</Pressable>
-					<View style={{ flex: 1 }} />
-					<CustomButton
-						title={"Sign in"}
-						onPress={handleSignIn}
-						extendedStyles={{
-							// marginVertical: rMS(SIZES.h1 * 2),
-							marginBottom: rS(SIZES.h6),
-						}}
-					/>
+					{/* <View style={{ flex: 1 }} /> */}
 					<View
 						style={{
-							marginTop: "auto",
+							flexDirection: "row",
+							justifyContent: "space-between",
+							width: "90%",
 							marginHorizontal: "auto",
-							marginBottom: rMS(SIZES.h6),
-							backgroundColor: COLORS.paleYellow + 39,
-							padding: rMS(SIZES.h9),
-							borderRadius: 45,
+							marginVertical: rMS(SIZES.h10),
 						}}
 					>
 						<Text
 							style={{
-								fontSize: rMS(SIZES.h8),
-								fontWeight: "500",
-								color: COLORS.deepPaleBrown,
+								fontSize: rMS(SIZES.h9),
+
+								color: COLORS.fadedBlue,
 								// textAlign: "center",
 							}}
 						>
@@ -153,7 +143,28 @@ const Signin = () => {
 								Sign Up
 							</Link>
 						</Text>
+						<Link
+							href={"/(auth)/other/forgotPassword"}
+							onPress={handleForgotPassword}
+							style={{
+								fontSize: rMS(SIZES.h9),
+								color: COLORS.darkBlue,
+								fontWeight: "600",
+							}}
+						>
+							Forgot Password?
+						</Link>
 					</View>
+					<CustomButton
+						title={"Sign in"}
+						onPress={handleSignIn}
+						extendedStyles={
+							{
+								// marginVertical: rMS(SIZES.h1 * 2),
+								// marginBottom: rS(SIZES.h6),
+							}
+						}
+					/>
 				</View>
 			</SafeAreaContainer>
 		</KeyboardAvoidingView>

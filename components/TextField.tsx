@@ -16,7 +16,7 @@ const TextField = ({
 	value,
 	placeholder,
 	secureTextEntry = false,
-    keyboardType
+	keyboardType,
 }: TextFieldProps) => {
 	return (
 		<TextInput
@@ -27,11 +27,13 @@ const TextField = ({
 			placeholder={placeholder}
 			style={{
 				padding: rMS(SIZES.h5),
-				borderRadius: 99,
+				borderRadius: rMS(SIZES.h10),
 				backgroundColor: COLORS.white,
 				width: "90%",
 				marginHorizontal: "auto",
-				marginVertical: rMS(SIZES.h8),
+				marginVertical: rMS(SIZES.h10),
+				borderWidth: 1,
+				borderColor: COLORS.lightGray,
 			}}
 			placeholderTextColor={COLORS.dark + "89"}
 		/>

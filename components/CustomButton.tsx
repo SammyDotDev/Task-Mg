@@ -22,15 +22,15 @@ const CustomButton = ({ onPress, title, extendedStyles, disabled }: Props) => {
 				StyleSheet.flatten(extendedStyles),
 				{
 					padding: rMS(SIZES.h6),
-					borderRadius: 99,
+					borderRadius: rMS(SIZES.h10),
 					width: "90%",
 					marginHorizontal: "auto",
-					backgroundColor: COLORS.deepPaleBrown,
+					backgroundColor: COLORS.darkBlue,
 				},
 			]}
-            titleStyle={{
-                fontSize:rMS(SIZES.h8)
-            }}
+			titleStyle={{
+				fontSize: rMS(SIZES.h8),
+			}}
 		/>
 	);
 };
