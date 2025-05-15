@@ -47,7 +47,7 @@ const Signup = () => {
 	return (
 		<>
 			<SafeAreaContainer>
-				{isLoading && <Loader />}
+				<Loader visible={isLoading} />
 				<LogoHeader />
 				<View
 					style={{

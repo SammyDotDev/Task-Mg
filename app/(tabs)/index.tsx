@@ -29,9 +29,21 @@ import Loader from "@/components/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { setLoading } from "@/store/slices/authSlice";
-import { Calendar, CalendarList, Agenda } from "react-native-calendars";
+import {
+	Calendar,
+	CalendarList,
+	Agenda,
+	AgendaList,
+	ExpandableCalendar,
+	CalendarProvider,
+	WeekCalendar,
+} from "react-native-calendars";
 import { TouchableWithoutFeedback } from "react-native";
 import { setPostLoadingTasks } from "@/store/slices/taskSlice";
+import { agendaItems, getMarkedDates } from "../../assets/data/agendaItems";
+import { getTheme, lightThemeColor, themeColor } from "../../assets/data/theme";
+import AgendaItem from "@/components/AgendaItem";
+import testIDs from "@/assets/data/testIDs";
 
 interface TaskInfo {
 	taskName: string;
@@ -39,6 +51,12 @@ interface TaskInfo {
 	date: string;
 	time: string;
 	priority: string;
+}
+
+const ITEMS: any[] = agendaItems;
+
+interface Props {
+	weekView?: boolean;
 }
 
 const Home = () => {
@@ -124,36 +142,90 @@ const Home = () => {
 			.select();
 		console.log(res);
 	};
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// const { weekView } = props;
+	const marked = useRef(getMarkedDates());
+	const theme = useRef(getTheme());
+	const todayBtnTheme = useRef({
+		todayButtonTextColor: themeColor,
+	});
 
+	const renderItem = useCallback(({ item }: any) => {
+		const isLongItem = item.itemCustomHeightType === "LongEvent";
+		return (
+			// <View style={{ paddingTop: isLongItem ? 40 : 0 }}>
+				<AgendaItem item={item} />
+		);
+	}, []);
 
 	return (
-		<Pressable
+		<ViewContainer
 			style={{
-				flex: 1,
+				paddingHorizontal: 0,
 			}}
-			onPress={() => setShowCalendar(false)}
 		>
-			<Loader visible={postLoadingTasks} />
-			<ViewContainer>
-				<SafeAreaScrollView>
-					<Header handleNotification={() => {}} handleAddTask={handleAddTask} />
-					<Text
-						style={{
-							fontSize: rMS(SIZES.h5),
-							marginHorizontal: rMS(SIZES.h6),
-							paddingVertical: rMS(SIZES.h9),
-						}}
-					>
-						Manage your task
-					</Text>
-
-					<CustomButton
-						title={"Log out"}
-						onPress={handleLogout}
+			<SafeAreaScrollView
+				contentContainerStyle={{
+					paddingHorizontal: 0,
+					paddingTop: rMS(SIZES.h1 * 1.5),
+					backgroundColor: COLORS.white,
+					paddingBottom: rMS(100),
+				}}
+				alwaysBounceVertical
+				showsVerticalScrollIndicator={false}
+				bounces={true}
+				scrollEventThrottle={16}
+			>
+				<Loader visible={postLoadingTasks} />
+				<Header handleNotification={() => {}} handleAddTask={handleAddTask} />
+				<CalendarProvider
+					date={ITEMS[1]?.title}
+					showTodayButton
+					theme={todayBtnTheme.current}
+				>
+					<WeekCalendar
+						testID={testIDs.weekCalendar.CONTAINER}
+						firstDay={1}
+						markedDates={marked.current}
 					/>
-				</SafeAreaScrollView>
-			</ViewContainer>
-		</Pressable>
+{/*
+					<ExpandableCalendar
+						testID={testIDs.expandableCalendar.CONTAINER}
+						theme={theme.current}
+						firstDay={1}
+						markedDates={marked.current}
+						//   leftArrowImageSource={leftArrowIcon}
+						//   rightArrowImageSource={rightArrowIcon}
+					/> */}
+					<AgendaList
+						sections={ITEMS}
+						renderItem={renderItem}
+						sectionStyle={{
+							backgroundColor: lightThemeColor,
+							color: "grey",
+							textTransform: "capitalize",
+						}}
+						infiniteListProps={{
+							itemHeight: 80,
+							titleHeight: 50,
+							itemHeightByType: {
+								LongEvent: 120,
+							},
+						}}
+					/>
+				</CalendarProvider>
+				{/* <Text
+					style={{
+						fontSize: rMS(SIZES.h5),
+						paddingVertical: rMS(SIZES.h9),
+					}}
+				>
+					Manage your task
+				</Text>
+
+				<CustomButton title={"Log out"} onPress={handleLogout} /> */}
+			</SafeAreaScrollView>
+		</ViewContainer>
 	);
 };
 

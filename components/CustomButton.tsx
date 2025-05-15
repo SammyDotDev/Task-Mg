@@ -30,7 +30,7 @@ const CustomButton = ({
 				{
 					padding: rMS(SIZES.h6),
 					borderRadius: task ? 999 : rMS(SIZES.h10),
-					width: "90%",
+					width: "100%",
 					marginHorizontal: "auto",
 					backgroundColor: COLORS.darkBlue,
 				},

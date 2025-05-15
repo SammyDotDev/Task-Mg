@@ -36,14 +36,14 @@ export default function RootLayout() {
 				flex: 1,
 			}}
 		>
-			<Provider store={store}>
-				<BottomSheetModalProvider>
-					<Stack>
-						<Stack.Screen name="(auth)" options={{ headerShown: false }} />
-						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-					</Stack>
-				</BottomSheetModalProvider>
-			</Provider>
+				<Provider store={store}>
+					<BottomSheetModalProvider>
+						<Stack>
+							<Stack.Screen name="(auth)" options={{ headerShown: false }} />
+							<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+						</Stack>
+					</BottomSheetModalProvider>
+				</Provider>
 		</GestureHandlerRootView>
 	);
 }

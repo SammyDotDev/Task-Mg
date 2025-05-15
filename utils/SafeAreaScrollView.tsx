@@ -1,10 +1,16 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, ScrollViewProps } from "react-native";
 import React from "react";
 import { rMS } from "./responsive_size";
 import { SIZES } from "@/constants/SIZES";
 import { COLORS } from "@/constants/COLORS";
 
-const SafeAreaScrollView = ({ children }: { children: React.ReactNode }) => {
+const SafeAreaScrollView = ({
+	children,
+	contentContainerStyle,
+}: {
+	children: React.ReactNode;
+	contentContainerStyle?: ScrollViewProps;
+}) => {
 	return (
 		<ScrollView
 			contentContainerStyle={{
@@ -12,6 +18,7 @@ const SafeAreaScrollView = ({ children }: { children: React.ReactNode }) => {
 				paddingTop: rMS(SIZES.h1 * 1.5),
 				backgroundColor: COLORS.white,
 				paddingBottom: rMS(100),
+                ...contentContainerStyle
 			}}
 			alwaysBounceVertical
 			showsVerticalScrollIndicator={false}
