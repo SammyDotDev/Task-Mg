@@ -66,7 +66,6 @@ const Signup = () => {
 					>
 						Sign Up
 					</Text>
-
 					<Text
 						style={{
 							fontSize: rMS(SIZES.h8),

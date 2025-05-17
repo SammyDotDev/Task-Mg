@@ -154,7 +154,7 @@ const Home = () => {
 		const isLongItem = item.itemCustomHeightType === "LongEvent";
 		return (
 			// <View style={{ paddingTop: isLongItem ? 40 : 0 }}>
-				<AgendaItem item={item} />
+			<AgendaItem item={item} />
 		);
 	}, []);
 
@@ -165,30 +165,42 @@ const Home = () => {
 			}}
 		>
 			<SafeAreaScrollView
+				scrollEnabled={false}
 				contentContainerStyle={{
 					paddingHorizontal: 0,
 					paddingTop: rMS(SIZES.h1 * 1.5),
 					backgroundColor: COLORS.white,
 					paddingBottom: rMS(100),
 				}}
-				alwaysBounceVertical
-				showsVerticalScrollIndicator={false}
-				bounces={true}
-				scrollEventThrottle={16}
 			>
 				<Loader visible={postLoadingTasks} />
-				<Header handleNotification={() => {}} handleAddTask={handleAddTask} />
+				<ViewContainer>
+					<Header handleNotification={() => {}} handleAddTask={handleAddTask} />
+				</ViewContainer>
 				<CalendarProvider
 					date={ITEMS[1]?.title}
 					showTodayButton
 					theme={todayBtnTheme.current}
+					style={{
+						backgroundColor: "#F7F9FC",
+					}}
 				>
 					<WeekCalendar
+						dayComponent={({date}) => <View>
+                            <Text>{date.day}</Text>
+                            <Text></Text>
+                        </View>}
 						testID={testIDs.weekCalendar.CONTAINER}
 						firstDay={1}
 						markedDates={marked.current}
+						calendarStyle={{
+							backgroundColor: COLORS.darkBlue,
+							borderWidth: 2,
+						}}
+						renderScrollComponent={() => <View />}
+						renderHeader={() => <View></View>}
 					/>
-{/*
+					{/*
 					<ExpandableCalendar
 						testID={testIDs.expandableCalendar.CONTAINER}
 						theme={theme.current}
@@ -200,11 +212,6 @@ const Home = () => {
 					<AgendaList
 						sections={ITEMS}
 						renderItem={renderItem}
-						sectionStyle={{
-							backgroundColor: lightThemeColor,
-							color: "grey",
-							textTransform: "capitalize",
-						}}
 						infiniteListProps={{
 							itemHeight: 80,
 							titleHeight: 50,
