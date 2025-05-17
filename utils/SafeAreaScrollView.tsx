@@ -23,10 +23,10 @@ const SafeAreaScrollView = ({
 				paddingBottom: rMS(100),
 				...contentContainerStyle,
 			}}
-			alwaysBounceVertical
+			// alwaysBounceVertical
 			showsVerticalScrollIndicator={false}
-			bounces={true}
-			scrollEventThrottle={16}
+			// bounces={true}
+			// scrollEventThrottle={16}
 		>
 			{children}
 		</ScrollView>

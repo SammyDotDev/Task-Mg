@@ -4,6 +4,7 @@ import {
 	Alert,
 	Pressable,
 	KeyboardAvoidingView,
+	Platform,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import SafeAreaContainer from "@/utils/SafeAreaContainer";
@@ -17,6 +18,8 @@ import InputWrapper from "@/components/InputWrapper";
 import { supabase } from "@/lib/supabase";
 import Loader from "@/components/Loader";
 import LogoHeader from "@/components/LogoHeader";
+import { ScrollView } from "react-native";
+import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
 
 const Signin = () => {
 	const [userInputDetails, setUserInputDetails] = useState({
@@ -60,12 +63,14 @@ const Signin = () => {
 
 	return (
 		<KeyboardAvoidingView
+			behavior={Platform.OS === "ios" ? "padding" : undefined}
 			style={{
-				flexGrow: 1,
+				flex: 1,
+				backgroundColor: COLORS.white,
 			}}
 		>
-			<SafeAreaContainer>
-				{isLoading && <Loader />}
+			<SafeAreaScrollView>
+				<Loader visible={isLoading} />
 				<LogoHeader />
 				<View
 					style={{
@@ -82,7 +87,7 @@ const Signin = () => {
 							color: COLORS.darkBlue,
 						}}
 					>
-						Sign Up
+						Sign In
 					</Text>
 
 					<Text
@@ -101,7 +106,10 @@ const Signin = () => {
 							placeholder="Email address"
 							value={userInputDetails.emailAddress}
 							onChangeText={(text) =>
-								setUserInputDetails((prev) => ({ ...prev, emailAddress: text }))
+								setUserInputDetails((prev) => ({
+									...prev,
+									emailAddress: text,
+								}))
 							}
 							keyboardType="email-address"
 						/>
@@ -115,6 +123,27 @@ const Signin = () => {
 						/>
 					</InputWrapper>
 					{/* <View style={{ flex: 1 }} /> */}
+					<View
+						style={{
+							flexDirection: "row",
+							justifyContent: "flex-end",
+							width: "90%",
+							marginHorizontal: "auto",
+							marginVertical: rMS(SIZES.h10),
+						}}
+					>
+						<Link
+							href={"/(auth)/other/forgotPassword"}
+							onPress={handleForgotPassword}
+							style={{
+								fontSize: rMS(SIZES.h9),
+								color: COLORS.darkBlue,
+								fontWeight: "600",
+							}}
+						>
+							Forgot Password?
+						</Link>
+					</View>
 					<View
 						style={{
 							flexDirection: "row",
@@ -143,17 +172,6 @@ const Signin = () => {
 								Sign Up
 							</Link>
 						</Text>
-						<Link
-							href={"/(auth)/other/forgotPassword"}
-							onPress={handleForgotPassword}
-							style={{
-								fontSize: rMS(SIZES.h9),
-								color: COLORS.darkBlue,
-								fontWeight: "600",
-							}}
-						>
-							Forgot Password?
-						</Link>
 					</View>
 					<CustomButton
 						title={"Sign in"}
@@ -166,7 +184,7 @@ const Signin = () => {
 						}
 					/>
 				</View>
-			</SafeAreaContainer>
+			</SafeAreaScrollView>
 		</KeyboardAvoidingView>
 	);
 };

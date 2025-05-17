@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { rMS } from "@/utils/responsive_size";
@@ -37,6 +37,7 @@ import {
 	ExpandableCalendar,
 	CalendarProvider,
 	WeekCalendar,
+	DateData,
 } from "react-native-calendars";
 import { TouchableWithoutFeedback } from "react-native";
 import { setPostLoadingTasks } from "@/store/slices/taskSlice";
@@ -44,6 +45,7 @@ import { agendaItems, getMarkedDates } from "../../assets/data/agendaItems";
 import { getTheme, lightThemeColor, themeColor } from "../../assets/data/theme";
 import AgendaItem from "@/components/AgendaItem";
 import testIDs from "@/assets/data/testIDs";
+import dayjs from "dayjs";
 
 interface TaskInfo {
 	taskName: string;
@@ -157,15 +159,15 @@ const Home = () => {
 			<AgendaItem item={item} />
 		);
 	}, []);
-
+	const [selected, setSelected] = useState(dayjs().format("YYYY-MM-DD"));
 	return (
 		<ViewContainer
 			style={{
 				paddingHorizontal: 0,
 			}}
 		>
-			<SafeAreaScrollView
-				scrollEnabled={false}
+			<SafeAreaContainer
+				// scrollEnabled={false}
 				contentContainerStyle={{
 					paddingHorizontal: 0,
 					paddingTop: rMS(SIZES.h1 * 1.5),
@@ -174,7 +176,12 @@ const Home = () => {
 				}}
 			>
 				<Loader visible={postLoadingTasks} />
-				<ViewContainer>
+				<ViewContainer
+					style={{
+						flex: undefined,
+						paddingVertical: rMS(SIZES.h1),
+					}}
+				>
 					<Header handleNotification={() => {}} handleAddTask={handleAddTask} />
 				</ViewContainer>
 				<CalendarProvider
@@ -186,19 +193,85 @@ const Home = () => {
 					}}
 				>
 					<WeekCalendar
-						dayComponent={({date}) => <View>
-                            <Text>{date.day}</Text>
-                            <Text></Text>
-                        </View>}
+						theme={{
+							dotColor: COLORS.darkBlue,
+							selectedDayBackgroundColor: COLORS.darkBlue,
+							dayTextColor: COLORS.lightGray,
+							todayTextColor: COLORS.dark,
+							todayDotColor: COLORS.dark,
+						}}
+						calendarHeight={rMS(70)}
+						calendarStyle={{
+							elevation: 0,
+							borderRadius: 10,
+						}}
 						testID={testIDs.weekCalendar.CONTAINER}
 						firstDay={1}
-						markedDates={marked.current}
-						calendarStyle={{
-							backgroundColor: COLORS.darkBlue,
-							borderWidth: 2,
+						headerStyle={{
+							height: 300,
 						}}
-						renderScrollComponent={() => <View />}
-						renderHeader={() => <View></View>}
+						contentContainerStyle={{
+							elevation: 0,
+							shadowOffset: {
+								width: 0,
+								height: 0,
+							},
+							shadowColor: "transparent",
+							shadowOpacity: 0,
+							boxShadow: undefined,
+							backgroundColor: COLORS.dark,
+						}}
+						markedDates={marked.current}
+						markingType="custom"
+						dayComponent={({ date, onPress, ...props }) => {
+							// console.log(typeof selected, typeof date?.dateString);
+							const isSelected = date?.dateString === selected;
+							console.log(selected, isSelected);
+							return (
+								<View
+									style={{
+										alignItems: "center",
+										gap: rMS(SIZES.h13),
+									}}
+								>
+									<View
+										style={{
+											width: 10,
+											height: 10,
+											backgroundColor: isSelected
+												? COLORS.darkBlue
+												: "transparent",
+											borderRadius: 99,
+										}}
+									/>
+									<TouchableOpacity
+										onPress={() => {
+											console.log("s");
+											setSelected(date?.dateString ?? "");
+											onPress?.(date);
+										}}
+										style={{
+											backgroundColor: isSelected
+												? COLORS.darkBlue
+												: COLORS.white,
+											borderRadius: isSelected ? SIZES.h10 : 0,
+											padding: rMS(SIZES.h11),
+										}}
+									>
+										<Text
+											style={{
+												fontSize: rMS(SIZES.h6),
+												color: isSelected ? COLORS.white : COLORS.darkBlue,
+												fontWeight: "600",
+											}}
+										>
+											{date?.day}
+										</Text>
+										{/* <Text></Text> */}
+									</TouchableOpacity>
+								</View>
+							);
+						}}
 					/>
 					{/*
 					<ExpandableCalendar
@@ -214,7 +287,7 @@ const Home = () => {
 						renderItem={renderItem}
 						infiniteListProps={{
 							itemHeight: 80,
-							titleHeight: 50,
+							// titleHeight: 50,
 							itemHeightByType: {
 								LongEvent: 120,
 							},
@@ -231,7 +304,7 @@ const Home = () => {
 				</Text>
 
 				<CustomButton title={"Log out"} onPress={handleLogout} /> */}
-			</SafeAreaScrollView>
+			</SafeAreaContainer>
 		</ViewContainer>
 	);
 };

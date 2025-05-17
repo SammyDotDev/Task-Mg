@@ -34,6 +34,7 @@ const TextField = ({
 				marginVertical: rMS(SIZES.h10),
 				borderWidth: 1,
 				borderColor: COLORS.lightGray,
+				overflow: "hidden",
 			}}
 			placeholderTextColor={COLORS.dark + "89"}
 		/>

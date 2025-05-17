@@ -17,7 +17,13 @@ import Animated, {
 import Loader from "@/components/Loader";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
+import {
+	AntDesign,
+	Entypo,
+	FontAwesome6,
+	MaterialIcons,
+} from "@expo/vector-icons";
+import { isAndroid } from "@/utils";
 
 const Tablayout = () => {
 	const logoutLoading = useSelector((state: RootState) => state.auth.loading);
@@ -34,7 +40,7 @@ const Tablayout = () => {
 					tabBarStyle: {
 						position: "absolute",
 						// bottom: rMS(SIZES.h5),
-						height: rS(70),
+						height: isAndroid ? rS(70) : rS(80),
 						elevation: 0,
 						backgroundColor: COLORS.white,
 						borderTopWidth: 0,
@@ -97,12 +103,14 @@ const Tablayout = () => {
 											borderRadius: 999,
 											padding: rMS(SIZES.h7),
 											backgroundColor: COLORS.darkBlue,
+											justifyContent: "center",
+											alignItems: "center",
 										}}
 									>
-										<Entypo
+										<FontAwesome6
 											name="plus"
 											color={COLORS.white}
-											size={rMS(SIZES.h5)}
+											size={rMS(SIZES.h8)}
 										/>
 									</View>
 								);
