@@ -168,7 +168,7 @@ const Home = () => {
 		>
 			<SafeAreaContainer
 				// scrollEnabled={false}
-				contentContainerStyle={{
+				style={{
 					paddingHorizontal: 0,
 					paddingTop: rMS(SIZES.h1 * 1.5),
 					backgroundColor: COLORS.white,
@@ -189,7 +189,7 @@ const Home = () => {
 					showTodayButton
 					theme={todayBtnTheme.current}
 					style={{
-						backgroundColor: "#F7F9FC",
+						backgroundColor: "##f7f9fc",
 					}}
 				>
 					<WeekCalendar
@@ -199,6 +199,19 @@ const Home = () => {
 							dayTextColor: COLORS.lightGray,
 							todayTextColor: COLORS.dark,
 							todayDotColor: COLORS.dark,
+							stylesheet: {
+								calendar: {
+									header: {
+										main: {
+											elevation: 0,
+											borderRadius: 90,
+										},
+										week: {
+											borderRadius: 90,
+										},
+									},
+								},
+							},
 						}}
 						calendarHeight={rMS(70)}
 						calendarStyle={{
@@ -208,7 +221,12 @@ const Home = () => {
 						testID={testIDs.weekCalendar.CONTAINER}
 						firstDay={1}
 						headerStyle={{
-							height: 300,
+							elevation: 0,
+							shadowColor: "transparent",
+							shadowOpacity: 0,
+						}}
+						style={{
+							elevation: 0,
 						}}
 						contentContainerStyle={{
 							elevation: 0,
@@ -284,6 +302,12 @@ const Home = () => {
 					/> */}
 					<AgendaList
 						sections={ITEMS}
+						style={{
+							backgroundColor: "#f7f9fc",
+						}}
+						contentContainerStyle={{
+							backgroundColor: "#f7f9fc",
+						}}
 						renderItem={renderItem}
 						infiniteListProps={{
 							itemHeight: 80,

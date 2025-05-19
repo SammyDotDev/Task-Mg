@@ -32,7 +32,7 @@ const Tablayout = () => {
 
 	return (
 		<>
-			<Loader visible={logoutLoading} />
+			{/* <Loader visible={logoutLoading} /> */}
 			<Tabs
 				screenOptions={({ route }) => ({
 					headerShown: false,
@@ -56,6 +56,7 @@ const Tablayout = () => {
 					},
 					tabBarShowLabel: false,
 					tabBarButton: (props) => {
+                        const { children, onPress } = props;
 						const isSelected = props?.accessibilityState?.selected;
 						const opacity = useSharedValue(1);
 						// const animatedStyle = useAnimatedStyle(() => {
@@ -120,7 +121,8 @@ const Tablayout = () => {
 						}
 						return (
 							<Pressable
-								{...props}
+								// {...props}
+                                onPress={onPress}
 								style={[
 									{
 										borderRadius: 99,

@@ -17,6 +17,7 @@ import { setPostLoadingTasks } from "@/store/slices/taskSlice";
 import Modal from "react-native-modal";
 import CalendarModal from "@/components/CalendarModal";
 import SafeAreaContainer from "@/utils/SafeAreaContainer";
+import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
 
 interface TaskInfo {
 	taskName: string;
@@ -95,7 +96,7 @@ const createTask = () => {
 	return (
 		// <SafeAreaContainer>
 		<>
-			<ScrollView
+			<SafeAreaScrollView
 				style={{
 					flexGrow: 1,
 					backgroundColor: COLORS.white,
@@ -284,7 +285,7 @@ const createTask = () => {
 						// marginBottom: rMS(SIZES.h4),
 					}}
 				/>
-			</ScrollView>
+			</SafeAreaScrollView>
 			<CalendarModal
 				showCalendar={showCalendar}
 				handleBackdropPress={() => setShowCalendar(false)}

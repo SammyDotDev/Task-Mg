@@ -28,7 +28,7 @@ export function getTheme() {
     textDayFontSize: 18,
     textDayFontFamily: 'HelveticaNeue',
     textDayFontWeight: '500' as const,
-    textDayStyle: {marginTop: Platform.OS === 'android' ? 2 : 4},
+    // textDayStyle: {marginTop: Platform.OS === 'android' ? 2 : 4},
     // selected date
     selectedDayBackgroundColor: themeColor,
     selectedDayTextColor: 'white',

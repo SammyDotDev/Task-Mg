@@ -47,6 +47,8 @@ const AgendaItem = (props: ItemProps) => {
 					paddingVertical: rMS(SIZES.h7),
 					paddingHorizontal: rMS(SIZES.h10),
 					width: "15%",
+					backgroundColor: "#f7f9fc",
+					alignItems: "center",
 				}}
 			>
 				<Text style={styles.itemHourText}>{item.hour}</Text>
@@ -89,7 +91,8 @@ const styles = StyleSheet.create({
 		width: "100%",
 	},
 	itemHourText: {
-		color: "black",
+		color: "#A0ABC0",
+		fontWeight: "500",
 	},
 	itemDurationText: {
 		color: "grey",
