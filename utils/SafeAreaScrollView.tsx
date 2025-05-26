@@ -21,7 +21,7 @@ const SafeAreaScrollView = ({
 				paddingTop: rMS(SIZES.h1 * 1.5),
 				backgroundColor: COLORS.white,
 				paddingBottom: rMS(100),
-				// ...contentContainerStyle,
+				...contentContainerStyle,
 			}}
 			// alwaysBounceVertical
 			showsVerticalScrollIndicator={false}

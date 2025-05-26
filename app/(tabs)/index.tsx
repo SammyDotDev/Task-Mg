@@ -200,6 +200,16 @@ const Home = () => {
 							todayTextColor: COLORS.dark,
 							todayDotColor: COLORS.dark,
 							stylesheet: {
+								day: {
+									basic: {
+										width: 32,
+										height: 32,
+										alignItems: "center",
+										justifyContent: "center",
+										borderRadius: 6, // 👈 less rounded
+										padding: 2, // 👈 inner breathing room
+									},
+								},
 								calendar: {
 									header: {
 										main: {
@@ -241,55 +251,56 @@ const Home = () => {
 						}}
 						markedDates={marked.current}
 						markingType="custom"
-						dayComponent={({ date, onPress, ...props }) => {
-							// console.log(typeof selected, typeof date?.dateString);
-							const isSelected = date?.dateString === selected;
-							console.log(selected, isSelected);
-							return (
-								<View
-									style={{
-										alignItems: "center",
-										gap: rMS(SIZES.h13),
-									}}
-								>
-									<View
-										style={{
-											width: 10,
-											height: 10,
-											backgroundColor: isSelected
-												? COLORS.darkBlue
-												: "transparent",
-											borderRadius: 99,
-										}}
-									/>
-									<TouchableOpacity
-										onPress={() => {
-											console.log("s");
-											setSelected(date?.dateString ?? "");
-											onPress?.(date);
-										}}
-										style={{
-											backgroundColor: isSelected
-												? COLORS.darkBlue
-												: COLORS.white,
-											borderRadius: isSelected ? SIZES.h10 : 0,
-											padding: rMS(SIZES.h11),
-										}}
-									>
-										<Text
-											style={{
-												fontSize: rMS(SIZES.h6),
-												color: isSelected ? COLORS.white : COLORS.darkBlue,
-												fontWeight: "600",
-											}}
-										>
-											{date?.day}
-										</Text>
-										{/* <Text></Text> */}
-									</TouchableOpacity>
-								</View>
-							);
-						}}
+
+						// dayComponent={({ date, onPress, ...props }) => {
+						// 	// console.log(typeof selected, typeof date?.dateString);
+						// 	const isSelected = date?.dateString === selected;
+						// 	console.log(selected, isSelected);
+						// 	return (
+						// 		<View
+						// 			style={{
+						// 				alignItems: "center",
+						// 				gap: rMS(SIZES.h13),
+						// 			}}
+						// 		>
+						// 			<View
+						// 				style={{
+						// 					width: 10,
+						// 					height: 10,
+						// 					backgroundColor: isSelected
+						// 						? COLORS.darkBlue
+						// 						: "transparent",
+						// 					borderRadius: 99,
+						// 				}}
+						// 			/>
+						// 			<TouchableOpacity
+						// 				onPress={() => {
+						// 					console.log("s");
+						// 					setSelected(date?.dateString ?? "");
+						// 					onPress?.(date);
+						// 				}}
+						// 				style={{
+						// 					backgroundColor: isSelected
+						// 						? COLORS.darkBlue
+						// 						: COLORS.white,
+						// 					borderRadius: isSelected ? SIZES.h10 : 0,
+						// 					padding: rMS(SIZES.h11),
+						// 				}}
+						// 			>
+						// 				<Text
+						// 					style={{
+						// 						fontSize: rMS(SIZES.h6),
+						// 						color: isSelected ? COLORS.white : COLORS.darkBlue,
+						// 						fontWeight: "600",
+						// 					}}
+						// 				>
+						// 					{date?.day}
+						// 				</Text>
+						// 				{/* <Text></Text> */}
+						// 			</TouchableOpacity>
+						// 		</View>
+						// 	);
+						// }}
 					/>
 					{/*
 					<ExpandableCalendar
@@ -301,21 +312,31 @@ const Home = () => {
 						//   rightArrowImageSource={rightArrowIcon}
 					/> */}
 					<AgendaList
+						renderSectionHeader={() => null}
+						renderSectionFooter={() => null}
 						sections={ITEMS}
 						style={{
-							backgroundColor: "#f7f9fc",
+							backgroundColor: COLORS.dimWhite,
 						}}
 						contentContainerStyle={{
-							backgroundColor: "#f7f9fc",
+							backgroundColor: COLORS.dimWhite,
+						}}
+						sectionStyle={{
+							borderWidth: 1,
+							height: 0,
+							gap: 0,
+							display: "none",
 						}}
 						renderItem={renderItem}
-						infiniteListProps={{
-							itemHeight: 80,
-							// titleHeight: 50,
-							itemHeightByType: {
-								LongEvent: 120,
-							},
-						}}
+						infiniteListProps={
+							{
+								// itemHeight: 0,
+								// titleHeight: 50,
+								// itemHeightByType: {
+								// 	LongEvent: 120,
+								// },
+							}
+						}
 					/>
 				</CalendarProvider>
 				{/* <Text

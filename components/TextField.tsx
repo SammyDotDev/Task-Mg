@@ -1,15 +1,24 @@
-import { View, Text, TextInput, KeyboardTypeOptions } from "react-native";
+import {
+	View,
+	Text,
+	TextInput,
+	KeyboardTypeOptions,
+	ViewStyle,
+	TextStyle,
+} from "react-native";
 import React from "react";
 import { rMS } from "@/utils/responsive_size";
 import { SIZES } from "@/constants/SIZES";
 import { COLORS } from "@/constants/COLORS";
 
-interface TextFieldProps {
+export interface TextFieldProps {
 	onChangeText: (text: string) => void;
 	value: string;
-	placeholder: string;
+	placeholder?: string;
 	secureTextEntry?: boolean;
 	keyboardType?: KeyboardTypeOptions;
+	style?: TextStyle;
+    title?: string;
 }
 const TextField = ({
 	onChangeText,
@@ -17,6 +26,7 @@ const TextField = ({
 	placeholder,
 	secureTextEntry = false,
 	keyboardType,
+	style,
 }: TextFieldProps) => {
 	return (
 		<TextInput
@@ -35,6 +45,7 @@ const TextField = ({
 				borderWidth: 1,
 				borderColor: COLORS.lightGray,
 				overflow: "hidden",
+				...style,
 			}}
 			placeholderTextColor={COLORS.dark + "89"}
 		/>

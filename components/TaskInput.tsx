@@ -45,7 +45,7 @@ const TaskInput = ({
 			<View
 				style={{
 					flexDirection: "row",
-					alignItems: isDescription ? "flex-start" : "center",
+					// alignItems: isDescription ? "flex-start" : "center",
 					padding: rMS(SIZES.h11),
 					paddingVertical: isDescription ? 0 : rMS(SIZES.h10),
 					borderWidth: 1,
@@ -53,17 +53,20 @@ const TaskInput = ({
 					borderRadius: rMS(SIZES.h10),
 					width: "100%",
 					overflow: "hidden",
+					height: isDescription ? rMS(90) : null,
 				}}
 			>
 				<TextInput
 					onChangeText={onChangeText}
 					value={value}
-					style={{
-						width: hasIcon ? "80%" : "100%",
-						borderRadius: 30,
-						// minHeight: isDescription ? rMS(80) : null,
-						padding: isDescription ? rMS(SIZES.h11) : 0,
-					}}
+					style={[
+						{
+							width: hasIcon ? "80%" : "100%",
+							padding: isDescription ? rMS(SIZES.h11) : 0,
+							paddingHorizontal: 0,
+						},
+						isDescription && { textAlignVertical: "top" },
+					]}
 					multiline={isDescription}
 					numberOfLines={isDescription ? 5 : 1}
 				/>

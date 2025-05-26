@@ -18,6 +18,8 @@ import Modal from "react-native-modal";
 import CalendarModal from "@/components/CalendarModal";
 import SafeAreaContainer from "@/utils/SafeAreaContainer";
 import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
+import { Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 interface TaskInfo {
 	taskName: string;
@@ -119,7 +121,7 @@ const createTask = () => {
 					}}
 				>
 					<Pressable
-						// onPress={() => bottomSheetModalRef.current?.close()}
+						onPress={() => router.dismiss(1)}
 						style={{
 							justifyContent: "center",
 							alignItems: "center",
@@ -127,7 +129,7 @@ const createTask = () => {
 							left: rMS(SIZES.h9),
 						}}
 					>
-						<CancelIcon color={COLORS.deepDark} />
+						<Feather name="x" size={rMS(SIZES.h4)} color={COLORS.deepDark} />
 					</Pressable>
 					<Text
 						style={{

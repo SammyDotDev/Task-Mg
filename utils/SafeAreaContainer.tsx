@@ -9,7 +9,7 @@ const SafeAreaContainer = ({
 	style,
 }: {
 	children: React.ReactNode;
-	style: ViewStyle;
+	style?: ViewStyle;
 }) => {
 	return (
 		<SafeAreaView

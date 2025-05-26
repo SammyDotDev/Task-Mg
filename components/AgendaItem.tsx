@@ -47,7 +47,7 @@ const AgendaItem = (props: ItemProps) => {
 					paddingVertical: rMS(SIZES.h7),
 					paddingHorizontal: rMS(SIZES.h10),
 					width: "15%",
-					backgroundColor: "#f7f9fc",
+					backgroundColor: COLORS.dimWhite,
 					alignItems: "center",
 				}}
 			>
@@ -60,7 +60,7 @@ const AgendaItem = (props: ItemProps) => {
 					borderColor: COLORS.darkBlue,
 					padding: rMS(SIZES.h8),
 					backgroundColor: "#EDF0F7",
-					width: "100%",
+					width: "85%",
 					justifyContent: "center",
 				}}
 			>
@@ -81,13 +81,15 @@ const AgendaItem = (props: ItemProps) => {
 	);
 };
 
-export default React.memo(AgendaItem);
+// export default React.memo(AgendaItem);
+export default AgendaItem;
 
 const styles = StyleSheet.create({
 	item: {
 		// padding: 20,
-		backgroundColor: "#F7F9FC",
+		// backgroundColor: "#000",
 		flexDirection: "row",
+		// flexWrap:"wrap",
 		width: "100%",
 	},
 	itemHourText: {

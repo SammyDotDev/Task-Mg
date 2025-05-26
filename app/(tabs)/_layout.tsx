@@ -3,11 +3,17 @@ import { Tabs } from "expo-router";
 import { rMS, rS } from "@/utils/responsive_size";
 import { SIZES } from "@/constants/SIZES";
 import { COLORS } from "@/constants/COLORS";
-import HomeIcon from "@/assets/svg/HomeIcon";
+// import HomeIcon from "@/assets/svg/HomeIcon";
 import TaskIcon from "@/assets/svg/TaskIcon";
 import CalenderIcon from "@/assets/svg/CalenderIcon";
 import SettingsIcon from "@/assets/svg/SettingsIcon";
-import { Dimensions, Pressable, TouchableOpacity, View } from "react-native";
+import {
+	Dimensions,
+	Pressable,
+	TouchableOpacity,
+	TouchableWithoutFeedback,
+	View,
+} from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import Animated, {
 	useAnimatedStyle,
@@ -24,6 +30,15 @@ import {
 	MaterialIcons,
 } from "@expo/vector-icons";
 import { isAndroid } from "@/utils";
+import ActiveHomeIcon from "@/assets/svg/navIcons/ActiveHomeIcon";
+import ActiveTasksIcon from "@/assets/svg/navIcons/ActiveTasksIcon";
+import TasksIcon from "@/assets/svg/navIcons/TasksIcon";
+import ActiveCalendarIcon from "@/assets/svg/navIcons/ActiveCalendarIcon";
+import CalendarIcon from "@/assets/svg/navIcons/CalendarIcon";
+import ActiveProfilesIcon from "@/assets/svg/navIcons/ActiveProfilesIcon";
+import ProfilesIcon from "@/assets/svg/navIcons/ProfilesIcon";
+import HomeIcon from "@/assets/svg/navIcons/HomeIcon";
+import { BottomTabBarButtonProps } from "@react-navigation/bottom-tabs";
 
 const Tablayout = () => {
 	const logoutLoading = useSelector((state: RootState) => state.auth.loading);
@@ -55,9 +70,10 @@ const Tablayout = () => {
 						height: rS(60),
 					},
 					tabBarShowLabel: false,
-					tabBarButton: (props) => {
-                        const { children, onPress } = props;
-						const isSelected = props?.accessibilityState?.selected;
+					tabBarButton: (props: BottomTabBarButtonProps) => {
+						const { children, onPress, accessibilityState } = props;
+						const isSelected = accessibilityState?.selected;
+						// console.log(route.name, accessibilityState);
 						const opacity = useSharedValue(1);
 						// const animatedStyle = useAnimatedStyle(() => {
 						// 	return {
@@ -74,28 +90,16 @@ const Tablayout = () => {
 						let icon;
 						switch (route.name) {
 							case "index":
-								icon = (
-									<HomeIcon color={isSelected ? COLORS.dark : COLORS.dark} />
-								);
+								icon = isSelected ? <ActiveHomeIcon /> : <HomeIcon />;
 								break;
 							case "tasks":
-								icon = (
-									<TaskIcon color={isSelected ? COLORS.dark : COLORS.dark} />
-								);
+								icon = isSelected ? <ActiveTasksIcon /> : <TasksIcon />;
 								break;
-							case "calender":
-								icon = (
-									<CalenderIcon
-										color={isSelected ? COLORS.dark : COLORS.dark}
-									/>
-								);
+							case "calendar":
+								icon = isSelected ? <ActiveCalendarIcon /> : <CalendarIcon />;
 								break;
-							case "settings":
-								icon = (
-									<SettingsIcon
-										color={isSelected ? COLORS.dark : COLORS.dark}
-									/>
-								);
+							case "profile":
+								icon = isSelected ? <ActiveProfilesIcon /> : <ProfilesIcon />;
 								break;
 							case "createTask":
 								icon = (
@@ -120,9 +124,10 @@ const Tablayout = () => {
 								break;
 						}
 						return (
-							<Pressable
+							<TouchableWithoutFeedback
 								// {...props}
-                                onPress={onPress}
+								accessibilityState={accessibilityState}
+								onPress={onPress}
 								style={[
 									{
 										borderRadius: 99,
@@ -155,16 +160,16 @@ const Tablayout = () => {
 										{icon}
 									</View>
 								</Animated.View>
-							</Pressable>
+							</TouchableWithoutFeedback>
 						);
 					},
 				})}
 			>
 				<Tabs.Screen name="index" />
-				<Tabs.Screen name="tasks" />
+				<Tabs.Screen name="calendar" />
 				<Tabs.Screen name="createTask" />
-				<Tabs.Screen name="calender" />
-				<Tabs.Screen name="settings" />
+				<Tabs.Screen name="tasks" />
+				<Tabs.Screen name="profile" />
 			</Tabs>
 		</>
 	);
