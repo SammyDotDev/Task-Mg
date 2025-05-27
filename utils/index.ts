@@ -1,5 +1,7 @@
-import { Platform } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { rMS, rS, rV } from "./responsive_size";
+import { SIZES } from "@/constants/SIZES";
+import { COLORS } from "@/constants/COLORS";
 
 export default {
 	rS,
@@ -15,3 +17,26 @@ export const getMonthName = (date: Date) => {
 export const formatDate = (date: Date) => {
 	return date.toISOString().split("T")[0];
 };
+
+export const universalStyles = StyleSheet.create({
+	headerText: {
+		fontSize: rMS(SIZES.h1),
+		fontWeight: "700",
+		color: COLORS.darkBlue,
+	},
+	baseText: {
+		fontSize: rMS(SIZES.h7),
+		fontWeight: "500",
+		color: COLORS.darkBlue,
+	},
+	textSm: {
+		fontSize: rMS(SIZES.h8),
+		fontWeight: "500",
+		color: COLORS.darkBlue,
+	},
+	textL: {
+		fontSize: rMS(SIZES.h4),
+		fontWeight: "500",
+		color: COLORS.darkBlue,
+	},
+});

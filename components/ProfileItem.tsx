@@ -3,6 +3,7 @@ import React from "react";
 import { rMS } from "@/utils/responsive_size";
 import { SIZES } from "@/constants/SIZES";
 import { COLORS } from "@/constants/COLORS";
+import { universalStyles } from "@/utils";
 
 type Props = {
 	icon: React.ReactNode;
@@ -39,11 +40,13 @@ const ProfileItem = ({
 			>
 				{icon}
 				<Text
-					style={{
-						fontSize: rMS(SIZES.h8),
-						fontWeight: "500",
-						color: isLogout ? COLORS.red : COLORS.darkBlue,
-					}}
+					style={[
+						,
+						universalStyles.baseText,
+						{
+							color: isLogout ? COLORS.red : COLORS.darkBlue,
+						},
+					]}
 				>
 					{title}
 				</Text>

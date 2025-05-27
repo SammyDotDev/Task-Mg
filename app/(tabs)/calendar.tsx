@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, FlatList, Pressable } from "react-native";
 import React, { Fragment, useCallback, useMemo, useState } from "react";
 import ViewContainer from "@/utils/ViewContainer";
 import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
@@ -9,7 +9,10 @@ import SearchHeader from "@/components/SearchHeader";
 import { COLORS } from "@/constants/COLORS";
 import { Calendar, CalendarUtils } from "react-native-calendars";
 import testIDs from "@/assets/data/testIDs";
-import { formatDate, getMonthName } from "@/utils";
+import { formatDate, getMonthName, universalStyles } from "@/utils";
+import { agendaItems } from "@/assets/data/agendaItems";
+import TaskItem from "@/components/TaskItem";
+import ListEmptyComponent from "@/components/ListEmptyComponent";
 
 const Calender = () => {
 	const INITIAL_DATE = new Date();
@@ -68,27 +71,16 @@ const Calender = () => {
 							customHeaderTitle={<View />}
 							hideArrows
 							hideExtraDays
-							theme={{
-								arrowColor: COLORS.darkBlue,
-								selectedDayBackgroundColor: "#717D96",
-								textDayFontWeight: "600",
-								textDayStyle: {
-									// backgroundColor: COLORS.paleWhite,
-									// padding: rMS(SIZES.h10),
-									borderRadius: 99,
-									color: COLORS.darkBlue,
-									fontWeight: "600",
-								},
-								dayTextColor: COLORS.darkBlue,
-							}}
-							dayComponent={({ date, state }) => {
+
+							dayComponent={({ date, state, onPress }) => {
 								const isSelected = date?.dateString === selected;
 								const isToday =
 									date?.dateString ===
 									CalendarUtils.getCalendarDateString(new Date());
 
 								return (
-									<View
+									<Pressable
+										onPress={() => onPress(date)}
 										style={{
 											width: 36,
 											height: 36,
@@ -101,16 +93,36 @@ const Calender = () => {
 										<Text
 											style={{
 												color: isSelected ? "white" : COLORS.darkBlue,
-												fontWeight: "600",
+												fontWeight: "700",
 											}}
 										>
 											{date?.day}
 										</Text>
-									</View>
+									</Pressable>
 								);
 							}}
 						/>
 					</Fragment>
+				</View>
+				<View
+					style={{
+						paddingVertical: rMS(SIZES.h3),
+					}}
+				>
+					<Text
+						style={{
+							fontSize: rMS(SIZES.h5),
+							color: COLORS.darkBlue,
+						}}
+					>
+						Tasks
+					</Text>
+					<FlatList
+						scrollEnabled={false}
+						data={agendaItems}
+						renderItem={({ item }) => <TaskItem item={item} />}
+						ListEmptyComponent={<ListEmptyComponent />}
+					/>
 				</View>
 			</SafeAreaScrollView>
 		</ViewContainer>

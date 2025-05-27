@@ -6,16 +6,16 @@ import { rMS } from "@/utils/responsive_size";
 import { SIZES } from "@/constants/SIZES";
 import { COLORS } from "@/constants/COLORS";
 import CustomButton from "./CustomButton";
+import { universalStyles } from "@/utils";
 
 const LogoutModal = ({
 	isVisible,
 	handleBackdropPress,
-    handleLogoutPress
+	handleLogoutPress,
 }: {
 	isVisible: boolean;
 	handleBackdropPress: () => void;
-    handleLogoutPress: () => void;
-
+	handleLogoutPress: () => void;
 }) => {
 	return (
 		<Modal
@@ -58,22 +58,14 @@ const LogoutModal = ({
 						marginVertical: rMS(SIZES.h7),
 					}}
 				>
+					<Text style={universalStyles.textL}>Are you sure?</Text>
 					<Text
-						style={{
-							fontSize: rMS(SIZES.h4),
-							fontWeight: "500",
-							color: COLORS.darkBlue,
-						}}
-					>
-						Are you sure?
-					</Text>
-					<Text
-						style={{
-							fontSize: rMS(SIZES.h7),
-							fontWeight: "400",
-							color: COLORS.darkBlue,
-							textAlign: "center",
-						}}
+						style={[
+							universalStyles.baseText,
+							{
+								textAlign: "center",
+							},
+						]}
 					>
 						Are you sure you want to logout of your account?
 					</Text>

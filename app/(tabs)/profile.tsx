@@ -16,6 +16,7 @@ import { COLORS } from "@/constants/COLORS";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import LogoutModal from "@/components/LogoutModal";
+import { universalStyles } from "@/utils";
 
 const Settings = () => {
 	const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -88,15 +89,7 @@ const Settings = () => {
 								</TouchableOpacity>
 							</View>
 						</View>
-						<Text
-							style={{
-								fontSize: rMS(SIZES.h4),
-								fontWeight: "500",
-								color: COLORS.darkBlue,
-							}}
-						>
-							Jane Doe
-						</Text>
+						<Text style={universalStyles.textL}>Jane Doe</Text>
 						<Text
 							style={{
 								fontSize: rMS(SIZES.h7),
@@ -149,6 +142,7 @@ const Settings = () => {
 			<LogoutModal
 				isVisible={logoutModalIsVisible}
 				handleBackdropPress={() => setLogoutModalIsVisible(false)}
+				handleLogoutPress={() => {}} /* handle logout */
 			/>
 		</>
 	);

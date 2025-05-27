@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
-import { isAndroid } from "@/utils";
+import { isAndroid, universalStyles } from "@/utils";
 import { COLORS } from "@/constants/COLORS";
 import { rMS } from "@/utils/responsive_size";
 import { SIZES } from "@/constants/SIZES";
@@ -110,15 +110,7 @@ const userInfo = () => {
 								</TouchableOpacity>
 							</View>
 						</View>
-						<Text
-							style={{
-								fontSize: rMS(SIZES.h4),
-								fontWeight: "500",
-								color: COLORS.darkBlue,
-							}}
-						>
-							Jane Doe
-						</Text>
+						<Text style={universalStyles.textL}>Jane Doe</Text>
 						<Text
 							style={{
 								fontSize: rMS(SIZES.h7),
