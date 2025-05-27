@@ -12,6 +12,7 @@ import testIDs from "../assets/data/testIDs";
 import { COLORS } from "@/constants/COLORS";
 import { rMS } from "@/utils/responsive_size";
 import { SIZES } from "@/constants/SIZES";
+import { universalStyles } from "@/utils";
 
 interface ItemProps {
 	item: any;
@@ -51,7 +52,16 @@ const AgendaItem = (props: ItemProps) => {
 					alignItems: "center",
 				}}
 			>
-				<Text style={styles.itemHourText}>{item.hour}</Text>
+				<Text
+					style={[
+						universalStyles.textSm,
+						{
+							color: "#A0ABC0",
+						},
+					]}
+				>
+					{item.hour}
+				</Text>
 				<Text style={styles.itemDurationText}>{item.duration}</Text>
 			</View>
 			<View

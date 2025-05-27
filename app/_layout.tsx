@@ -28,7 +28,7 @@ export default function RootLayout() {
 		console.log(loading);
 	}, [loading]);
 
-	if (loading) return <Loader />;
+	if (loading) return <Loader visible={loading} />;
 	return (
 		<GestureHandlerRootView
 			style={{

@@ -71,7 +71,6 @@ const Calender = () => {
 							customHeaderTitle={<View />}
 							hideArrows
 							hideExtraDays
-
 							dayComponent={({ date, state, onPress }) => {
 								const isSelected = date?.dateString === selected;
 								const isToday =
@@ -80,7 +79,7 @@ const Calender = () => {
 
 								return (
 									<Pressable
-										onPress={() => onPress(date)}
+										onPress={() => onPress && onPress(date)}
 										style={{
 											width: 36,
 											height: 36,

@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, FlatList } from "react-native";
 import React, { useState } from "react";
 import ViewContainer from "@/utils/ViewContainer";
 import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
@@ -7,13 +7,22 @@ import { SIZES } from "@/constants/SIZES";
 import SearchHeader from "@/components/SearchHeader";
 import { universalStyles } from "@/utils";
 import { COLORS } from "@/constants/COLORS";
+import { agendaItems } from "@/assets/data/agendaItems";
+import TaskItem from "@/components/TaskItem";
+import SafeAreaContainer from "@/utils/SafeAreaContainer";
 
 const Tasks = () => {
 	const [activeTimeline, setActiveTimeline] = useState("today");
 	const [state, setState] = useState("active");
 	return (
 		<ViewContainer>
-			<SafeAreaScrollView>
+			<View
+				style={{
+					paddingHorizontal: rMS(SIZES.h9),
+					paddingTop: rMS(SIZES.h3),
+					paddingBottom: rMS(SIZES.h3),
+				}}
+			>
 				<SearchHeader screenTitle="Tasks" handleSearch={() => {}} />
 				<View
 					style={{
@@ -24,7 +33,7 @@ const Tasks = () => {
 					<View
 						style={{
 							flexDirection: "row",
-							gap: rMS(SIZES.h5),
+							gap: rMS(SIZES.h10),
 						}}
 					>
 						<Pressable onPress={() => setActiveTimeline("past")}>
@@ -83,7 +92,7 @@ const Tasks = () => {
 					<View
 						style={{
 							flexDirection: "row",
-							gap: rMS(SIZES.h5),
+							gap: rMS(SIZES.h10),
 						}}
 					>
 						<Pressable onPress={() => setState("active")}>
@@ -114,7 +123,18 @@ const Tasks = () => {
 						</Pressable>
 					</View>
 				</View>
-			</SafeAreaScrollView>
+			</View>
+			<SafeAreaContainer
+				// scrollEnabled={false}
+				contentContainerStyle={{
+					paddingTop: 0,
+				}}
+			>
+				<FlatList
+					data={agendaItems}
+					renderItem={({ item }) => <TaskItem item={item} checkBoxVisible />}
+				/>
+			</SafeAreaContainer>
 		</ViewContainer>
 	);
 };

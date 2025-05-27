@@ -1,10 +1,12 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { rMS } from "@/utils/responsive_size";
 import { SIZES } from "@/constants/SIZES";
 import { COLORS } from "@/constants/COLORS";
+import Checkbox from "expo-checkbox";
 
-const TaskItem = ({ item }: any) => {
+const TaskItem = ({ item, checkBoxVisible = false }: any) => {
+	const [isDone, setIsDone] = useState(false);
 	return (
 		<View
 			style={{
@@ -15,6 +17,7 @@ const TaskItem = ({ item }: any) => {
 				paddingVertical: rMS(SIZES.h5),
 				flexDirection: "row",
 				alignItems: "flex-start",
+				justifyContent: "space-between",
 				marginVertical: rMS(SIZES.h12),
 			}}
 		>
@@ -61,7 +64,20 @@ const TaskItem = ({ item }: any) => {
 					</Text>
 				</View>
 			</View>
-            {/* CheckBox */}
+			{/* CheckBox */}
+			{checkBoxVisible && (
+				<Checkbox
+					style={{
+						borderRadius: 6,
+                        width: rMS(SIZES.h4),
+                        height: rMS(SIZES.h4),
+					}}
+					value={isDone}
+					onValueChange={setIsDone}
+					color={COLORS.darkBlue}
+
+				/>
+			)}
 		</View>
 	);
 };

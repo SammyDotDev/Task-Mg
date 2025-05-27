@@ -1,4 +1,10 @@
-import { View, Text, ScrollView, ScrollViewProps } from "react-native";
+import {
+	View,
+	Text,
+	ScrollView,
+	ScrollViewProps,
+	ViewStyle,
+} from "react-native";
 import React from "react";
 import { rMS } from "./responsive_size";
 import { SIZES } from "@/constants/SIZES";
@@ -10,7 +16,7 @@ const SafeAreaScrollView = ({
 	scrollEnabled,
 }: {
 	children: React.ReactNode;
-	contentContainerStyle?: ScrollViewProps;
+	contentContainerStyle?: ViewStyle;
 	scrollEnabled?: boolean;
 }) => {
 	return (

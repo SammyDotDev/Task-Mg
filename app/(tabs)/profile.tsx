@@ -63,8 +63,12 @@ const Settings = () => {
 											height: rMS(100),
 											borderRadius: 99,
 											backgroundColor: COLORS.lightGray,
+											justifyContent: "center",
+											alignItems: "center",
 										}}
-									></View>
+									>
+										<Text style={[universalStyles.headerText]}>S</Text>
+									</View>
 								)}
 								<TouchableOpacity
 									onPress={pickImage}
