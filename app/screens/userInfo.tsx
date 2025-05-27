@@ -130,7 +130,7 @@ const userInfo = () => {
 						</Text>
 					</View>
 					<View
-						style={{ paddingHorizontal: rMS(SIZES.h5), gap: rMS(SIZES.h7) }}
+						style={{ paddingHorizontal: rMS(SIZES.h5), gap: rMS(SIZES.h10) }}
 					>
 						<UserInfoTextField
 							title="First Name"
@@ -166,6 +166,29 @@ const userInfo = () => {
 								padding: rMS(SIZES.h8),
 							}}
 						/>
+						{/* <View
+							style={{
+								padding: rMS(SIZES.h8),
+								borderRadius: rMS(SIZES.h10),
+								backgroundColor: COLORS.white,
+								width: "100%",
+								marginHorizontal: "auto",
+								marginVertical: rMS(SIZES.h10),
+								borderWidth: 1,
+								borderColor: COLORS.lightGray,
+								overflow: "hidden",
+							}}
+						>
+							<Text
+								style={{
+									fontSize: rMS(SIZES.h7),
+									fontWeight: "500",
+									color: COLORS.lightPurple,
+								}}
+							>
+								John Doe
+							</Text>
+						</View> */}
 					</View>
 					<View style={{ flex: 1 }} />
 					<View
@@ -175,7 +198,6 @@ const userInfo = () => {
 							flexDirection: "row",
 							alignItems: "center",
 							marginHorizontal: "auto",
-							borderWidth: 1,
 							justifyContent: "space-between",
 						}}
 					>
@@ -184,7 +206,8 @@ const userInfo = () => {
 							onPress={() => {}}
 							extendedStyles={{
 								backgroundColor: COLORS.white,
-								marginHorizontal: 0,
+								marginHorizontal: null,
+								width: "80%",
 							}}
 							titleStyles={{
 								color: COLORS.darkBlue,
@@ -194,8 +217,9 @@ const userInfo = () => {
 							title={"Save"}
 							onPress={() => {}}
 							extendedStyles={{
-								marginHorizontal: 0,
-                                marginRight:"auto"
+								marginHorizontal: null,
+								marginLeft: "auto",
+								width: "80%",
 							}}
 						/>
 					</View>
