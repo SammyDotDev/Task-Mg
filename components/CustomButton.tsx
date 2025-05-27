@@ -1,4 +1,11 @@
-import { View, Text, StyleProp, ViewStyle, StyleSheet, TextStyle } from "react-native";
+import {
+	View,
+	Text,
+	StyleProp,
+	ViewStyle,
+	StyleSheet,
+	TextStyle,
+} from "react-native";
 import React from "react";
 import { Button } from "react-native-elements";
 import { rMS } from "@/utils/responsive_size";
@@ -11,7 +18,7 @@ interface Props {
 	extendedStyles?: ViewStyle;
 	disabled?: boolean;
 	task?: boolean;
-    titleStyles?: TextStyle;
+	titleStyles?: TextStyle;
 }
 
 const CustomButton = ({
@@ -20,7 +27,7 @@ const CustomButton = ({
 	extendedStyles,
 	disabled,
 	task,
-    titleStyles
+	titleStyles,
 }: Props) => {
 	return (
 		<Button
@@ -29,19 +36,19 @@ const CustomButton = ({
 			disabled={disabled}
 			buttonStyle={[
 				{
-                    borderWidth:2,
-                    borderColor: COLORS.darkBlue,
+					borderWidth: 3,
+					borderColor: COLORS.darkBlue,
 					padding: rMS(SIZES.h7),
 					borderRadius: task ? 999 : rMS(SIZES.h10),
 					width: "90%",
 					marginHorizontal: "auto",
 					backgroundColor: COLORS.darkBlue,
-                    ...extendedStyles
+					...extendedStyles,
 				},
 			]}
 			titleStyle={{
 				fontSize: rMS(SIZES.h8),
-                ...titleStyles
+				...titleStyles,
 			}}
 		/>
 	);

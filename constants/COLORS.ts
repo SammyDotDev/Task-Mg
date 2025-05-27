@@ -1,6 +1,7 @@
 export const COLORS = {
 	white: "#ffffff",
 	offWhite: "#ebebeb",
+	paleWhite: "#EDF0F7",
 	paleYellow: "#cbd87d",
 	lightPaleYellow: "#f4fce3",
 	lightPurple: "#a6a0d2",
@@ -14,4 +15,5 @@ export const COLORS = {
 	fadedBlue: "#717D96",
 	red: "#E60000",
 	dimWhite: "#F7F9FC",
+	fadedRed: "#FFB8B8",
 };

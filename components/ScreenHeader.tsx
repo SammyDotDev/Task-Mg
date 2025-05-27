@@ -6,9 +6,10 @@ import { SIZES } from "@/constants/SIZES";
 import { COLORS } from "@/constants/COLORS";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { isAndroid } from "@/utils";
 
 const ScreenHeader = ({ screenTitle }: { screenTitle: string }) => {
-	const marginTop = useSafeAreaInsets().top;
+	const marginTop = isAndroid ? useSafeAreaInsets().top : null;
 	return (
 		<View
 			style={{
@@ -16,13 +17,14 @@ const ScreenHeader = ({ screenTitle }: { screenTitle: string }) => {
 				alignItems: "center",
 				position: "relative",
 				paddingHorizontal: rMS(SIZES.h9),
+                paddingBottom:rMS(SIZES.h9),
 				marginTop,
 			}}
 		>
 			{/* Back Button */}
 			<TouchableOpacity
 				onPress={() => router.back()}
-				style={{ position: "absolute" }}
+				style={{ position: "absolute", left: rMS(SIZES.h9) }}
 			>
 				<MaterialIcons
 					name="keyboard-backspace"

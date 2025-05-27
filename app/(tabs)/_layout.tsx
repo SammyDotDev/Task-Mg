@@ -43,52 +43,35 @@ import TabBarIcon from "@/components/TabBarIcon";
 
 const Tablayout = () => {
 	const logoutLoading = useSelector((state: RootState) => state.auth.loading);
-	// let loading = true;
 	const tabWidth = rS(50 * 4 + 40);
 
 	return (
 		<>
-			{/* <Loader visible={logoutLoading} /> */}
+			<Loader visible={logoutLoading} />
 			<Tabs
 				screenOptions={({ route }) => ({
 					headerShown: false,
 					tabBarHideOnKeyboard: true,
 					tabBarStyle: {
 						position: "absolute",
-						// bottom: rMS(SIZES.h5),
 						height: isAndroid ? rS(70) : rS(80),
 						elevation: 0,
 						backgroundColor: COLORS.white,
 						borderTopWidth: 0,
-						// borderRadius: 999,
-						// width: tabWidth,
-						// left: "50%",
-						// transform: [{ translateX: tabWidth / 4 }], // Center using transform
+                        alignItems:"center"
 					},
 					tabBarItemStyle: {
-						justifyContent: "center",
+						justifyContent: "flex-end",
 						alignItems: "center",
-						height: rS(60),
+						// borderWidth: 1,
+						backgroundColor: COLORS.white,
+						height: rS(70),
 					},
 					tabBarShowLabel: false,
-					// tabBarButton: (props: BottomTabBarButtonProps) => {
+					// tabBarButton:(props: BottomTabBarButtonProps) => {
 					// 	const { children, onPress, accessibilityState } = props;
-					// 	console.log(props?.accessibilityState?.selected);
+					// 	console.log(props?.accessibilityState);
 					// 	const isSelected = accessibilityState?.selected;
-					// 	// console.log(route.name, accessibilityState);
-					// 	const opacity = useSharedValue(1);
-					// 	// const animatedStyle = useAnimatedStyle(() => {
-					// 	// 	return {
-					// 	// 		opacity: withTiming(opacity.value, { duration: 400 }),
-					// 	// 	};
-					// 	// });
-					// 	// useEffect(() => {
-					// 	// 	if (isSelected) {
-					// 	// 		opacity.value = 1;
-					// 	// 	} else {
-					// 	// 		opacity.value = 0.5;
-					// 	// 	}
-					// 	// }, [isSelected]);
 					// 	let icon;
 					// 	switch (route.name) {
 					// 		case "index":
@@ -126,9 +109,8 @@ const Tablayout = () => {
 					// 			break;
 					// 	}
 					// 	return (
-					// 		<TouchableWithoutFeedback
-					// 			// {...props}
-					// 			accessibilityState={accessibilityState}
+					// 		<Pressable
+					// 			{...props}
 					// 			onPress={onPress}
 					// 			style={[
 					// 				{
@@ -162,7 +144,7 @@ const Tablayout = () => {
 					// 					{icon}
 					// 				</View>
 					// 			</Animated.View>
-					// 		</TouchableWithoutFeedback>
+					// 		</Pressable>
 					// 	);
 					// },
 				})}

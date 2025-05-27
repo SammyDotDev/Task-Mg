@@ -30,14 +30,14 @@ const CalendarModal = ({
 			// deviceHeight={deviceHeight}
 			// deviceWidth={deviceWidth}
 			// style={{ margin: 0 }}
-			// statusBarTranslucent
+			statusBarTranslucent
 			// style={{ margin: 0 }}
 		>
-			{/* <StatusBar
+			<StatusBar
 				backgroundColor={showCalendar ? "rgba(0, 0, 0, 0.1)" : undefined}
 				barStyle="dark-content"
-			/> */}
-			<StatusBar />
+			/>
+			{/* <StatusBar /> */}
 			<SafeAreaView
 				style={{
 					// ...StyleSheet.absoluteFillObject,

@@ -8,7 +8,7 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import { Stack } from "expo-router";
 import { useCallback, useEffect, useRef } from "react";
-import { Text } from "react-native";
+import { StatusBar, Text } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider } from "react-redux";
 
@@ -36,16 +36,19 @@ export default function RootLayout() {
 				flex: 1,
 			}}
 		>
-				<Provider store={store}>
-					<BottomSheetModalProvider>
-						<Stack screenOptions={{
-                            headerShown: false,
-                        }}>
-							<Stack.Screen name="(auth)" options={{ headerShown: false }} />
-							<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-						</Stack>
-					</BottomSheetModalProvider>
-				</Provider>
+			<Provider store={store}>
+				<BottomSheetModalProvider>
+					<Stack
+						screenOptions={{
+							headerShown: false,
+						}}
+					>
+						<Stack.Screen name="(auth)" options={{ headerShown: false }} />
+						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+					</Stack>
+				</BottomSheetModalProvider>
+			</Provider>
+			<StatusBar barStyle={"dark-content"} />
 		</GestureHandlerRootView>
 	);
 }
