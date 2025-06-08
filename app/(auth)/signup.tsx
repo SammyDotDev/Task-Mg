@@ -22,7 +22,7 @@ import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
 
 const Signup = () => {
 	const [userInputDetails, setUserInputDetails] = useState({
-		fullName: "",
+		username: "",
 		emailAddress: "",
 		password: "",
 	});
@@ -38,6 +38,7 @@ const Signup = () => {
 		setIsLoading(true);
 		const {
 			data: { session },
+
 			error,
 		} = await supabase.auth.signUp({
 			email: userInputDetails.emailAddress,
@@ -45,6 +46,10 @@ const Signup = () => {
 		});
 
 		if (error) Alert.alert(error.message);
+
+		const { data: profile, error: profileError } = await supabase
+			.from("profiles")
+			.insert([{ id: session?.user.id, username: userInputDetails.username }]);
 		console.log(session);
 		if (!session)
 			Alert.alert("Please check your inbox for email verification!");

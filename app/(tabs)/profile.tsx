@@ -17,6 +17,7 @@ import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import LogoutModal from "@/components/LogoutModal";
 import { universalStyles } from "@/utils";
+import { supabase } from "@/lib/supabase";
 
 const Settings = () => {
 	const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -37,6 +38,15 @@ const Settings = () => {
 		if (!result.canceled) {
 			setProfileImage(result.assets[0].uri);
 		}
+	};
+
+	const handleLogout = async () => {
+		await supabase.auth
+			.signOut()
+			.then(() => {
+				router.replace("/(auth)");
+			})
+			.catch((error) => console.log(error));
 	};
 
 	return (
@@ -146,7 +156,7 @@ const Settings = () => {
 			<LogoutModal
 				isVisible={logoutModalIsVisible}
 				handleBackdropPress={() => setLogoutModalIsVisible(false)}
-				handleLogoutPress={() => {}} /* handle logout */
+				handleLogoutPress={handleLogout} /* handle logout */
 			/>
 		</>
 	);

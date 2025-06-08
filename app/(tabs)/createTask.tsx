@@ -20,12 +20,13 @@ import SafeAreaContainer from "@/utils/SafeAreaContainer";
 import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 interface TaskInfo {
 	taskName: string;
 	description: string;
-	date: string;
-	time: string;
+	date: Date;
+	time: Date;
 	priority: string;
 }
 
@@ -34,8 +35,8 @@ const createTask = () => {
 	const [taskInfo, setTaskInfo] = useState<TaskInfo>({
 		taskName: "",
 		description: "",
-		date: "",
-		time: "",
+		date: new Date(),
+		time: new Date(),
 		priority: "",
 	});
 	const [bottomSheetButtonDisabled, setButtonSheetButtonDisabled] = useState<
@@ -53,6 +54,15 @@ const createTask = () => {
 	const isMediumPriority = selectedPriority === "medium";
 	const isHighPriority = selectedPriority === "high";
 
+	const [date, setDate] = useState(new Date());
+	const [mode, setMode] = useState("date");
+	const [show, setShow] = useState(false);
+
+	// const showMode = (currentMode) => {
+	// 	setShow(true);
+	// 	setMode(currentMode);
+	// };
+
 	// add new task, expand bottomsheet
 	const handleAddTask = () => {
 		// console.log(bottomSheetModalRef.current);
@@ -64,12 +74,13 @@ const createTask = () => {
 		if (
 			taskInfo.taskName.length === 0 ||
 			taskInfo.description.length === 0 ||
-			taskInfo.time.length === 0 ||
-			taskInfo.date.length === 0 ||
+			!taskInfo.time ||
+			!taskInfo.date ||
 			taskInfo.priority.length === 0
 		) {
 			setButtonSheetButtonDisabled(true);
 		} else {
+			console.log(taskInfo);
 			setButtonSheetButtonDisabled(false);
 		}
 	}, [taskInfo]);
@@ -78,9 +89,11 @@ const createTask = () => {
 		title: string,
 		description: string,
 		priority: string,
-		time: string,
-		date: string
+		date: Date,
+		time: Date
 	) => {
+		const dayDate = date.toISOString().slice(0, 10); // → "2025-06-08"
+		const dayTime = time.toTimeString().split(" ")[0];
 		const res = await supabase
 			.from("tasks")
 			.insert([
@@ -88,21 +101,22 @@ const createTask = () => {
 					tasktitle: title,
 					description: description,
 					priority: priority,
-					time: new Date().toTimeString().split(" ")[0],
-					date: new Date().toISOString().split("T")[0],
+					time: time,
+					date: date,
 				},
 			])
 			.select();
 		console.log(res);
 	};
+
 	return (
 		// <SafeAreaContainer>
 		<>
 			<SafeAreaScrollView
-				style={{
-					flexGrow: 1,
-					backgroundColor: COLORS.white,
-				}}
+				// style={{
+				// 	flexGrow: 1,
+				// 	backgroundColor: COLORS.white,
+				// }}
 				contentContainerStyle={{
 					width: "100%",
 					marginHorizontal: "auto",
@@ -170,15 +184,18 @@ const createTask = () => {
 						style={{
 							flexDirection: "row",
 							alignItems: "center",
-							gap: rMS(SIZES.h12 - 1),
+							justifyContent: "space-between",
+							// gap: rMS(SIZES.h12 - 1),
+							width: "90%",
 						}}
 					>
 						<View
 							style={{
-								width: "45%",
+								// width: "45%",
+								gap: rMS(SIZES.h11),
 							}}
 						>
-							<TaskInput
+							{/* <TaskInput
 								label="Choose date"
 								onChangeText={(text) => {
 									console.log(text);
@@ -189,18 +206,105 @@ const createTask = () => {
 								onIconPress={() => setShowCalendar((prev) => !prev)}
 								hasContainer
 								icon={<CalenderIcon />}
-							/>
+							/> */}
+							<Text
+								style={{
+									fontSize: rMS(SIZES.h9),
+									fontWeight: "400",
+									color: COLORS.fadedBlue,
+								}}
+							>
+								Choose date
+							</Text>
+							<View
+								style={{
+									paddingVertical: rMS(SIZES.h10),
+									borderWidth: 1,
+									borderColor: COLORS.lightGray,
+									borderRadius: rMS(SIZES.h10),
+									width: "100%",
+									overflow: "hidden",
+								}}
+							>
+								<DateTimePicker
+									style={{
+										marginRight: 10,
+									}}
+									themeVariant="light"
+									textColor={COLORS.darkBlue}
+									testID="dateTimePicker"
+									value={date}
+									mode={"date"}
+									is24Hour={true}
+									onChange={(_, selectedDate) => {
+										if (selectedDate) {
+											setTaskInfo((prev) => ({ ...prev, date: selectedDate }));
+										}
+									}}
+								/>
+							</View>
 						</View>
-						<TaskInput
-							label="Choose time"
-							onChangeText={(text) => {
-								console.log(text);
-								setTaskInfo((prev) => ({ ...prev, time: text }));
+						<View
+							style={{
+								// width: "45%",
+								gap: rMS(SIZES.h11),
 							}}
-							value={taskInfo.time}
-							hasIcon
-							icon={<TimeIcon />}
-						/>
+						>
+							{/* <TaskInput
+								label="Choose time"
+								onChangeText={(text) => {
+									console.log(text);
+									setTaskInfo((prev) => ({ ...prev, time: text }));
+								}}
+								value={taskInfo.time}
+								hasIcon
+								onIconPress={showTimepicker}
+								hasContainer
+								icon={<TimeIcon />}
+							/> */}
+							<Text
+								style={{
+									fontSize: rMS(SIZES.h9),
+									fontWeight: "400",
+									color: COLORS.fadedBlue,
+								}}
+							>
+								Choose time
+							</Text>
+							<View
+								style={{
+									paddingVertical: rMS(SIZES.h10) - 1,
+									borderWidth: 1,
+									borderColor: COLORS.lightGray,
+									borderRadius: rMS(SIZES.h10),
+									width: "100%",
+									overflow: "hidden",
+									justifyContent: "center",
+									alignItems: "center",
+								}}
+							>
+								<DateTimePicker
+									style={{
+										marginRight: 10,
+										padding: 0,
+									}}
+									themeVariant="light"
+									textColor={COLORS.darkBlue}
+									testID="dateTimePicker"
+									value={date}
+									mode={"time"}
+									is24Hour={true}
+									onChange={(_, selectedTime) => {
+										if (selectedTime) {
+											setTaskInfo((prev) => ({
+												...prev,
+												time: selectedTime,
+											}));
+										}
+									}}
+								/>
+							</View>
+						</View>
 					</View>
 				</View>
 				<View
@@ -274,8 +378,8 @@ const createTask = () => {
 							setTaskInfo({
 								taskName: "",
 								description: "",
-								date: "",
-								time: "",
+								date: new Date(),
+								time: new Date(),
 								priority: "",
 							});
 						}
