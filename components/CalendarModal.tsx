@@ -20,9 +20,11 @@ const INITIAL_DATE = new Date();
 const CalendarModal = ({
 	showCalendar,
 	handleBackdropPress,
+	setDateString,
 }: {
 	showCalendar: boolean;
 	handleBackdropPress: () => void;
+	setDateString: (text: string) => void;
 }) => {
 	const [selected, setSelected] = useState(formatDate(INITIAL_DATE));
 	return (
@@ -72,6 +74,8 @@ const CalendarModal = ({
 						textDisabledColor: "#dd99ee",
 					}}
 					onDayPress={(day: any) => {
+						console.log(day);
+                        setDateString(day.dateString)
 						// setSelected(day.dateString);
 					}}
 					hideExtraDays

@@ -1,5 +1,6 @@
 import Loader from "@/components/Loader";
 import { COLORS } from "@/constants/COLORS";
+import { AuthProvider } from "@/context/AuthContext";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import { store } from "@/store/store";
 import BottomSheet, {
@@ -15,6 +16,7 @@ import { Provider } from "react-redux";
 export default function RootLayout() {
 	const { loading } = useAuthRedirect();
 
+	// if (loading) return <Loader visible={loading} />;
 	return (
 		<>
 			<Loader visible={loading} />
@@ -24,16 +26,18 @@ export default function RootLayout() {
 					flex: 1,
 				}}
 			>
-				<Provider store={store}>
-					<Stack
-						screenOptions={{
-							headerShown: false,
-						}}
-					>
-						<Stack.Screen name="(auth)" options={{ headerShown: false }} />
-						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-					</Stack>
-				</Provider>
+				<AuthProvider>
+					<Provider store={store}>
+						<Stack
+							screenOptions={{
+								headerShown: false,
+							}}
+						>
+							<Stack.Screen name="(auth)" options={{ headerShown: false }} />
+							<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+						</Stack>
+					</Provider>
+				</AuthProvider>
 				<StatusBar barStyle={"dark-content"} />
 			</GestureHandlerRootView>
 		</>

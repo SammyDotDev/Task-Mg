@@ -24,6 +24,8 @@ import dayjs from "dayjs";
 import { Pressable, Text, TouchableOpacity } from "react-native";
 import { View } from "react-native";
 import { formatDate } from "@/utils";
+import useAuthRedirect from "@/hooks/useAuthRedirect";
+import { useAuth } from "@/context/AuthContext";
 
 interface TaskInfo {
 	taskName: string;
@@ -41,104 +43,55 @@ interface Props {
 const INITIAL_DATE = new Date();
 
 const Home = () => {
+	// auth
+	const { session, profile } = useAuth();
+
+	// dispatch
 	const dispatch = useDispatch();
-	const [taskInfo, setTaskInfo] = useState<TaskInfo>({
-		taskName: "",
-		description: "",
-		date: "",
-		time: "",
-		priority: "",
-	});
-	const [bottomSheetButtonDisabled, setButtonSheetButtonDisabled] = useState<
-		boolean | undefined
-	>(false);
 
-	const [selectedPriority, setSelectedPriority] = useState("");
-	const [showCalendar, setShowCalendar] = useState<boolean>(false);
+	// useState
+	const [selected, setSelected] = useState(dayjs().format("YYYY-MM-DD"));
 
+	// useSelector
 	const postLoadingTasks = useSelector(
 		(state: RootState) => state.tasks.postLoadingTasks
 	);
 
-	const isLowPriority = selectedPriority === "low";
-	const isMediumPriority = selectedPriority === "medium";
-	const isHighPriority = selectedPriority === "high";
-
-	// add new task, expand bottomsheet
-	const handleAddTask = () => {
-		// console.log(bottomSheetModalRef.current);
-		// bottomSheetModalRef.current?.snapToIndex(1);
-	};
-
-	const handleSheetChanges = useCallback((index: number) => {
-		console.log("handleSheetChanges", index);
+	// useEffect
+	useEffect(() => {
+		const fetchData = async () => {
+			const { data: daysWithTasks, error } = await supabase
+				.from("days")
+				.select(
+					`
+    id,
+    day_date,
+    tasks (
+      title,
+      description,
+      priority,
+      time,
+      created_at
+    )
+  `
+				)
+				.eq("user_id", session?.user.id)
+				.order("day_date", { ascending: true });
+		};
+		fetchData();
 	}, []);
 
-	const handleLogout = async () => {
-		dispatch(setLoading(true));
-		try {
-			const { error } = await supabase.auth.signOut();
-		} catch (error) {
-			if (error) {
-				alert("Error signing out");
-			}
-		} finally {
-			dispatch(setLoading(false));
-		}
-		// router.push("/(auth)");
-	};
-
-	useEffect(() => {
-		if (
-			taskInfo.taskName.length === 0 ||
-			taskInfo.description.length === 0 ||
-			taskInfo.time.length === 0 ||
-			taskInfo.date.length === 0 ||
-			taskInfo.priority.length === 0
-		) {
-			setButtonSheetButtonDisabled(true);
-		} else {
-			setButtonSheetButtonDisabled(false);
-		}
-	}, [taskInfo]);
-
-	const createTask = async (
-		title: string,
-		description: string,
-		priority: string,
-		time: string,
-		date: string
-	) => {
-		const res = await supabase
-			.from("tasks")
-			.insert([
-				{
-					tasktitle: title,
-					description: description,
-					priority: priority,
-					time: new Date().toTimeString().split(" ")[0],
-					date: new Date().toISOString().split("T")[0],
-				},
-			])
-			.select();
-		console.log(res);
-	};
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// const { weekView } = props;
+	// calendar config
 	const marked = useRef(getMarkedDates());
 	const theme = useRef(getTheme());
 	const todayBtnTheme = useRef({
 		todayButtonTextColor: themeColor,
 	});
 
+	// render agenda items
 	const renderItem = useCallback(({ item }: any) => {
-		const isLongItem = item.itemCustomHeightType === "LongEvent";
-		return (
-			// <View style={{ paddingTop: isLongItem ? 40 : 0 }}>
-			<AgendaItem item={item} />
-		);
+		return <AgendaItem item={item} />;
 	}, []);
-	const [selected, setSelected] = useState(dayjs().format("YYYY-MM-DD"));
 	return (
 		<ViewContainer
 			style={{
@@ -162,7 +115,10 @@ const Home = () => {
 						paddingHorizontal: rMS(SIZES.h9),
 					}}
 				>
-					<Header handleNotification={() => {}} handleAddTask={handleAddTask} />
+					<Header
+						handleNotification={() => {}}
+						username={profile?.username}
+					/>
 				</ViewContainer>
 				<CalendarProvider
 					date={ITEMS[1]?.title}
@@ -171,36 +127,6 @@ const Home = () => {
 					}}
 				>
 					<WeekCalendar
-						// theme={{
-						// 	dotColor: COLORS.darkBlue,
-						// 	selectedDayBackgroundColor: COLORS.darkBlue,
-						// 	dayTextColor: COLORS.lightGray,
-						// 	todayTextColor: COLORS.dark,
-						// 	todayDotColor: COLORS.dark,
-						// 	stylesheet: {
-						// 		day: {
-						// 			basic: {
-						// 				width: 32,
-						// 				height: 32,
-						// 				alignItems: "center",
-						// 				justifyContent: "center",
-						// 				borderRadius: 6, // 👈 less rounded
-						// 				padding: 2, // 👈 inner breathing room
-						// 			},
-						// 		},
-						// 		calendar: {
-						// 			header: {
-						// 				main: {
-						// 					elevation: 0,
-						// 					borderRadius: 90,
-						// 				},
-						// 				week: {
-						// 					borderRadius: 90,
-						// 				},
-						// 			},
-						// 		},
-						// 	},
-						// }}
 						calendarHeight={rMS(70)}
 						calendarStyle={{
 							elevation: 0,
@@ -217,34 +143,14 @@ const Home = () => {
 							shadowColor: "transparent",
 							shadowOpacity: 0,
 						}}
-						// headerStyle={{
-						// 	elevation: 0,
-						// 	shadowColor: "transparent",
-						// 	shadowOpacity: 0,
-						// }}
-						// style={{
-						// 	elevation: 0,
-						// }}
-						// contentContainerStyle={{
-						// 	elevation: 0,
-						// 	shadowOffset: {
-						// 		width: 0,
-						// 		height: 0,
-						// 	},
-						// 	shadowColor: "transparent",
-						// 	shadowOpacity: 0,
-						// 	boxShadow: undefined,
-						// 	backgroundColor: COLORS.dark,
-						// }}
 						markedDates={marked.current}
 						markingType="custom"
 						dayComponent={({ date, onPress, marking }) => {
 							const today = date?.dateString === formatDate(INITIAL_DATE);
 							const isSelected = date?.dateString === selected;
-							console.log(marking);
 							return (
 								<Pressable
-									onPress={() => onPress && onPress()}
+									onPress={() => date?.dateString && onPress && onPress()}
 									style={{
 										alignItems: "center",
 										gap: rMS(SIZES.h13),

@@ -21,6 +21,9 @@ import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { formatDate, formatFullDate, isAndroid } from "@/utils";
+import useAuthRedirect from "@/hooks/useAuthRedirect";
+import { useAuth } from "@/context/AuthContext";
 
 interface TaskInfo {
 	taskName: string;
@@ -32,6 +35,8 @@ interface TaskInfo {
 
 const createTask = () => {
 	const dispatch = useDispatch();
+	const { session } = useAuth();
+
 	const [taskInfo, setTaskInfo] = useState<TaskInfo>({
 		taskName: "",
 		description: "",
@@ -39,15 +44,16 @@ const createTask = () => {
 		time: new Date(),
 		priority: "",
 	});
-	const [bottomSheetButtonDisabled, setButtonSheetButtonDisabled] = useState<
-		boolean | undefined
-	>(false);
 
 	const [selectedPriority, setSelectedPriority] = useState("");
 	const [showCalendar, setShowCalendar] = useState<boolean>(false);
 
 	const postLoadingTasks = useSelector(
 		(state: RootState) => state.tasks.postLoadingTasks
+	);
+
+	const [buttonDisabled, setButtonDisabled] = useState<boolean | undefined>(
+		false
 	);
 
 	const isLowPriority = selectedPriority === "low";
@@ -57,6 +63,8 @@ const createTask = () => {
 	const [date, setDate] = useState(new Date());
 	const [mode, setMode] = useState("date");
 	const [show, setShow] = useState(false);
+
+	const [androidDate, setAndroidDate] = useState("");
 
 	// const showMode = (currentMode) => {
 	// 	setShow(true);
@@ -78,12 +86,13 @@ const createTask = () => {
 			!taskInfo.date ||
 			taskInfo.priority.length === 0
 		) {
-			setButtonSheetButtonDisabled(true);
+			setButtonDisabled(true);
 		} else {
 			console.log(taskInfo);
-			setButtonSheetButtonDisabled(false);
+			setButtonDisabled(false);
 		}
-	}, [taskInfo]);
+		console.log(androidDate, "DATE");
+	}, [taskInfo, androidDate]);
 
 	const createTask = async (
 		title: string,
@@ -94,6 +103,39 @@ const createTask = () => {
 	) => {
 		const dayDate = date.toISOString().slice(0, 10); // → "2025-06-08"
 		const dayTime = time.toTimeString().split(" ")[0];
+
+		// 2️⃣ upsert the day
+		const {
+			data: [day],
+			error: dayErr,
+		} = await supabase
+			.from("days")
+			.upsert(
+				{ user_id: session?.user.id, day_date: dayDate },
+				{ onConflict: ["user_id", "day_date"] }
+			)
+			.select();
+
+		if (dayErr) throw dayErr;
+
+		// 3️⃣ insert the task
+		const { data: task, error: taskErr } = await supabase
+			.from("tasks")
+			.insert([
+				{
+					user_id: session?.user.id,
+					day_id: day.id,
+					title: title,
+					description: description,
+					priority: priority,
+					time: time,
+				},
+			])
+			.select(); // returns the inserted row
+
+		if (taskErr) throw taskErr;
+		console.log("new task:", task[0]);
+
 		const res = await supabase
 			.from("tasks")
 			.insert([
@@ -101,8 +143,10 @@ const createTask = () => {
 					tasktitle: title,
 					description: description,
 					priority: priority,
-					time: time,
-					date: date,
+					time: dayTime,
+					date: isAndroid
+						? new Date(androidDate).toISOString().slice(0, 10)
+						: dayDate,
 				},
 			])
 			.select();
@@ -134,17 +178,6 @@ const createTask = () => {
 						// marginTop: rMS(SIZES.h1),
 					}}
 				>
-					<Pressable
-						onPress={() => router.dismiss(1)}
-						style={{
-							justifyContent: "center",
-							alignItems: "center",
-							position: "absolute",
-							left: rMS(SIZES.h9),
-						}}
-					>
-						<Feather name="x" size={rMS(SIZES.h4)} color={COLORS.deepDark} />
-					</Pressable>
 					<Text
 						style={{
 							fontSize: rMS(SIZES.h5),
@@ -191,119 +224,135 @@ const createTask = () => {
 					>
 						<View
 							style={{
-								// width: "45%",
+								width: isAndroid ? "45%" : null,
 								gap: rMS(SIZES.h11),
 							}}
 						>
-							{/* <TaskInput
-								label="Choose date"
-								onChangeText={(text) => {
-									console.log(text);
-									setTaskInfo((prev) => ({ ...prev, date: text }));
-								}}
-								value={taskInfo.date}
-								hasIcon
-								onIconPress={() => setShowCalendar((prev) => !prev)}
-								hasContainer
-								icon={<CalenderIcon />}
-							/> */}
-							<Text
-								style={{
-									fontSize: rMS(SIZES.h9),
-									fontWeight: "400",
-									color: COLORS.fadedBlue,
-								}}
-							>
-								Choose date
-							</Text>
-							<View
-								style={{
-									paddingVertical: rMS(SIZES.h10),
-									borderWidth: 1,
-									borderColor: COLORS.lightGray,
-									borderRadius: rMS(SIZES.h10),
-									width: "100%",
-									overflow: "hidden",
-								}}
-							>
-								<DateTimePicker
-									style={{
-										marginRight: 10,
+							{isAndroid ? (
+								<TaskInput
+									label="Choose date"
+									onChangeText={(text) => {
+										console.log(text);
+										setTaskInfo((prev) => ({
+											...prev,
+											date: new Date(androidDate),
+										}));
 									}}
-									themeVariant="light"
-									textColor={COLORS.darkBlue}
-									testID="dateTimePicker"
-									value={date}
-									mode={"date"}
-									is24Hour={true}
-									onChange={(_, selectedDate) => {
-										if (selectedDate) {
-											setTaskInfo((prev) => ({ ...prev, date: selectedDate }));
-										}
-									}}
+									value={formatFullDate(taskInfo.date)}
+									hasIcon
+									onIconPress={() => setShowCalendar((prev) => !prev)}
+									hasContainer
+									icon={<CalenderIcon />}
 								/>
-							</View>
+							) : (
+								<>
+									<Text
+										style={{
+											fontSize: rMS(SIZES.h9),
+											fontWeight: "400",
+											color: COLORS.fadedBlue,
+										}}
+									>
+										Choose date
+									</Text>
+									<View
+										style={{
+											paddingVertical: rMS(SIZES.h10),
+											borderWidth: 1,
+											borderColor: COLORS.lightGray,
+											borderRadius: rMS(SIZES.h10),
+											width: "100%",
+											overflow: "hidden",
+										}}
+									>
+										<DateTimePicker
+											style={{
+												marginRight: 10,
+											}}
+											themeVariant="light"
+											textColor={COLORS.darkBlue}
+											testID="dateTimePicker"
+											value={date}
+											mode={"date"}
+											is24Hour={true}
+											onChange={(_, selectedDate) => {
+												if (selectedDate) {
+													setTaskInfo((prev) => ({
+														...prev,
+														date: selectedDate,
+													}));
+												}
+											}}
+										/>
+									</View>
+								</>
+							)}
 						</View>
 						<View
 							style={{
-								// width: "45%",
+								width: isAndroid ? "45%" : null,
 								gap: rMS(SIZES.h11),
 							}}
 						>
-							{/* <TaskInput
-								label="Choose time"
-								onChangeText={(text) => {
-									console.log(text);
-									setTaskInfo((prev) => ({ ...prev, time: text }));
-								}}
-								value={taskInfo.time}
-								hasIcon
-								onIconPress={showTimepicker}
-								hasContainer
-								icon={<TimeIcon />}
-							/> */}
-							<Text
-								style={{
-									fontSize: rMS(SIZES.h9),
-									fontWeight: "400",
-									color: COLORS.fadedBlue,
-								}}
-							>
-								Choose time
-							</Text>
-							<View
-								style={{
-									paddingVertical: rMS(SIZES.h10) - 1,
-									borderWidth: 1,
-									borderColor: COLORS.lightGray,
-									borderRadius: rMS(SIZES.h10),
-									width: "100%",
-									overflow: "hidden",
-									justifyContent: "center",
-									alignItems: "center",
-								}}
-							>
-								<DateTimePicker
-									style={{
-										marginRight: 10,
-										padding: 0,
+							{isAndroid ? (
+								<TaskInput
+									label="Choose time"
+									onChangeText={(text) => {
+										console.log(text);
+										setTaskInfo((prev) => ({ ...prev, time: text }));
 									}}
-									themeVariant="light"
-									textColor={COLORS.darkBlue}
-									testID="dateTimePicker"
-									value={date}
-									mode={"time"}
-									is24Hour={true}
-									onChange={(_, selectedTime) => {
-										if (selectedTime) {
-											setTaskInfo((prev) => ({
-												...prev,
-												time: selectedTime,
-											}));
-										}
-									}}
+									value={taskInfo.time}
+									hasIcon
+									onIconPress={() => {}}
+									hasContainer
+									icon={<TimeIcon />}
 								/>
-							</View>
+							) : (
+								<>
+									<Text
+										style={{
+											fontSize: rMS(SIZES.h9),
+											fontWeight: "400",
+											color: COLORS.fadedBlue,
+										}}
+									>
+										Choose time
+									</Text>
+									<View
+										style={{
+											paddingVertical: rMS(SIZES.h10) - 1,
+											borderWidth: 1,
+											borderColor: COLORS.lightGray,
+											borderRadius: rMS(SIZES.h10),
+											width: "100%",
+											overflow: "hidden",
+											justifyContent: "center",
+											alignItems: "center",
+										}}
+									>
+										<DateTimePicker
+											style={{
+												marginRight: 10,
+												padding: 0,
+											}}
+											themeVariant="light"
+											textColor={COLORS.darkBlue}
+											testID="dateTimePicker"
+											value={date}
+											mode={"time"}
+											is24Hour={true}
+											onChange={(_, selectedTime) => {
+												if (selectedTime) {
+													setTaskInfo((prev) => ({
+														...prev,
+														time: selectedTime,
+													}));
+												}
+											}}
+										/>
+									</View>
+								</>
+							)}
 						</View>
 					</View>
 				</View>
@@ -317,9 +366,9 @@ const createTask = () => {
 				>
 					<Text
 						style={{
-							fontSize: rMS(SIZES.h8),
-							fontWeight: "500",
-							color: COLORS.dark,
+							fontSize: rMS(SIZES.h9),
+							fontWeight: "400",
+							color: COLORS.fadedBlue,
 						}}
 					>
 						Priority
@@ -359,7 +408,7 @@ const createTask = () => {
 				</View>
 				<View style={{ flex: 1 }} />
 				<CustomButton
-					disabled={bottomSheetButtonDisabled}
+					disabled={buttonDisabled}
 					onPress={async () => {
 						dispatch(setPostLoadingTasks(true));
 						try {
@@ -395,6 +444,7 @@ const createTask = () => {
 			<CalendarModal
 				showCalendar={showCalendar}
 				handleBackdropPress={() => setShowCalendar(false)}
+				setDateString={setAndroidDate}
 			/>
 		</>
 	);

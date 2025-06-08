@@ -18,11 +18,17 @@ import { router } from "expo-router";
 import LogoutModal from "@/components/LogoutModal";
 import { universalStyles } from "@/utils";
 import { supabase } from "@/lib/supabase";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import useAuthRedirect from "@/hooks/useAuthRedirect";
+import { useAuth } from "@/context/AuthContext";
 
 const Settings = () => {
 	const [profileImage, setProfileImage] = useState<string | null>(null);
 	const [logoutModalIsVisible, setLogoutModalIsVisible] =
 		useState<boolean>(false);
+    	const { session, profile } = useAuth();
+        console.log(profile)
 
 	const pickImage = async () => {
 		// No permissions request is necessary for launching the image library
@@ -77,7 +83,9 @@ const Settings = () => {
 											alignItems: "center",
 										}}
 									>
-										<Text style={[universalStyles.headerText]}>S</Text>
+										<Text style={[universalStyles.headerText]}>
+											{profile.username.charAt(0)}
+										</Text>
 									</View>
 								)}
 								<TouchableOpacity
@@ -103,7 +111,9 @@ const Settings = () => {
 								</TouchableOpacity>
 							</View>
 						</View>
-						<Text style={universalStyles.textL}>Jane Doe</Text>
+						<Text style={universalStyles.textL}>
+							{profile.username}
+						</Text>
 						<Text
 							style={{
 								fontSize: rMS(SIZES.h7),
@@ -111,7 +121,7 @@ const Settings = () => {
 								color: COLORS.darkBlue,
 							}}
 						>
-							jane.doe@gmail.com
+							{session?.user.email}
 						</Text>
 					</View>
 					<View>

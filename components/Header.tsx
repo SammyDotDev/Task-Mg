@@ -12,12 +12,14 @@ interface HeaderProps {
 	handleAddTask?: () => void;
 	handleNotification: () => void;
 	addIsVisible?: boolean;
+	username: string;
 }
 
 const Header = ({
 	handleNotification,
 	handleAddTask,
 	addIsVisible = true,
+	username,
 }: HeaderProps) => {
 	return (
 		<View
@@ -31,11 +33,11 @@ const Header = ({
 			<Text
 				style={{
 					fontSize: rMS(SIZES.h5),
-					fontWeight: "500",
+					fontWeight: "800",
 					color: COLORS.darkBlue,
 				}}
 			>
-				Hello, User!
+				Hello, {username}!
 			</Text>
 			<View
 				style={{
@@ -47,9 +49,16 @@ const Header = ({
 					alignItems: "center",
 				}}
 			>
-				<Text style={[universalStyles.headerText,{
-                    fontSize: rMS(SIZES.h5),
-                }]}>S</Text>
+				<Text
+					style={[
+						universalStyles.headerText,
+						{
+							fontSize: rMS(SIZES.h5),
+						},
+					]}
+				>
+					{username && username?.charAt(0)}
+				</Text>
 			</View>
 		</View>
 	);

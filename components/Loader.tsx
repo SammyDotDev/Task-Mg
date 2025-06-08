@@ -21,6 +21,7 @@ const Loader = ({ visible }: { visible: boolean }) => {
 				alignItems: "center",
 				zIndex: 999999999,
 			}}
+			statusBarTranslucent
 		>
 			<View
 				style={{

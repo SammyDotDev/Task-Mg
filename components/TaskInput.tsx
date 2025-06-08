@@ -7,7 +7,7 @@ import { COLORS } from "@/constants/COLORS";
 
 interface TaskInputProps {
 	label: string;
-	value: string;
+	value: string | Date;
 	onChangeText: (text: string) => void;
 	hasIcon?: boolean;
 	icon?: React.ReactNode;

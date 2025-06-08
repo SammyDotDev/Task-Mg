@@ -30,10 +30,6 @@ const Signup = () => {
 	const [confirmPassword, setConfirmPassword] = useState<string>("");
 	const [isLoading, setIsLoading] = useState(false);
 
-	useEffect(() => {
-		console.log(userInputDetails);
-	}, [userInputDetails]);
-
 	const handleSignUp = async () => {
 		setIsLoading(true);
 		const {
@@ -50,7 +46,7 @@ const Signup = () => {
 		const { data: profile, error: profileError } = await supabase
 			.from("profiles")
 			.insert([{ id: session?.user.id, username: userInputDetails.username }]);
-		console.log(session);
+		console.log(session, profile, profileError);
 		if (!session)
 			Alert.alert("Please check your inbox for email verification!");
 		setIsLoading(false);
@@ -97,6 +93,16 @@ const Signup = () => {
 					</View>
 					<View style={{ flex: 1 }}>
 						<InputWrapper backgroundColor={COLORS.paleYellow}>
+							<TextField
+								placeholder="Username"
+								value={userInputDetails.username}
+								onChangeText={(text) =>
+									setUserInputDetails((prev) => ({
+										...prev,
+										username: text,
+									}))
+								}
+							/>
 							<TextField
 								placeholder="Email address"
 								value={userInputDetails.emailAddress}

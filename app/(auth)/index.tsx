@@ -20,6 +20,8 @@ import Loader from "@/components/Loader";
 import LogoHeader from "@/components/LogoHeader";
 import { ScrollView } from "react-native";
 import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/store/slices/userSlice";
 
 const Signin = () => {
 	const [userInputDetails, setUserInputDetails] = useState({
@@ -27,6 +29,7 @@ const Signin = () => {
 		password: "",
 	});
 	const [isLoading, setIsLoading] = useState(false);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		// console.log(userInputDetails);
@@ -44,9 +47,28 @@ const Signin = () => {
 				password: userInputDetails.password,
 			});
 			console.log(session);
-			if (session?.user.aud === "authenticated") router.push("/(tabs)");
+			const { data: profile, error: err } = await supabase
+				.from("profiles")
+				.select(
+					`
+                    id,
+                    username
+                `
+				)
+				.eq("id", session?.user.id);
+			console.log(profile, session?.user.id, " USER ID");
+			if (session?.user.aud === "authenticated") {
+				dispatch(
+					setUser({
+						id: session.user.id,
+						email: session.user.email,
+						username: profile ? profile[0].username : null,
+					})
+				);
+				router.push("/(tabs)");
+			}
 			if (error) Alert.alert(error.message);
-			console.log(session);
+			console.log(session?.user.email);
 			// if (!session)
 			// 	Alert.alert("Please check your inbox for email verification!");
 		} catch (error) {

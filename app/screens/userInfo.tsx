@@ -19,20 +19,24 @@ import ViewContainer from "@/utils/ViewContainer";
 import SafeAreaContainer from "@/utils/SafeAreaContainer";
 import UserInfoTextField from "@/components/UserInfoTextField";
 import CustomButton from "@/components/CustomButton";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import useAuthRedirect from "@/hooks/useAuthRedirect";
+import { useAuth } from "@/context/AuthContext";
 
 type UserData = {
-	firstName: string;
-	lastName: string;
+	username: string;
 	email: string;
 };
 
 const userInfo = () => {
 	const [profileImage, setProfileImage] = useState<string | null>(null);
 	const [userData, setUserData] = useState<UserData>({
-		firstName: "",
-		lastName: "",
+		username: "",
 		email: "",
 	});
+
+        const { session, profile } = useAuth();
 
 	const pickImage = async () => {
 		let result = await ImagePicker.launchImageLibraryAsync({
@@ -110,7 +114,9 @@ const userInfo = () => {
 								</TouchableOpacity>
 							</View>
 						</View>
-						<Text style={universalStyles.textL}>Jane Doe</Text>
+						<Text style={universalStyles.textL}>
+							{profile.username}
+						</Text>
 						<Text
 							style={{
 								fontSize: rMS(SIZES.h7),
@@ -118,34 +124,24 @@ const userInfo = () => {
 								color: COLORS.darkBlue,
 							}}
 						>
-							jane.doe@gmail.com
+							{session?.user.email}
 						</Text>
 					</View>
 					<View
 						style={{ paddingHorizontal: rMS(SIZES.h5), gap: rMS(SIZES.h10) }}
 					>
 						<UserInfoTextField
-							title="First Name"
-							value={userData.firstName}
+							title="Username"
+							value={userData.username}
 							onChangeText={(text) =>
-								setUserData((prev) => ({ ...prev, firstName: text }))
+								setUserData((prev) => ({ ...prev, username: text }))
 							}
 							style={{
 								width: "100%",
 								padding: rMS(SIZES.h8),
 							}}
 						/>
-						<UserInfoTextField
-							title="Last Name"
-							value={userData.lastName}
-							onChangeText={(text) =>
-								setUserData((prev) => ({ ...prev, lastName: text }))
-							}
-							style={{
-								width: "100%",
-								padding: rMS(SIZES.h8),
-							}}
-						/>
+
 						<UserInfoTextField
 							title="Email"
 							value={userData.email}

@@ -21,7 +21,7 @@ import Animated, {
 	withTiming,
 } from "react-native-reanimated";
 import Loader from "@/components/Loader";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import {
 	AntDesign,
@@ -40,14 +40,31 @@ import ProfilesIcon from "@/assets/svg/navIcons/ProfilesIcon";
 import HomeIcon from "@/assets/svg/navIcons/HomeIcon";
 import { BottomTabBarButtonProps } from "@react-navigation/bottom-tabs";
 import TabBarIcon from "@/components/TabBarIcon";
+import useAuthRedirect from "@/hooks/useAuthRedirect";
+import { setUser } from "@/store/slices/userSlice";
 
 const Tablayout = () => {
 	const logoutLoading = useSelector((state: RootState) => state.auth.loading);
 	const tabWidth = rS(50 * 4 + 40);
+	const { loading, currentSession, currentProfile } = useAuthRedirect();
+	const dispatch = useDispatch();
 
+	useEffect(() => {
+		console.log(currentProfile);
+		dispatch(
+			setUser({
+				email: currentSession?.user.email,
+				id: currentSession?.user.id,
+				username: currentProfile && currentProfile[0]?.username,
+			})
+		);
+	}, []);
+
+	// if (loading) return <Loader visible={loading} />;
 	return (
 		<>
 			<Loader visible={logoutLoading} />
+
 			<Tabs
 				screenOptions={({ route }) => ({
 					headerShown: false,
@@ -58,7 +75,7 @@ const Tablayout = () => {
 						elevation: 0,
 						backgroundColor: COLORS.white,
 						borderTopWidth: 0,
-                        alignItems:"center"
+						alignItems: "center",
 					},
 					tabBarItemStyle: {
 						justifyContent: "flex-end",
@@ -68,85 +85,6 @@ const Tablayout = () => {
 						height: rS(70),
 					},
 					tabBarShowLabel: false,
-					// tabBarButton:(props: BottomTabBarButtonProps) => {
-					// 	const { children, onPress, accessibilityState } = props;
-					// 	console.log(props?.accessibilityState);
-					// 	const isSelected = accessibilityState?.selected;
-					// 	let icon;
-					// 	switch (route.name) {
-					// 		case "index":
-					// 			icon = isSelected ? <ActiveHomeIcon /> : <HomeIcon />;
-					// 			break;
-					// 		case "tasks":
-					// 			icon = isSelected ? <ActiveTasksIcon /> : <TasksIcon />;
-					// 			break;
-					// 		case "calendar":
-					// 			icon = isSelected ? <ActiveCalendarIcon /> : <CalendarIcon />;
-					// 			break;
-					// 		case "profile":
-					// 			icon = isSelected ? <ActiveProfilesIcon /> : <ProfilesIcon />;
-					// 			break;
-					// 		case "createTask":
-					// 			icon = (
-					// 				<View
-					// 					style={{
-					// 						borderRadius: 999,
-					// 						padding: rMS(SIZES.h7),
-					// 						backgroundColor: COLORS.darkBlue,
-					// 						justifyContent: "center",
-					// 						alignItems: "center",
-					// 					}}
-					// 				>
-					// 					<FontAwesome6
-					// 						name="plus"
-					// 						color={COLORS.white}
-					// 						size={rMS(SIZES.h8)}
-					// 					/>
-					// 				</View>
-					// 			);
-					// 			break;
-					// 		default:
-					// 			break;
-					// 	}
-					// 	return (
-					// 		<Pressable
-					// 			{...props}
-					// 			onPress={onPress}
-					// 			style={[
-					// 				{
-					// 					borderRadius: 99,
-					// 					justifyContent: "center",
-					// 					alignItems: "center",
-
-					// 					height: rS(50),
-					// 					width: rS(50),
-					// 				},
-					// 			]}
-					// 		>
-					// 			<Animated.View
-					// 				style={[
-					// 					// animatedStyle,
-					// 					{
-					// 						borderRadius: 99,
-					// 						justifyContent: "center",
-					// 						alignItems: "center",
-
-					// 						height: rS(50),
-					// 						width: rS(50),
-					// 					},
-					// 				]}
-					// 			>
-					// 				<View
-					// 					style={{
-					// 						margin: "auto",
-					// 					}}
-					// 				>
-					// 					{icon}
-					// 				</View>
-					// 			</Animated.View>
-					// 		</Pressable>
-					// 	);
-					// },
 				})}
 			>
 				<Tabs.Screen
