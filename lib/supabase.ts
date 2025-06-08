@@ -26,13 +26,13 @@ AppState.addEventListener("change", (state) => {
 const { data } = supabase.auth.onAuthStateChange((event, session) => {
 	// console.log(event, session);
 	if (event === "INITIAL_SESSION") {
-        console.log("INITIAL SESSION")
+        // console.log("INITIAL SESSION")
 		// handle initial session
 	} else if (event === "SIGNED_IN") {
         console.log("SIGNED IN")
 		// handle sign in event
 	} else if (event === "SIGNED_OUT") {
-        console.log("SIGNED IN")
+        console.log("SIGNED OUT")
 		// handle sign out event
 	} else if (event === "PASSWORD_RECOVERY") {
 		// handle password recovery event

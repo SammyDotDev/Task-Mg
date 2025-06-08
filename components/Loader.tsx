@@ -1,8 +1,9 @@
-import { Modal, View } from "react-native";
+import { ActivityIndicator, Modal, View } from "react-native";
 import React from "react";
 import LottieView from "lottie-react-native";
 import { rMS } from "@/utils/responsive_size";
 import { StatusBar } from "expo-status-bar";
+import { COLORS } from "@/constants/COLORS";
 
 const Loader = ({ visible }: { visible: boolean }) => {
 	return (
@@ -31,8 +32,8 @@ const Loader = ({ visible }: { visible: boolean }) => {
 			>
 				<View
 					style={{
-						width: 80,
-						height: 80,
+						width: 50,
+						height: 50,
 						backgroundColor: "#fff",
 						borderRadius: 10,
 						justifyContent: "center",
@@ -40,12 +41,7 @@ const Loader = ({ visible }: { visible: boolean }) => {
 						margin: "auto",
 					}}
 				>
-					<LottieView
-						source={require("../assets/json/loader.json")}
-						style={{ width: rMS(90), height: rMS(90) }}
-						autoPlay
-						loop
-					/>
+					<ActivityIndicator color={COLORS.darkBlue} />
 					<StatusBar />
 				</View>
 			</View>

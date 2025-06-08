@@ -6,9 +6,16 @@ import {
 	StyleSheet,
 	SafeAreaView,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import Modal from "react-native-modal";
 import { Calendar } from "react-native-calendars";
+import { formatDate, formatFullDate, universalStyles } from "@/utils";
+import { COLORS } from "@/constants/COLORS";
+import { MaterialIcons } from "@expo/vector-icons";
+import { rMS } from "@/utils/responsive_size";
+import { SIZES } from "@/constants/SIZES";
+
+const INITIAL_DATE = new Date();
 
 const CalendarModal = ({
 	showCalendar,
@@ -17,6 +24,7 @@ const CalendarModal = ({
 	showCalendar: boolean;
 	handleBackdropPress: () => void;
 }) => {
+	const [selected, setSelected] = useState(formatDate(INITIAL_DATE));
 	return (
 		<Modal
 			onBackdropPress={handleBackdropPress}
@@ -39,11 +47,13 @@ const CalendarModal = ({
 			/>
 			{/* <StatusBar /> */}
 			<SafeAreaView
-				style={{
-					// ...StyleSheet.absoluteFillObject,
-					// justifyContent: "center",
-					// alignItems: "center",
-				}}
+				style={
+					{
+						// ...StyleSheet.absoluteFillObject,
+						// justifyContent: "center",
+						// alignItems: "center",
+					}
+				}
 			>
 				<Calendar
 					style={{
@@ -64,13 +74,32 @@ const CalendarModal = ({
 					onDayPress={(day: any) => {
 						// setSelected(day.dateString);
 					}}
-					// markedDates={{
-					// 	[selected]: {
-					// 		selected: true,
-					// 		disableTouchEvent: true,
-					// 		selectedDotColor: "orange",
-					// 	},
-					// }}
+					hideExtraDays
+					customHeaderTitle={
+						<Text style={universalStyles.textL}>
+							{formatFullDate(new Date())}
+						</Text>
+					}
+					renderArrow={(direction) => {
+						console.log(direction);
+						return (
+							<MaterialIcons
+								name={`arrow-${
+									direction === "left" ? "back-ios-new" : "forward-ios"
+								}`}
+								size={rMS(SIZES.h5)}
+								color="black"
+							/>
+						);
+					}}
+					markedDates={{
+						[selected]: {
+							selected: true,
+							disableTouchEvent: true,
+							selectedColor: COLORS.darkBlue,
+							selectedTextColor: "white",
+						},
+					}}
 				/>
 			</SafeAreaView>
 		</Modal>

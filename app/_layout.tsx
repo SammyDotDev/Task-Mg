@@ -15,29 +15,16 @@ import { Provider } from "react-redux";
 export default function RootLayout() {
 	const { loading } = useAuthRedirect();
 
-	// ref
-	const bottomSheetRef = useRef<BottomSheet>(null);
-
-	// callbacks
-	const handleSheetChanges = useCallback((index: number) => {
-		console.log("handleSheetChanges", index);
-	}, []);
-
-	useEffect(() => {
-		bottomSheetRef.current?.expand();
-		console.log(loading);
-	}, [loading]);
-
-	if (loading) return <Loader visible={loading} />;
 	return (
-		<GestureHandlerRootView
-			style={{
-				backgroundColor: COLORS.white,
-				flex: 1,
-			}}
-		>
-			<Provider store={store}>
-				<BottomSheetModalProvider>
+		<>
+			<Loader visible={loading} />
+			<GestureHandlerRootView
+				style={{
+					backgroundColor: COLORS.white,
+					flex: 1,
+				}}
+			>
+				<Provider store={store}>
 					<Stack
 						screenOptions={{
 							headerShown: false,
@@ -46,9 +33,9 @@ export default function RootLayout() {
 						<Stack.Screen name="(auth)" options={{ headerShown: false }} />
 						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 					</Stack>
-				</BottomSheetModalProvider>
-			</Provider>
-			<StatusBar barStyle={"dark-content"} />
-		</GestureHandlerRootView>
+				</Provider>
+				<StatusBar barStyle={"dark-content"} />
+			</GestureHandlerRootView>
+		</>
 	);
 }

@@ -18,6 +18,23 @@ export const formatDate = (date: Date) => {
 	return date.toISOString().split("T")[0];
 };
 
+export const formatFullDate = (date: Date): string => {
+	const options: Intl.DateTimeFormatOptions = {
+		month: "long",
+		day: "numeric",
+		year: "numeric",
+	};
+
+	// e.g., "May 10, 2025"
+	const formatted = date.toLocaleDateString("en-US", options);
+
+	// Convert to "May, 10 2025"
+	const [monthDay, year] = formatted.split(", ");
+	const [month, day] = monthDay.split(" ");
+	return `${month}, ${day} ${year}`;
+};
+
+
 export const universalStyles = StyleSheet.create({
 	headerText: {
 		fontSize: rMS(SIZES.h1),
