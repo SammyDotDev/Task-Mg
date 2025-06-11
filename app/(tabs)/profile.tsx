@@ -27,8 +27,8 @@ const Settings = () => {
 	const [profileImage, setProfileImage] = useState<string | null>(null);
 	const [logoutModalIsVisible, setLogoutModalIsVisible] =
 		useState<boolean>(false);
-    	const { session, profile } = useAuth();
-        console.log(profile)
+	const { session, profile } = useAuth();
+	console.log(profile);
 
 	const pickImage = async () => {
 		// No permissions request is necessary for launching the image library
@@ -84,7 +84,7 @@ const Settings = () => {
 										}}
 									>
 										<Text style={[universalStyles.headerText]}>
-											{profile.username.charAt(0)}
+											{profile?.username && profile?.username.charAt(0)}
 										</Text>
 									</View>
 								)}
@@ -111,9 +111,7 @@ const Settings = () => {
 								</TouchableOpacity>
 							</View>
 						</View>
-						<Text style={universalStyles.textL}>
-							{profile.username}
-						</Text>
+						<Text style={universalStyles.textL}>{profile.username}</Text>
 						<Text
 							style={{
 								fontSize: rMS(SIZES.h7),

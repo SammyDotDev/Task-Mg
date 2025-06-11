@@ -12,7 +12,7 @@ import testIDs from "../assets/data/testIDs";
 import { COLORS } from "@/constants/COLORS";
 import { rMS } from "@/utils/responsive_size";
 import { SIZES } from "@/constants/SIZES";
-import { universalStyles } from "@/utils";
+import { formatTimeTo12Hour, universalStyles } from "@/utils";
 
 interface ItemProps {
 	item: any;
@@ -47,7 +47,7 @@ const AgendaItem = (props: ItemProps) => {
 				style={{
 					paddingVertical: rMS(SIZES.h7),
 					paddingHorizontal: rMS(SIZES.h10),
-					width: "15%",
+					width: "20%",
 					backgroundColor: COLORS.dimWhite,
 					alignItems: "center",
 				}}
@@ -60,7 +60,8 @@ const AgendaItem = (props: ItemProps) => {
 						},
 					]}
 				>
-					{item.hour}
+					{/* {item.hour} */}
+                    {formatTimeTo12Hour(item.time)}
 				</Text>
 				<Text style={styles.itemDurationText}>{item.duration}</Text>
 			</View>
@@ -70,7 +71,7 @@ const AgendaItem = (props: ItemProps) => {
 					borderColor: COLORS.darkBlue,
 					padding: rMS(SIZES.h8),
 					backgroundColor: "#EDF0F7",
-					width: "85%",
+					width: "80%",
 					justifyContent: "center",
 				}}
 			>

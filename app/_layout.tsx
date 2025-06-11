@@ -1,6 +1,7 @@
 import Loader from "@/components/Loader";
 import { COLORS } from "@/constants/COLORS";
 import { AuthProvider } from "@/context/AuthContext";
+import { TaskProvider } from "@/context/TasksContext";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import { store } from "@/store/store";
 import BottomSheet, {
@@ -27,16 +28,18 @@ export default function RootLayout() {
 				}}
 			>
 				<AuthProvider>
-					<Provider store={store}>
-						<Stack
-							screenOptions={{
-								headerShown: false,
-							}}
-						>
-							<Stack.Screen name="(auth)" options={{ headerShown: false }} />
-							<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-						</Stack>
-					</Provider>
+					<TaskProvider>
+						<Provider store={store}>
+							<Stack
+								screenOptions={{
+									headerShown: false,
+								}}
+							>
+								<Stack.Screen name="(auth)" options={{ headerShown: false }} />
+								<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+							</Stack>
+						</Provider>
+					</TaskProvider>
 				</AuthProvider>
 				<StatusBar barStyle={"dark-content"} />
 			</GestureHandlerRootView>

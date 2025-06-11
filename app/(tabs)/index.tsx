@@ -26,6 +26,7 @@ import { View } from "react-native";
 import { formatDate } from "@/utils";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import { useAuth } from "@/context/AuthContext";
+import { useTasks } from "@/context/TasksContext";
 
 interface TaskInfo {
 	taskName: string;
@@ -45,6 +46,7 @@ const INITIAL_DATE = new Date();
 const Home = () => {
 	// auth
 	const { session, profile } = useAuth();
+	const { taskData, loading } = useTasks();
 
 	// dispatch
 	const dispatch = useDispatch();
@@ -59,26 +61,7 @@ const Home = () => {
 
 	// useEffect
 	useEffect(() => {
-		const fetchData = async () => {
-			const { data: daysWithTasks, error } = await supabase
-				.from("days")
-				.select(
-					`
-    id,
-    day_date,
-    tasks (
-      title,
-      description,
-      priority,
-      time,
-      created_at
-    )
-  `
-				)
-				.eq("user_id", session?.user.id)
-				.order("day_date", { ascending: true });
-		};
-		fetchData();
+		console.log(taskData, loading);
 	}, []);
 
 	// calendar config
@@ -92,6 +75,7 @@ const Home = () => {
 	const renderItem = useCallback(({ item }: any) => {
 		return <AgendaItem item={item} />;
 	}, []);
+	if (loading) return <Loader visible={loading} />;
 	return (
 		<ViewContainer
 			style={{
@@ -115,10 +99,7 @@ const Home = () => {
 						paddingHorizontal: rMS(SIZES.h9),
 					}}
 				>
-					<Header
-						handleNotification={() => {}}
-						username={profile?.username}
-					/>
+					<Header handleNotification={() => {}} username={profile?.username} />
 				</ViewContainer>
 				<CalendarProvider
 					date={ITEMS[1]?.title}
@@ -209,7 +190,7 @@ const Home = () => {
 					/>
 
 					<AgendaList
-						sections={ITEMS}
+						sections={taskData}
 						style={{
 							backgroundColor: COLORS.dimWhite,
 						}}

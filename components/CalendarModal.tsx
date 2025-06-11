@@ -5,10 +5,11 @@ import {
 	Dimensions,
 	StyleSheet,
 	SafeAreaView,
+	Pressable,
 } from "react-native";
 import React, { useState } from "react";
 import Modal from "react-native-modal";
-import { Calendar } from "react-native-calendars";
+import { Calendar, CalendarUtils } from "react-native-calendars";
 import { formatDate, formatFullDate, universalStyles } from "@/utils";
 import { COLORS } from "@/constants/COLORS";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -74,28 +75,20 @@ const CalendarModal = ({
 						textDisabledColor: "#dd99ee",
 					}}
 					onDayPress={(day: any) => {
-						console.log(day);
-                        setDateString(day.dateString)
+						// console.log(day);
+						setDateString(day.dateString);
 						// setSelected(day.dateString);
 					}}
 					hideExtraDays
-					customHeaderTitle={
-						<Text style={universalStyles.textL}>
-							{formatFullDate(new Date())}
-						</Text>
-					}
-					renderArrow={(direction) => {
-						console.log(direction);
-						return (
-							<MaterialIcons
-								name={`arrow-${
-									direction === "left" ? "back-ios-new" : "forward-ios"
-								}`}
-								size={rMS(SIZES.h5)}
-								color="black"
-							/>
-						);
-					}}
+					renderArrow={(direction) => (
+						<MaterialIcons
+							name={`arrow-${
+								direction === "left" ? "back-ios-new" : "forward-ios"
+							}`}
+							size={rMS(SIZES.h5)}
+							color="black"
+						/>
+					)}
 					markedDates={{
 						[selected]: {
 							selected: true,
@@ -103,6 +96,35 @@ const CalendarModal = ({
 							selectedColor: COLORS.darkBlue,
 							selectedTextColor: "white",
 						},
+					}}
+					dayComponent={({ date, state, onPress }) => {
+						const isSelected = date?.dateString === selected;
+						const isToday =
+							date?.dateString ===
+							CalendarUtils.getCalendarDateString(new Date());
+
+						return (
+							<Pressable
+								onPress={() => onPress && onPress(date)}
+								style={{
+									width: 36,
+									height: 36,
+									borderRadius: 18,
+									backgroundColor: isSelected ? "#717D96" : "#F1F3F6", // light bluish for all unselected
+									alignItems: "center",
+									justifyContent: "center",
+								}}
+							>
+								<Text
+									style={{
+										color: isSelected ? "white" : COLORS.darkBlue,
+										fontWeight: "700",
+									}}
+								>
+									{date?.day}
+								</Text>
+							</Pressable>
+						);
 					}}
 				/>
 			</SafeAreaView>

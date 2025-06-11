@@ -21,7 +21,12 @@ import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { formatDate, formatFullDate, isAndroid } from "@/utils";
+import {
+	formatDate,
+	formatFullDate,
+	formatToSupabaseTime,
+	isAndroid,
+} from "@/utils";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import { useAuth } from "@/context/AuthContext";
 
@@ -91,10 +96,10 @@ const createTask = () => {
 			console.log(taskInfo);
 			setButtonDisabled(false);
 		}
-		console.log(androidDate, "DATE");
+		// console.log(androidDate, "DATE");
 	}, [taskInfo, androidDate]);
 
-	const createTask = async (
+	const addTaskToDb = async (
 		title: string,
 		description: string,
 		priority: string,
@@ -102,21 +107,20 @@ const createTask = () => {
 		time: Date
 	) => {
 		const dayDate = date.toISOString().slice(0, 10); // → "2025-06-08"
-		const dayTime = time.toTimeString().split(" ")[0];
+		const dayTime = time.toTimeString().split(" ")[0]
+        console.log(dayTime, "Supabase time")
 
-		// 2️⃣ upsert the day
-		const {
-			data: [day],
-			error: dayErr,
-		} = await supabase
+	// 2️⃣ upsert the day
+		const { data, error: dayErr } = await supabase
 			.from("days")
 			.upsert(
 				{ user_id: session?.user.id, day_date: dayDate },
-				{ onConflict: ["user_id", "day_date"] }
+				{ onConflict: "user_id,day_date" }
 			)
 			.select();
+		const [day] = data ?? [];
 
-		if (dayErr) throw dayErr;
+		if (dayErr) throw dayErr + "DAY ERROR";
 
 		// 3️⃣ insert the task
 		const { data: task, error: taskErr } = await supabase
@@ -128,7 +132,7 @@ const createTask = () => {
 					title: title,
 					description: description,
 					priority: priority,
-					time: time,
+					time: dayTime,
 				},
 			])
 			.select(); // returns the inserted row
@@ -136,21 +140,22 @@ const createTask = () => {
 		if (taskErr) throw taskErr;
 		console.log("new task:", task[0]);
 
-		const res = await supabase
-			.from("tasks")
-			.insert([
-				{
-					tasktitle: title,
-					description: description,
-					priority: priority,
-					time: dayTime,
-					date: isAndroid
-						? new Date(androidDate).toISOString().slice(0, 10)
-						: dayDate,
-				},
-			])
-			.select();
-		console.log(res);
+		// const res = await supabase
+		// 	.from("tasks")
+		// 	.insert([
+		// 		{
+		// 			tasktitle: title,
+		// 			description: description,
+		// 			priority: priority,
+		// 			time: dayTime,
+		// 			date: isAndroid
+		// 				? new Date(androidDate).toISOString().slice(0, 10)
+		// 				: dayDate,
+		// 		},
+		// 	])
+		// 	.select();
+		console.log(task);
+       
 	};
 
 	return (
@@ -238,7 +243,7 @@ const createTask = () => {
 											date: new Date(androidDate),
 										}));
 									}}
-									value={formatFullDate(taskInfo.date)}
+									value={formatFullDate(new Date(androidDate))}
 									hasIcon
 									onIconPress={() => setShowCalendar((prev) => !prev)}
 									hasContainer
@@ -298,7 +303,7 @@ const createTask = () => {
 								<TaskInput
 									label="Choose time"
 									onChangeText={(text) => {
-										console.log(text);
+										// console.log(text);
 										setTaskInfo((prev) => ({ ...prev, time: text }));
 									}}
 									value={taskInfo.time}
@@ -412,7 +417,7 @@ const createTask = () => {
 					onPress={async () => {
 						dispatch(setPostLoadingTasks(true));
 						try {
-							await createTask(
+							await addTaskToDb(
 								taskInfo.taskName,
 								taskInfo.description,
 								taskInfo.priority,
@@ -420,17 +425,17 @@ const createTask = () => {
 								taskInfo.time
 							);
 						} catch (error) {
-							console.log(error);
+							console.error("ERROR ",error);
 						} finally {
 							dispatch(setPostLoadingTasks(false));
 							// bottomSheetModalRef.current?.close();
-							setTaskInfo({
-								taskName: "",
-								description: "",
-								date: new Date(),
-								time: new Date(),
-								priority: "",
-							});
+							// setTaskInfo({
+							// 	taskName: "",
+							// 	description: "",
+							// 	date: new Date(),
+							// 	time: new Date(),
+							// 	priority: "",
+							// });
 						}
 					}}
 					title={"Create task"}

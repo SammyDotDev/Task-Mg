@@ -2,6 +2,7 @@ import { Platform, StyleSheet } from "react-native";
 import { rMS, rS, rV } from "./responsive_size";
 import { SIZES } from "@/constants/SIZES";
 import { COLORS } from "@/constants/COLORS";
+import { supabase } from "@/lib/supabase";
 
 export default {
 	rS,
@@ -34,6 +35,62 @@ export const formatFullDate = (date: Date): string => {
 	return `${month}, ${day} ${year}`;
 };
 
+export const formatToSupabaseTime = (date: string): string => {
+	const isoString = new Date(date);
+	console.log(date);
+	const timeString = isoString
+		.toISOString()
+		.split("T")[1]
+		.split("Z")[0]
+		.split(".")[0];
+	console.log(timeString);
+	// "15:17:18"
+	return timeString;
+};
+
+export const fetchGroupedTasksByDate = async (user_id: string) => {
+	const { data, error } = await supabase
+		.from("tasks")
+		.select("*")
+		.eq("user_id", user_id)
+		.order("date", { ascending: true })
+		.order("time", { ascending: true });
+	console.log(data);
+
+	if (error) {
+		console.error("Error fetching tasks:", error);
+		return [];
+	}
+
+	// Group by date
+	const grouped = data.reduce((acc, task) => {
+		const dateKey = new Date(task.date).toISOString().split("T")[0]; // e.g., "2025-06-08"
+		if (!acc[dateKey]) acc[dateKey] = [];
+		acc[dateKey].push(task);
+		return acc;
+	}, {});
+
+	// Transform into desired array format
+	const result = Object.entries(grouped).map(([date, tasks]) => ({
+		title: date, // or format this using moment.js or date-fns
+		data: tasks,
+	}));
+
+	return result;
+};
+
+export function formatTimeTo12Hour(timeString: string): string {
+	const [hourStr, minuteStr] = timeString.split(":");
+	let hour = parseInt(hourStr, 10);
+	const minute = parseInt(minuteStr, 10);
+
+	const period = hour >= 12 ? "pm" : "am";
+	hour = hour % 12 || 12; // convert 0 -> 12
+
+	return `${hour.toString().padStart(2, "0")}:${minute
+		.toString()
+		.padStart(2, "0")}${period}`;
+}
 
 export const universalStyles = StyleSheet.create({
 	headerText: {
