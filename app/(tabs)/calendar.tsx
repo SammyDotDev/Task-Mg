@@ -13,10 +13,13 @@ import { formatDate, getMonthName, universalStyles } from "@/utils";
 import { agendaItems } from "@/assets/data/agendaItems";
 import TaskItem from "@/components/TaskItem";
 import ListEmptyComponent from "@/components/ListEmptyComponent";
+import { useTasks } from "@/context/TasksContext";
+import Loader from "@/components/Loader";
 
 const Calender = () => {
 	const INITIAL_DATE = new Date();
 
+	const { taskData, loading } = useTasks();
 	const [selected, setSelected] = useState(formatDate(INITIAL_DATE));
 	const [currentMonth, setCurrentMonth] = useState(formatDate(INITIAL_DATE));
 
@@ -84,14 +87,22 @@ const Calender = () => {
 											width: 36,
 											height: 36,
 											borderRadius: 18,
-											backgroundColor: isSelected ? "#717D96" : "#F1F3F6", // light bluish for all unselected
+											backgroundColor: isToday
+												? COLORS.darkBlue
+												: isSelected
+												? "#717D96"
+												: "#F1F3F6", // light bluish for all unselected
 											alignItems: "center",
 											justifyContent: "center",
 										}}
 									>
 										<Text
 											style={{
-												color: isSelected ? "white" : COLORS.darkBlue,
+												color: isToday
+													? COLORS.white
+													: isSelected
+													? COLORS.white
+													: COLORS.darkBlue,
 												fontWeight: "700",
 											}}
 										>
@@ -116,12 +127,21 @@ const Calender = () => {
 					>
 						Tasks
 					</Text>
-					<FlatList
-						scrollEnabled={false}
-						data={agendaItems}
-						renderItem={({ item }) => <TaskItem item={item} />}
-						ListEmptyComponent={<ListEmptyComponent />}
-					/>
+					{loading ? (
+						<Loader visible={loading} />
+					) : (
+						<FlatList
+							scrollEnabled={false}
+							data={taskData.filter((item) => item.title === selected)}
+							renderItem={({ item }) => <TaskItem item={item} />}
+							ListEmptyComponent={
+								<ListEmptyComponent
+									title="No Tasks"
+									description="You don’t have any task scheduled for today"
+								/>
+							}
+						/>
+					)}
 				</View>
 			</SafeAreaScrollView>
 		</ViewContainer>

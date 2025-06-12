@@ -16,7 +16,7 @@ const Loader = ({ visible }: { visible: boolean }) => {
 				left: 0,
 				right: 0,
 				bottom: 0,
-				backgroundColor: "rgba(0,0,0,0.5)", // Semi-transparent background
+				backgroundColor: "rgb(255, 255, 255)", // Semi-transparent background
 				justifyContent: "center",
 				alignItems: "center",
 				zIndex: 999999999,
@@ -26,7 +26,7 @@ const Loader = ({ visible }: { visible: boolean }) => {
 			<View
 				style={{
 					flex: 1,
-					backgroundColor: "rgba(0,0,0,0.5)", // dim background
+					backgroundColor: "rgba(255, 255, 255, 0.79)", // dim background
 					justifyContent: "center",
 					alignItems: "center",
 				}}

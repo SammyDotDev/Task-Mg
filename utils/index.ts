@@ -92,6 +92,33 @@ export function formatTimeTo12Hour(timeString: string): string {
 		.padStart(2, "0")}${period}`;
 }
 
+export function getDateStatus(
+	inputDateStr: string
+): "past" | "today" | "tomorrow" | "future" {
+	const inputDate = new Date(inputDateStr);
+	const now = new Date();
+
+	// Strip time from both dates
+	const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+	const input = new Date(
+		inputDate.getFullYear(),
+		inputDate.getMonth(),
+		inputDate.getDate()
+	);
+
+	const diffInDays = Math.floor(
+		(input.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+	);
+    console.log(diffInDays)
+
+	if (diffInDays === 0) return "today";
+	if (diffInDays === 1) return "tomorrow";
+	if (diffInDays < 0) return "past";
+
+	// Optional: Add future if needed
+	return "future";
+}
+
 export const universalStyles = StyleSheet.create({
 	headerText: {
 		fontSize: rMS(SIZES.h1),

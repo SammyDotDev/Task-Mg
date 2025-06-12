@@ -26,7 +26,6 @@ function getPastDate(numberOfDays: number) {
 		.toISOString()
 		.split("T")[0];
 }
-// console.log(dates[0],"DATESSS")
 export const agendaItems = [
 	{
 		title: dates[0],

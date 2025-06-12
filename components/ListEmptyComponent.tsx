@@ -4,15 +4,23 @@ import { universalStyles } from "@/utils";
 import { rMS } from "@/utils/responsive_size";
 import { SIZES } from "@/constants/SIZES";
 
-const ListEmptyComponent = () => {
+const ListEmptyComponent = ({
+	title,
+	description,
+}: {
+	title: string;
+	description: string;
+}) => {
 	return (
 		<View
 			style={{
 				width: "100%",
 				gap: rMS(SIZES.h5),
+				alignItems: "center",
+				paddingVertical: "50%",
 			}}
 		>
-			<Text style={universalStyles.textL}>Are you sure?</Text>
+			<Text style={universalStyles.baseText}>{title}</Text>
 			<Text
 				style={[
 					universalStyles.baseText,
@@ -22,7 +30,7 @@ const ListEmptyComponent = () => {
 					},
 				]}
 			>
-				Are you sure you want to logout of your account?
+				{description}
 			</Text>
 		</View>
 	);

@@ -1,34 +1,24 @@
-import { View, Text, ScrollView, Pressable, StatusBar } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import { View, Text } from "react-native";
+import React, { useEffect, useState } from "react";
 import { SIZES } from "@/constants/SIZES";
 import { rMS } from "@/utils/responsive_size";
-import CancelIcon from "@/assets/svg/CancelIcon";
 import { COLORS } from "@/constants/COLORS";
 import TaskInput from "@/components/TaskInput";
 import { supabase } from "@/lib/supabase";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { Calendar } from "react-native-calendars";
 import CalenderIcon from "@/assets/svg/CalenderIcon";
 import TimeIcon from "@/assets/svg/TimeIcon";
 import PriorityButton from "@/components/PriorityButton";
 import CustomButton from "@/components/CustomButton";
 import { setPostLoadingTasks } from "@/store/slices/taskSlice";
-import Modal from "react-native-modal";
 import CalendarModal from "@/components/CalendarModal";
-import SafeAreaContainer from "@/utils/SafeAreaContainer";
 import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
-import { Feather } from "@expo/vector-icons";
-import { router } from "expo-router";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import {
-	formatDate,
-	formatFullDate,
-	formatToSupabaseTime,
-	isAndroid,
-} from "@/utils";
+import { formatFullDate, isAndroid } from "@/utils";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import { useAuth } from "@/context/AuthContext";
+import { useTasks } from "@/context/TasksContext";
 
 interface TaskInfo {
 	taskName: string;
@@ -41,6 +31,7 @@ interface TaskInfo {
 const createTask = () => {
 	const dispatch = useDispatch();
 	const { session } = useAuth();
+	const { refetchTasks } = useTasks();
 
 	const [taskInfo, setTaskInfo] = useState<TaskInfo>({
 		taskName: "",
@@ -103,14 +94,14 @@ const createTask = () => {
 		title: string,
 		description: string,
 		priority: string,
-		date: Date,
+		taskDate: Date,
 		time: Date
 	) => {
-		const dayDate = date.toISOString().slice(0, 10); // → "2025-06-08"
-		const dayTime = time.toTimeString().split(" ")[0]
-        console.log(dayTime, "Supabase time")
+		const dayDate = taskDate.toISOString().slice(0, 10); // → "2025-06-08"
+		const dayTime = time.toTimeString().split(" ")[0];
+		console.log(dayDate, "Supabase Date");
 
-	// 2️⃣ upsert the day
+		// 2️⃣ upsert the day
 		const { data, error: dayErr } = await supabase
 			.from("days")
 			.upsert(
@@ -155,7 +146,7 @@ const createTask = () => {
 		// 	])
 		// 	.select();
 		console.log(task);
-       
+		refetchTasks();
 	};
 
 	return (
@@ -277,11 +268,12 @@ const createTask = () => {
 											themeVariant="light"
 											textColor={COLORS.darkBlue}
 											testID="dateTimePicker"
-											value={date}
+											value={taskInfo.date}
 											mode={"date"}
 											is24Hour={true}
 											onChange={(_, selectedDate) => {
 												if (selectedDate) {
+													console.log(selectedDate, "datetime picker date");
 													setTaskInfo((prev) => ({
 														...prev,
 														date: selectedDate,
@@ -425,7 +417,7 @@ const createTask = () => {
 								taskInfo.time
 							);
 						} catch (error) {
-							console.error("ERROR ",error);
+							console.error("ERROR ", error);
 						} finally {
 							dispatch(setPostLoadingTasks(false));
 							// bottomSheetModalRef.current?.close();

@@ -4,8 +4,10 @@ import { rMS } from "@/utils/responsive_size";
 import { SIZES } from "@/constants/SIZES";
 import { COLORS } from "@/constants/COLORS";
 import Checkbox from "expo-checkbox";
+import { formatTimeTo12Hour } from "@/utils";
 
 const TaskItem = ({ item, checkBoxVisible = false }: any) => {
+    console.log(item, "TASK ITEM")
 	const [isDone, setIsDone] = useState(false);
 	return (
 		<View
@@ -28,12 +30,12 @@ const TaskItem = ({ item, checkBoxVisible = false }: any) => {
 						borderRadius: 99,
 						paddingHorizontal: rMS(SIZES.h10),
 						backgroundColor: "#CBD2E0",
-						width: rMS(80),
+						width: rMS(90),
 						justifyContent: "center",
 						alignItems: "center",
 					}}
 				>
-					<Text>{item.data[0].hour}</Text>
+					<Text> {formatTimeTo12Hour(item.data[0].time)}</Text>
 				</View>
 				<View
 					style={{
@@ -60,7 +62,7 @@ const TaskItem = ({ item, checkBoxVisible = false }: any) => {
 							textAlign: "center",
 						}}
 					>
-						{item.data[0].title}
+						{item.data[0].description}
 					</Text>
 				</View>
 			</View>
@@ -69,13 +71,12 @@ const TaskItem = ({ item, checkBoxVisible = false }: any) => {
 				<Checkbox
 					style={{
 						borderRadius: 6,
-                        width: rMS(SIZES.h4),
-                        height: rMS(SIZES.h4),
+						width: rMS(SIZES.h4),
+						height: rMS(SIZES.h4),
 					}}
 					value={isDone}
 					onValueChange={setIsDone}
 					color={COLORS.darkBlue}
-
 				/>
 			)}
 		</View>

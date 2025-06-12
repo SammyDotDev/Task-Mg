@@ -5,13 +5,17 @@ import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
 import { rMS } from "@/utils/responsive_size";
 import { SIZES } from "@/constants/SIZES";
 import SearchHeader from "@/components/SearchHeader";
-import { universalStyles } from "@/utils";
+import { getDateStatus, universalStyles } from "@/utils";
 import { COLORS } from "@/constants/COLORS";
 import { agendaItems } from "@/assets/data/agendaItems";
 import TaskItem from "@/components/TaskItem";
 import SafeAreaContainer from "@/utils/SafeAreaContainer";
+import { useTasks } from "@/context/TasksContext";
+import Loader from "@/components/Loader";
+import ListEmptyComponent from "@/components/ListEmptyComponent";
 
 const Tasks = () => {
+	const { taskData, loading } = useTasks();
 	const [activeTimeline, setActiveTimeline] = useState("today");
 	const [state, setState] = useState("active");
 	return (
@@ -124,16 +128,23 @@ const Tasks = () => {
 					</View>
 				</View>
 			</View>
-			<SafeAreaContainer
-				// scrollEnabled={false}
-				contentContainerStyle={{
-					paddingTop: 0,
-				}}
-			>
-				<FlatList
-					data={agendaItems}
-					renderItem={({ item }) => <TaskItem item={item} checkBoxVisible />}
-				/>
+			<SafeAreaContainer>
+				{loading ? (
+					<Loader visible={loading} />
+				) : (
+					<FlatList
+						data={taskData.filter(
+							(item) => activeTimeline === getDateStatus(item.title)
+						)}
+						renderItem={({ item }) => <TaskItem item={item} checkBoxVisible />}
+						ListEmptyComponent={
+							<ListEmptyComponent
+								title="No Tasks"
+								description="You don’t have any task scheduled for today"
+							/>
+						}
+					/>
+				)}
 			</SafeAreaContainer>
 		</ViewContainer>
 	);

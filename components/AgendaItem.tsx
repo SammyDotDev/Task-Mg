@@ -45,8 +45,8 @@ const AgendaItem = (props: ItemProps) => {
 		>
 			<View
 				style={{
-					paddingVertical: rMS(SIZES.h7),
-					paddingHorizontal: rMS(SIZES.h10),
+					paddingVertical: rMS(SIZES.h4),
+					paddingHorizontal: rMS(SIZES.h12),
 					width: "20%",
 					backgroundColor: COLORS.dimWhite,
 					alignItems: "center",
@@ -57,6 +57,7 @@ const AgendaItem = (props: ItemProps) => {
 						universalStyles.textSm,
 						{
 							color: "#A0ABC0",
+                            fontSize: rMS(SIZES.h9)
 						},
 					]}
 				>
