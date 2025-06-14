@@ -77,7 +77,8 @@ const CalendarModal = ({
 					onDayPress={(day: any) => {
 						// console.log(day);
 						setDateString(day.dateString);
-						// setSelected(day.dateString);
+						setSelected(day.dateString);
+                        console.log(day)
 					}}
 					hideExtraDays
 					renderArrow={(direction) => (

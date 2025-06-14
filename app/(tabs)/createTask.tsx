@@ -15,7 +15,7 @@ import { setPostLoadingTasks } from "@/store/slices/taskSlice";
 import CalendarModal from "@/components/CalendarModal";
 import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { formatFullDate, isAndroid } from "@/utils";
+import { formatDate, formatFullDate, isAndroid } from "@/utils";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import { useAuth } from "@/context/AuthContext";
 import { useTasks } from "@/context/TasksContext";
@@ -60,7 +60,7 @@ const createTask = () => {
 	const [mode, setMode] = useState("date");
 	const [show, setShow] = useState(false);
 
-	const [androidDate, setAndroidDate] = useState("");
+	const [androidDate, setAndroidDate] = useState(formatDate(new Date()));
 
 	// const showMode = (currentMode) => {
 	// 	setShow(true);
@@ -87,7 +87,7 @@ const createTask = () => {
 			console.log(taskInfo);
 			setButtonDisabled(false);
 		}
-		// console.log(androidDate, "DATE");
+		console.log(androidDate, "DATE");
 	}, [taskInfo, androidDate]);
 
 	const addTaskToDb = async (
@@ -97,8 +97,8 @@ const createTask = () => {
 		taskDate: Date,
 		time: Date
 	) => {
-		const dayDate = taskDate.toISOString().slice(0, 10); // → "2025-06-08"
-		const dayTime = time.toTimeString().split(" ")[0];
+		const dayDate = isAndroid ? taskDate : taskDate.toISOString().slice(0, 10); // → "2025-06-08"
+		const dayTime = isAndroid ? time : time.toTimeString().split(" ")[0];
 		console.log(dayDate, "Supabase Date");
 
 		// 2️⃣ upsert the day
@@ -234,7 +234,7 @@ const createTask = () => {
 											date: new Date(androidDate),
 										}));
 									}}
-									value={formatFullDate(new Date(androidDate))}
+									value={taskInfo.date}
 									hasIcon
 									onIconPress={() => setShowCalendar((prev) => !prev)}
 									hasContainer
@@ -441,7 +441,13 @@ const createTask = () => {
 			<CalendarModal
 				showCalendar={showCalendar}
 				handleBackdropPress={() => setShowCalendar(false)}
-				setDateString={setAndroidDate}
+				setDateString={(text) => {
+					setAndroidDate(text);
+					setTaskInfo((prev) => ({
+						...prev,
+						date: new Date(text),
+					}));
+				}}
 			/>
 		</>
 	);

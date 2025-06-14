@@ -18,6 +18,7 @@ const Tasks = () => {
 	const { taskData, loading } = useTasks();
 	const [activeTimeline, setActiveTimeline] = useState("today");
 	const [state, setState] = useState("active");
+    console.log(taskData, "TASK DATA")
 	return (
 		<ViewContainer>
 			<View
@@ -43,7 +44,7 @@ const Tasks = () => {
 						<Pressable onPress={() => setActiveTimeline("past")}>
 							<Text
 								style={[
-									universalStyles.baseText,
+									universalStyles.textSm,
 									{
 										color:
 											activeTimeline === "past"
@@ -58,7 +59,7 @@ const Tasks = () => {
 						<Pressable onPress={() => setActiveTimeline("today")}>
 							<Text
 								style={[
-									universalStyles.baseText,
+									universalStyles.textSm,
 									{
 										color:
 											activeTimeline === "today"
@@ -73,7 +74,7 @@ const Tasks = () => {
 						<Pressable onPress={() => setActiveTimeline("tomorrow")}>
 							<Text
 								style={[
-									universalStyles.baseText,
+									universalStyles.textSm,
 									{
 										color:
 											activeTimeline === "tomorrow"
@@ -102,7 +103,7 @@ const Tasks = () => {
 						<Pressable onPress={() => setState("active")}>
 							<Text
 								style={[
-									universalStyles.baseText,
+									universalStyles.textSm,
 									{
 										color:
 											state === "active" ? COLORS.darkBlue : COLORS.fadedBlue,
@@ -115,7 +116,7 @@ const Tasks = () => {
 						<Pressable onPress={() => setState("done")}>
 							<Text
 								style={[
-									universalStyles.baseText,
+									universalStyles.textSm,
 									{
 										color:
 											state === "done" ? COLORS.darkBlue : COLORS.fadedBlue,

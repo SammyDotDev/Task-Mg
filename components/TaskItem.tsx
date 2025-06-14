@@ -7,7 +7,8 @@ import Checkbox from "expo-checkbox";
 import { formatTimeTo12Hour } from "@/utils";
 
 const TaskItem = ({ item, checkBoxVisible = false }: any) => {
-    console.log(item, "TASK ITEM")
+	const itemData = item.data[0];
+	console.log(item, "TASK ITEM");
 	const [isDone, setIsDone] = useState(false);
 	return (
 		<View
@@ -23,19 +24,24 @@ const TaskItem = ({ item, checkBoxVisible = false }: any) => {
 				marginVertical: rMS(SIZES.h12),
 			}}
 		>
-			<View style={{ flexDirection: "column", alignItems: "flex-start" }}>
+			<View
+				style={{
+					flexDirection: "column",
+					alignItems: "flex-start",
+					width: "70%",
+				}}
+			>
 				<View
 					style={{
 						padding: rMS(SIZES.h12),
 						borderRadius: 99,
 						paddingHorizontal: rMS(SIZES.h10),
 						backgroundColor: "#CBD2E0",
-						width: rMS(90),
 						justifyContent: "center",
 						alignItems: "center",
 					}}
 				>
-					<Text> {formatTimeTo12Hour(item.data[0].time)}</Text>
+					<Text> {formatTimeTo12Hour(itemData.time)}</Text>
 				</View>
 				<View
 					style={{
@@ -45,15 +51,21 @@ const TaskItem = ({ item, checkBoxVisible = false }: any) => {
 						marginVertical: rMS(SIZES.h7),
 					}}
 				>
-					<Text
+					<View
 						style={{
-							fontSize: rMS(SIZES.h4),
-							fontWeight: "500",
-							color: COLORS.darkBlue,
+							width: "90%",
 						}}
 					>
-						{item.data[0].title}
-					</Text>
+						<Text
+							style={{
+								fontSize: rMS(SIZES.h6),
+								fontWeight: "500",
+								color: COLORS.darkBlue,
+							}}
+						>
+							{itemData.title}
+						</Text>
+					</View>
 					<Text
 						style={{
 							fontSize: rMS(SIZES.h7),
@@ -62,23 +74,67 @@ const TaskItem = ({ item, checkBoxVisible = false }: any) => {
 							textAlign: "center",
 						}}
 					>
-						{item.data[0].description}
+						{itemData.description}
 					</Text>
 				</View>
 			</View>
 			{/* CheckBox */}
-			{checkBoxVisible && (
-				<Checkbox
+			<View
+				style={{
+					flexDirection: "column",
+					justifyContent: "space-between",
+					height: "100%",
+					alignItems: "flex-end",
+				}}
+			>
+				{checkBoxVisible && (
+					<Checkbox
+						style={{
+							borderRadius: 6,
+							width: rMS(SIZES.h4),
+							height: rMS(SIZES.h4),
+						}}
+						value={isDone}
+						onValueChange={setIsDone}
+						color={COLORS.darkBlue}
+					/>
+				)}
+				<View
 					style={{
-						borderRadius: 6,
-						width: rMS(SIZES.h4),
-						height: rMS(SIZES.h4),
+						padding: rMS(SIZES.h12),
+						borderRadius: 99,
+						paddingHorizontal: rMS(SIZES.h10),
+						backgroundColor:
+							itemData.priority === "low"
+								? "#FFEEA9"
+								: itemData.priority === "medium"
+								? "#AEEA94"
+								: itemData.priority === "low"
+								? "#BE3144"
+								: "",
+						justifyContent: "center",
+						alignItems: "center",
 					}}
-					value={isDone}
-					onValueChange={setIsDone}
-					color={COLORS.darkBlue}
-				/>
-			)}
+				>
+					<Text
+						style={{
+							fontSize: rMS(SIZES.h8),
+							color:
+								itemData.priority === "low"
+									? COLORS.dark
+									: itemData.priority === "medium"
+									? COLORS.dark
+									: itemData.priority === "low"
+									? COLORS.white
+									: "",
+							fontWeight: "600",
+						}}
+					>
+						{" "}
+						{itemData.priority}
+					</Text>
+				</View>
+			</View>
 		</View>
 	);
 };
