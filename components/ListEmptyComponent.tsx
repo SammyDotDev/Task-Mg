@@ -17,7 +17,7 @@ const ListEmptyComponent = ({
 				width: "100%",
 				gap: rMS(SIZES.h5),
 				alignItems: "center",
-				paddingVertical: "50%",
+				paddingVertical: rMS(60),
 			}}
 		>
 			<Text style={universalStyles.baseText}>{title}</Text>
@@ -27,6 +27,7 @@ const ListEmptyComponent = ({
 					{
 						textAlign: "center",
 						fontWeight: "400",
+						opacity: 0.5,
 					},
 				]}
 			>

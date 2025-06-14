@@ -4,6 +4,7 @@ import LottieView from "lottie-react-native";
 import { rMS } from "@/utils/responsive_size";
 import { StatusBar } from "expo-status-bar";
 import { COLORS } from "@/constants/COLORS";
+import { SIZES } from "@/constants/SIZES";
 
 const Loader = ({ visible }: { visible: boolean }) => {
 	return (
@@ -26,7 +27,7 @@ const Loader = ({ visible }: { visible: boolean }) => {
 			<View
 				style={{
 					flex: 1,
-					backgroundColor: "rgba(255, 255, 255, 0.79)", // dim background
+					backgroundColor: "rgb(255, 255, 255)", // dim background
 					justifyContent: "center",
 					alignItems: "center",
 				}}
@@ -42,7 +43,7 @@ const Loader = ({ visible }: { visible: boolean }) => {
 						margin: "auto",
 					}}
 				>
-					<ActivityIndicator color={COLORS.darkBlue} />
+					<ActivityIndicator color={COLORS.darkBlue} size={rMS(SIZES.h1)} />
 					<StatusBar />
 				</View>
 			</View>

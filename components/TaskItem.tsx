@@ -41,7 +41,16 @@ const TaskItem = ({ item, checkBoxVisible = false }: any) => {
 						alignItems: "center",
 					}}
 				>
-					<Text> {formatTimeTo12Hour(itemData.time)}</Text>
+					<Text
+						style={{
+							fontSize: rMS(SIZES.h9),
+							color: COLORS.darkBlue,
+							fontWeight: "600",
+						}}
+					>
+						{" "}
+						{formatTimeTo12Hour(itemData.time)}
+					</Text>
 				</View>
 				<View
 					style={{
@@ -83,7 +92,6 @@ const TaskItem = ({ item, checkBoxVisible = false }: any) => {
 				style={{
 					flexDirection: "column",
 					justifyContent: "space-between",
-					height: "100%",
 					alignItems: "flex-end",
 				}}
 			>
@@ -99,18 +107,20 @@ const TaskItem = ({ item, checkBoxVisible = false }: any) => {
 						color={COLORS.darkBlue}
 					/>
 				)}
+                <View style={{flex:1}}/>
 				<View
 					style={{
 						padding: rMS(SIZES.h12),
 						borderRadius: 99,
+						minWidth: rMS(80),
 						paddingHorizontal: rMS(SIZES.h10),
 						backgroundColor:
 							itemData.priority === "low"
 								? "#FFEEA9"
 								: itemData.priority === "medium"
 								? "#AEEA94"
-								: itemData.priority === "low"
-								? "#BE3144"
+								: itemData.priority === "high"
+								? "#D84040"
 								: "",
 						justifyContent: "center",
 						alignItems: "center",
@@ -124,13 +134,12 @@ const TaskItem = ({ item, checkBoxVisible = false }: any) => {
 									? COLORS.dark
 									: itemData.priority === "medium"
 									? COLORS.dark
-									: itemData.priority === "low"
+									: itemData.priority === "high"
 									? COLORS.white
 									: "",
 							fontWeight: "600",
 						}}
 					>
-						{" "}
 						{itemData.priority}
 					</Text>
 				</View>

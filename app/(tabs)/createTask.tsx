@@ -227,14 +227,14 @@ const createTask = () => {
 							{isAndroid ? (
 								<TaskInput
 									label="Choose date"
-									onChangeText={(text) => {
-										console.log(text);
-										setTaskInfo((prev) => ({
-											...prev,
-											date: new Date(androidDate),
-										}));
-									}}
-									value={taskInfo.date}
+									// onChangeText={(text) => {
+									// 	console.log(text);
+									// 	setTaskInfo((prev) => ({
+									// 		...prev,
+									// 		date: new Date(androidDate),
+									// 	}));
+									// }}
+									value={formatFullDate(taskInfo.date)}
 									hasIcon
 									onIconPress={() => setShowCalendar((prev) => !prev)}
 									hasContainer
@@ -442,6 +442,7 @@ const createTask = () => {
 				showCalendar={showCalendar}
 				handleBackdropPress={() => setShowCalendar(false)}
 				setDateString={(text) => {
+					console.log(text, "LLLL");
 					setAndroidDate(text);
 					setTaskInfo((prev) => ({
 						...prev,
