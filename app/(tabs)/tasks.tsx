@@ -7,18 +7,19 @@ import { SIZES } from "@/constants/SIZES";
 import SearchHeader from "@/components/SearchHeader";
 import { getDateStatus, universalStyles } from "@/utils";
 import { COLORS } from "@/constants/COLORS";
-import { agendaItems } from "@/assets/data/agendaItems";
+import { agendaItems, DayWithTasks } from "@/assets/data/agendaItems";
 import TaskItem from "@/components/TaskItem";
 import SafeAreaContainer from "@/utils/SafeAreaContainer";
 import { useTasks } from "@/context/TasksContext";
 import Loader from "@/components/Loader";
 import ListEmptyComponent from "@/components/ListEmptyComponent";
+import MultiTaskItem from "@/components/MultiTaskItem";
 
 const Tasks = () => {
 	const { taskData, loading } = useTasks();
 	const [activeTimeline, setActiveTimeline] = useState("today");
 	const [state, setState] = useState("active");
-    console.log(taskData, "TASK DATA")
+	console.log(taskData, "TASK DATA");
 	return (
 		<ViewContainer>
 			<View
@@ -134,10 +135,16 @@ const Tasks = () => {
 					<Loader visible={loading} />
 				) : (
 					<FlatList
+						contentContainerStyle={{
+							paddingBottom: rMS(100),
+						}}
 						data={taskData.filter(
-							(item) => activeTimeline === getDateStatus(item.title)
+							(item: DayWithTasks) =>
+								activeTimeline === getDateStatus(item.title)
 						)}
-						renderItem={({ item }) => <TaskItem item={item} checkBoxVisible />}
+						renderItem={({ item }) => (
+							<MultiTaskItem showDateTitle item={item} checkBoxVisible />
+						)}
 						ListEmptyComponent={
 							<ListEmptyComponent
 								title="No Tasks"

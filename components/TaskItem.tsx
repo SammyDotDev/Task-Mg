@@ -5,8 +5,15 @@ import { SIZES } from "@/constants/SIZES";
 import { COLORS } from "@/constants/COLORS";
 import Checkbox from "expo-checkbox";
 import { formatTimeTo12Hour } from "@/utils";
+import { DayWithTasks } from "@/assets/data/agendaItems";
 
-const TaskItem = ({ item, checkBoxVisible = false }: any) => {
+const TaskItem = ({
+	item,
+	checkBoxVisible = false,
+}: {
+	item: DayWithTasks;
+	checkBoxVisible?: boolean;
+}) => {
 	const itemData = item.data[0];
 	console.log(item, "TASK ITEM");
 	const [isDone, setIsDone] = useState(false);
@@ -80,7 +87,6 @@ const TaskItem = ({ item, checkBoxVisible = false }: any) => {
 							fontSize: rMS(SIZES.h7),
 							fontWeight: "400",
 							color: COLORS.fadedBlue,
-							textAlign: "center",
 						}}
 					>
 						{itemData.description}
@@ -107,7 +113,7 @@ const TaskItem = ({ item, checkBoxVisible = false }: any) => {
 						color={COLORS.darkBlue}
 					/>
 				)}
-                <View style={{flex:1}}/>
+				<View style={{ flex: 1 }} />
 				<View
 					style={{
 						padding: rMS(SIZES.h12),

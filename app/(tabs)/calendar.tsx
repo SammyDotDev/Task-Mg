@@ -10,11 +10,12 @@ import { COLORS } from "@/constants/COLORS";
 import { Calendar, CalendarUtils } from "react-native-calendars";
 import testIDs from "@/assets/data/testIDs";
 import { formatDate, getMonthName, universalStyles } from "@/utils";
-import { agendaItems } from "@/assets/data/agendaItems";
+import { agendaItems, DayWithTasks } from "@/assets/data/agendaItems";
 import TaskItem from "@/components/TaskItem";
 import ListEmptyComponent from "@/components/ListEmptyComponent";
 import { useTasks } from "@/context/TasksContext";
 import Loader from "@/components/Loader";
+import MultiTaskItem from "@/components/MultiTaskItem";
 
 const Calender = () => {
 	const INITIAL_DATE = new Date();
@@ -132,8 +133,10 @@ const Calender = () => {
 					) : (
 						<FlatList
 							scrollEnabled={false}
-							data={taskData.filter((item) => item.title === selected)}
-							renderItem={({ item }) => <TaskItem item={item} />}
+							data={taskData.filter(
+								(item: DayWithTasks) => item.title === selected
+							)}
+							renderItem={({ item }) => <MultiTaskItem item={item} />}
 							ListEmptyComponent={
 								<ListEmptyComponent
 									title="No Tasks"

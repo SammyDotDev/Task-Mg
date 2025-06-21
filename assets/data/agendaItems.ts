@@ -6,6 +6,19 @@ const pastDate = getPastDate(3);
 const futureDates = getFutureDates(12);
 const dates = [pastDate, today].concat(futureDates);
 
+export type Task = {
+	created_at: string; // ISO timestamp string
+	description: string;
+	priority: "low" | "medium" | "high"; // or just string if dynamic
+	time: string; // "HH:mm:ss" format
+	title: string;
+};
+
+export type DayWithTasks = {
+	title: string; // e.g. "2025-06-21"
+	data: Task[];
+};
+
 function getFutureDates(numberOfDays: number) {
 	const array: string[] = [];
 	for (let index = 1; index <= numberOfDays; index++) {

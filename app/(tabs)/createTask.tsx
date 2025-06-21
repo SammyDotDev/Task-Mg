@@ -335,7 +335,7 @@ const createTask = () => {
 											themeVariant="light"
 											textColor={COLORS.darkBlue}
 											testID="dateTimePicker"
-											value={date}
+											value={taskInfo.time}
 											mode={"time"}
 											is24Hour={true}
 											onChange={(_, selectedTime) => {
@@ -438,18 +438,20 @@ const createTask = () => {
 					}}
 				/>
 			</SafeAreaScrollView>
-			<CalendarModal
-				showCalendar={showCalendar}
-				handleBackdropPress={() => setShowCalendar(false)}
-				setDateString={(text) => {
-					console.log(text, "LLLL");
-					setAndroidDate(text);
-					setTaskInfo((prev) => ({
-						...prev,
-						date: new Date(text),
-					}));
-				}}
-			/>
+			{isAndroid && (
+				<CalendarModal
+					showCalendar={showCalendar}
+					handleBackdropPress={() => setShowCalendar(false)}
+					setDateString={(text) => {
+						console.log(text, "LLLL");
+						setAndroidDate(text);
+						setTaskInfo((prev) => ({
+							...prev,
+							date: new Date(text),
+						}));
+					}}
+				/>
+			)}
 		</>
 	);
 };

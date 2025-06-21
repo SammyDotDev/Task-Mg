@@ -28,7 +28,6 @@ const Settings = () => {
 	const [logoutModalIsVisible, setLogoutModalIsVisible] =
 		useState<boolean>(false);
 	const { session, profile } = useAuth();
-	console.log(profile);
 
 	const pickImage = async () => {
 		// No permissions request is necessary for launching the image library
