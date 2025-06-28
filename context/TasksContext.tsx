@@ -33,11 +33,15 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
         id,
         day_date,
         tasks (
+        id,
           title,
           description,
           priority,
           time,
-          created_at
+          created_at,
+          is_active,
+          is_completed,
+          expired
         )
       `
 			)

@@ -7,11 +7,14 @@ const futureDates = getFutureDates(12);
 const dates = [pastDate, today].concat(futureDates);
 
 export type Task = {
+	id: string;
 	created_at: string; // ISO timestamp string
 	description: string;
 	priority: "low" | "medium" | "high"; // or just string if dynamic
 	time: string; // "HH:mm:ss" format
 	title: string;
+	is_completed: boolean;
+	is_active: boolean;
 };
 
 export type DayWithTasks = {
