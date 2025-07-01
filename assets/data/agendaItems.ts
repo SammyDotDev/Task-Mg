@@ -18,6 +18,7 @@ export type Task = {
 };
 
 export type DayWithTasks = {
+	id: string;
 	title: string; // e.g. "2025-06-21"
 	data: Task[];
 };

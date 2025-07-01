@@ -7,29 +7,32 @@ const AuthContext = createContext<any>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const [session, setSession] = useState<Session | null>(null);
-	const [profile, setProfile] = useState<
-		| {
-				id: any;
-				username: any;
-		  }
-		| null
-	>(null);
+	const [profile, setProfile] = useState<{
+		id: any;
+		username: any;
+	} | null>(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		const init = async () => {
-			const {
-				data: { session },
-			} = await supabase.auth.getSession();
-			setSession(session);
+        const init = async () => {
+            console.log("NETWORK ERROR");
+			try {
+				const {
+					data: { session },
+					error,
+				} = await supabase.auth.getSession();
+				setSession(session);
 
-			if (session?.user) {
-				const { data: profile } = await supabase
-					.from("profiles")
-					.select("id, username")
-					.eq("id", session.user.id)
-					.single();
-				setProfile(profile);
+				if (session?.user) {
+					const { data: profile } = await supabase
+						.from("profiles")
+						.select("id, username")
+						.eq("id", session.user.id)
+						.single();
+					setProfile(profile);
+				}
+			} catch (error) {
+				console.log(error, "NETWORK ERROR");
 			}
 			setLoading(false);
 		};

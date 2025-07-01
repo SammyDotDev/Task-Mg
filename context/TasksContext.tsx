@@ -49,6 +49,7 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
 			.order("day_date", { ascending: true });
 
 		const result = (daysWithTasks || []).map((item) => ({
+			id: item.id,
 			title: item.day_date, // or format this using moment.js or date-fns
 			data: item.tasks,
 		}));

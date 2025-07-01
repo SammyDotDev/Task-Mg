@@ -1,23 +1,40 @@
-import { View, Text } from "react-native";
-import React, { useState } from "react";
+import {
+	View,
+	Text,
+	Pressable,
+	TouchableOpacity,
+	Alert,
+	ActivityIndicator,
+} from "react-native";
+import React, { useRef, useState } from "react";
 import { rMS } from "@/utils/responsive_size";
 import { SIZES } from "@/constants/SIZES";
 import { COLORS } from "@/constants/COLORS";
 import Checkbox from "expo-checkbox";
-import { formatTimeTo12Hour } from "@/utils";
+import { formatTimeTo12Hour, universalStyles } from "@/utils";
 import { DayWithTasks, Task } from "@/assets/data/agendaItems";
 import { supabase } from "@/lib/supabase";
 import { useTasks } from "@/context/TasksContext";
+import { FontAwesome6 } from "@expo/vector-icons";
+import Popover, {
+	PopoverMode,
+	PopoverPlacement,
+} from "react-native-popover-view";
 
 const LoneTaskItemComponent = ({
 	item,
 	checkBoxVisible,
+	dayId,
 }: {
+	dayId: string;
 	item: Task;
 	checkBoxVisible?: boolean;
 }) => {
 	const [isDone, setIsDone] = useState(item.is_completed);
-	// const [isActive, setIsActive] = useState(item.is_active);
+	const touchable = useRef<View>(null);
+	const [showPopover, setShowPopover] = useState(false);
+	const { refetchTasks, loading } = useTasks();
+	console.log(dayId, "DAY ID");
 
 	// console.log(taskData[0].data);
 	const setTaskDone = async (taskId: string) => {
@@ -32,6 +49,43 @@ const LoneTaskItemComponent = ({
 			setIsDone(taskIsDone.data.is_completed);
 		}
 	};
+
+	// delete task item
+	const deleteTask = async (taskId: string) => {
+		try {
+			const { error } = await supabase.from("tasks").delete().eq("id", taskId);
+			if (error) {
+				console.error("Error deleting task:", error);
+			}
+			const { data, error: err } = await supabase
+				.from("days")
+				.select(
+					`
+        id,
+        day_date,
+        tasks (
+        id,
+          title,
+          description,
+          priority,
+          time,
+          created_at,
+          is_active,
+          is_completed,
+          expired
+        )
+      `
+				)
+				.eq("id", dayId);
+
+			console.log(data, "DATA AFTER DELETION FROM DAYS");
+			refetchTasks();
+		} catch (error) {
+			Alert.alert(error as string);
+		}
+	};
+	if (loading)
+		return <ActivityIndicator size="large" color={COLORS.darkBlue} />;
 	return (
 		<View
 			style={{
@@ -116,7 +170,70 @@ const LoneTaskItemComponent = ({
 					alignItems: "flex-end",
 				}}
 			>
-				<View>
+				<View
+					style={{
+						flexDirection: "row",
+						alignItems: "flex-start",
+						gap: rMS(SIZES.h7),
+					}}
+				>
+					{
+						<>
+							<Popover
+								onRequestClose={() => setShowPopover(false)}
+								mode={PopoverMode.RN_MODAL}
+								backgroundStyle={{
+									backgroundColor: "rgba(0, 0, 0, 0.35)",
+								}}
+								popoverStyle={{
+									width: "auto",
+									borderRadius: 10,
+									padding: rMS(SIZES.h11),
+									gap: rMS(SIZES.h10),
+								}}
+								from={
+									<Pressable>
+										<FontAwesome6 name="ellipsis" size={24} color="black" />
+									</Pressable>
+								}
+							>
+								<TouchableOpacity
+									style={{
+										backgroundColor: COLORS.offWhite,
+										borderRadius: 8,
+										padding: rMS(SIZES.h12),
+										alignItems: "center",
+									}}
+									onPress={() => {
+										setShowPopover(false);
+										// Navigate to edit task screen
+									}}
+								>
+									<Text style={universalStyles.textSm}>Edit</Text>
+								</TouchableOpacity>
+								<TouchableOpacity
+									style={{
+										backgroundColor: COLORS.offWhite,
+										borderRadius: 8,
+										padding: rMS(SIZES.h12),
+										alignItems: "center",
+									}}
+									onPress={() => deleteTask(item.id)}
+								>
+									<Text
+										style={[
+											universalStyles.textSm,
+											{
+												color: COLORS.red,
+											},
+										]}
+									>
+										Delete
+									</Text>
+								</TouchableOpacity>
+							</Popover>
+						</>
+					}
 					{checkBoxVisible && (
 						<Checkbox
 							style={{

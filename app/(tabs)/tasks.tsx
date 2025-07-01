@@ -18,7 +18,7 @@ import MultiTaskItem from "@/components/MultiTaskItem";
 const Tasks = () => {
 	const { taskData, loading } = useTasks();
 	const [activeTimeline, setActiveTimeline] = useState("today");
-	const [state, setState] = useState("active");
+	const [state, setState] = useState<"active" | "done">("active");
 	console.log(taskData, "TASK DATA");
 	return (
 		<ViewContainer>
@@ -138,12 +138,19 @@ const Tasks = () => {
 						contentContainerStyle={{
 							paddingBottom: rMS(100),
 						}}
-						data={taskData.filter(
-							(item: DayWithTasks) =>
-								activeTimeline === getDateStatus(item.title)
-						)}
+						data={taskData
+							.filter(
+								(item: DayWithTasks) =>
+									activeTimeline === getDateStatus(item.title)
+							)
+							.filter((item: DayWithTasks) => item.data.length > 0)}
 						renderItem={({ item }) => (
-							<MultiTaskItem showDateTitle item={item} checkBoxVisible />
+							<MultiTaskItem
+								showDateTitle
+								dayItem={item}
+								checkBoxVisible
+								state={state}
+							/>
 						)}
 						ListEmptyComponent={
 							<ListEmptyComponent

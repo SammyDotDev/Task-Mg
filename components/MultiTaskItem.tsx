@@ -7,17 +7,20 @@ import Checkbox from "expo-checkbox";
 import { formatFullDate, formatTimeTo12Hour, universalStyles } from "@/utils";
 import { DayWithTasks } from "@/assets/data/agendaItems";
 import LoneTaskItemComponent from "./LoneTaskItemComponent";
+import ListEmptyComponent from "./ListEmptyComponent";
 
 const MultiTaskItem = ({
-	item,
+	dayItem,
 	checkBoxVisible = false,
 	showDateTitle = false,
+	state,
 }: {
-	item: DayWithTasks;
+	dayItem: DayWithTasks;
 	checkBoxVisible?: boolean;
 	showDateTitle?: boolean;
+	state?: "active" | "done";
 }) => {
-	const [isDone, setIsDone] = useState(false);
+	console.log(dayItem, "DAY ITEM");
 
 	return (
 		<View
@@ -28,17 +31,29 @@ const MultiTaskItem = ({
 		>
 			{showDateTitle && (
 				<Text style={universalStyles.baseText}>
-					{formatFullDate(new Date(item.title))}
+					{formatFullDate(new Date(dayItem.title))}
 				</Text>
 			)}
 			<FlatList
-				data={item.data}
+				data={dayItem.data.filter((item) => {
+					const taskState = item.is_completed ? "done" : "active";
+					return taskState === state;
+				})}
 				renderItem={({ item }) => (
 					<LoneTaskItemComponent
+						dayId={dayItem.id}
 						item={item}
 						checkBoxVisible={checkBoxVisible}
 					/>
 				)}
+				ListEmptyComponent={
+					<ListEmptyComponent
+						title="No Tasks"
+						description={`You don’t have any ${
+							state === "active" ? "active" : "completed"
+						} tasks`}
+					/>
+				}
 			/>
 		</View>
 	);
