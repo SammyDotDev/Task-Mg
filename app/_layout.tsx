@@ -26,7 +26,7 @@ export default function RootLayout() {
 					backgroundColor: COLORS.white,
 					flex: 1,
 				}}
-			>
+			>   
 				<AuthProvider>
 					<TaskProvider>
 						<Provider store={store}>

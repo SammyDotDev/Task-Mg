@@ -31,7 +31,7 @@ interface TaskInfo {
 const createTask = () => {
 	const dispatch = useDispatch();
 	const { session } = useAuth();
-	const { refetchTasks } = useTasks();
+	const { refetchTasks, expireOldTasks } = useTasks();
 
 	const [taskInfo, setTaskInfo] = useState<TaskInfo>({
 		taskName: "",
@@ -147,6 +147,7 @@ const createTask = () => {
 		// 	.select();
 		console.log(task);
 		refetchTasks();
+		expireOldTasks();
 	};
 
 	return (

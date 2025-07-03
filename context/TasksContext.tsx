@@ -24,6 +24,47 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
 	const [loading, setLoading] = useState(true);
 	const { session } = useAuth();
 
+	const expireOldTasks = async () => {
+		const now = new Date();
+		const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+		const { data: outdatedTasks, error } = await supabase
+			.from("tasks")
+			.select(
+				`
+                  id,
+    title,
+    is_completed,
+    is_active,
+                days
+                (
+      day_date
+    )`
+			)
+			.eq("is_completed", false);
+
+		if (error) {
+			console.error("Error fetching tasks:", error);
+			return;
+		}
+
+		const expired = (outdatedTasks || []).filter((task) => {
+			const taskDate = new Date(task.days.day_date); // or use your task's day/time
+			return taskDate < today;
+		});
+		console.log(expired, "EXPIRED TASKS");
+
+		// Batch update expired tasks
+		const updates = expired.map((task) =>
+			supabase
+				.from("tasks")
+				.update({ is_active: false, expired: true })
+				.eq("id", task.id)
+		);
+
+		await Promise.all(updates);
+	};
+
 	const fetchTasks = async () => {
 		setLoading(true);
 		const { data: daysWithTasks, error } = await supabase
@@ -41,7 +82,11 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
           created_at,
           is_active,
           is_completed,
-          expired
+          expired,
+          days
+                (
+      day_date
+    )
         )
       `
 			)
@@ -59,6 +104,7 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
 	};
 	useEffect(() => {
 		if (session?.user?.id) {
+			expireOldTasks();
 			fetchTasks();
 		}
 	}, [session]);
@@ -69,6 +115,7 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
 				taskData,
 				loading,
 				refetchTasks: fetchTasks,
+				expireOldTasks,
 			}}
 		>
 			{children}

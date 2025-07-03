@@ -15,6 +15,10 @@ export type Task = {
 	title: string;
 	is_completed: boolean;
 	is_active: boolean;
+    expired?: boolean; // ISO timestamp string, optional
+    days:{
+        day_date: string; // ISO timestamp string
+    }
 };
 
 export type DayWithTasks = {

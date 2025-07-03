@@ -35,6 +35,7 @@ const MultiTaskItem = ({
 				</Text>
 			)}
 			<FlatList
+				showsVerticalScrollIndicator={false}
 				data={dayItem.data.filter((item) => {
 					const taskState = item.is_completed ? "done" : "active";
 					return taskState === state;

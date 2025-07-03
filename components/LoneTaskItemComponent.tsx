@@ -20,6 +20,7 @@ import Popover, {
 	PopoverMode,
 	PopoverPlacement,
 } from "react-native-popover-view";
+import { router } from "expo-router";
 
 const LoneTaskItemComponent = ({
 	item,
@@ -30,8 +31,11 @@ const LoneTaskItemComponent = ({
 	item: Task;
 	checkBoxVisible?: boolean;
 }) => {
+	// today's date
+	const now = new Date();
+	const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
 	const [isDone, setIsDone] = useState(item.is_completed);
-	const touchable = useRef<View>(null);
 	const [showPopover, setShowPopover] = useState(false);
 	const { refetchTasks, loading } = useTasks();
 	console.log(dayId, "DAY ID");
@@ -48,6 +52,13 @@ const LoneTaskItemComponent = ({
 		if (taskId === item.id) {
 			setIsDone(taskIsDone.data.is_completed);
 		}
+	};
+
+	const editTask = (taskId: string) => {
+		router.push({
+			pathname: "/screens/editTask",
+			params: { taskId, dayId },
+		});
 	};
 
 	// delete task item
@@ -84,6 +95,12 @@ const LoneTaskItemComponent = ({
 			Alert.alert(error as string);
 		}
 	};
+	console.log(item, "ITEM IN LONE TASK COMPONENT");
+
+	const taskDate = new Date(item.days.day_date); // or use your task's day/time
+	const expired = taskDate < today;
+	console.log(expired, "IS EXPIRED?");
+
 	if (loading)
 		return <ActivityIndicator size="large" color={COLORS.darkBlue} />;
 	return (
@@ -103,30 +120,114 @@ const LoneTaskItemComponent = ({
 			<View
 				style={{
 					flexDirection: "column",
-					alignItems: "flex-start",
-					width: "70%",
+					// alignItems: "flex-start",
+					width: "100%",
 				}}
 			>
-				<View
-					style={{
-						padding: rMS(SIZES.h12),
-						borderRadius: 99,
-						paddingHorizontal: rMS(SIZES.h10),
-						backgroundColor: "#CBD2E0",
-						justifyContent: "center",
-						alignItems: "center",
-					}}
-				>
-					<Text
+				<View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+					<View
 						style={{
-							fontSize: rMS(SIZES.h9),
-							color: COLORS.darkBlue,
-							fontWeight: "600",
+							padding: rMS(SIZES.h12),
+							borderRadius: 99,
+							paddingHorizontal: rMS(SIZES.h10),
+							backgroundColor: "#CBD2E0",
+							justifyContent: "center",
+							alignItems: "center",
 						}}
 					>
-						{" "}
-						{formatTimeTo12Hour(item.time)}
-					</Text>
+						<Text
+							style={{
+								fontSize: rMS(SIZES.h9),
+								color: COLORS.darkBlue,
+								fontWeight: "600",
+							}}
+						>
+							{formatTimeTo12Hour(item.time)}
+						</Text>
+					</View>
+					<View
+						style={{
+							flexDirection: "row",
+							alignItems: "flex-start",
+							gap: rMS(SIZES.h7),
+						}}
+					>
+						{/* Ellipsis toggle for editing and deleting tasks */}
+						{
+							<>
+								<Popover
+									onRequestClose={() => setShowPopover(false)}
+									mode={PopoverMode.RN_MODAL}
+									backgroundStyle={{
+										backgroundColor: "rgba(0, 0, 0, 0.35)",
+									}}
+									popoverStyle={{
+										width: "auto",
+										borderRadius: 10,
+										padding: rMS(SIZES.h11),
+										gap: rMS(SIZES.h10),
+									}}
+									from={
+										<Pressable>
+											<FontAwesome6 name="ellipsis" size={24} color="black" />
+										</Pressable>
+									}
+								>
+									{!expired && (
+										<TouchableOpacity
+											style={{
+												backgroundColor: COLORS.offWhite,
+												borderRadius: 8,
+												padding: rMS(SIZES.h12),
+												alignItems: "center",
+											}}
+											onPress={() => {
+												setShowPopover(false);
+												// Navigate to edit task screen
+												editTask(item.id);
+											}}
+										>
+											<Text style={universalStyles.textSm}>Edit</Text>
+										</TouchableOpacity>
+									)}
+									<TouchableOpacity
+										style={{
+											backgroundColor: COLORS.offWhite,
+											borderRadius: 8,
+											padding: rMS(SIZES.h12),
+											alignItems: "center",
+										}}
+										onPress={() => deleteTask(item.id)}
+									>
+										<Text
+											style={[
+												universalStyles.textSm,
+												{
+													color: COLORS.red,
+												},
+											]}
+										>
+											Delete
+										</Text>
+									</TouchableOpacity>
+								</Popover>
+							</>
+						}
+						{/* Checkbox */}
+						{checkBoxVisible && (
+							<Checkbox
+								style={{
+									borderRadius: 6,
+									width: rMS(SIZES.h4),
+									height: rMS(SIZES.h4),
+								}}
+								value={isDone}
+								onValueChange={() => setTaskDone(item.id)}
+								color={COLORS.darkBlue}
+								disabled={item.is_completed && expired}
+							/>
+						)}
+					</View>
 				</View>
 				<View
 					style={{
@@ -161,6 +262,73 @@ const LoneTaskItemComponent = ({
 						{item.description}
 					</Text>
 				</View>
+				<View
+					style={{
+						flexDirection: "row",
+						gap: rMS(SIZES.h7),
+						// borderWidth: 1,
+						marginLeft: "auto",
+					}}
+				>
+					{item.expired && (
+						<View
+							style={{
+								padding: rMS(SIZES.h12),
+								borderRadius: 99,
+								minWidth: rMS(80),
+								paddingHorizontal: rMS(SIZES.h10),
+								backgroundColor: `${COLORS.red}38`,
+								justifyContent: "center",
+								alignItems: "center",
+							}}
+						>
+							<Text
+								style={{
+									fontSize: rMS(SIZES.h8),
+									color: COLORS.red,
+									fontWeight: "600",
+								}}
+							>
+								expired
+							</Text>
+						</View>
+					)}
+					<View
+						style={{
+							padding: rMS(SIZES.h12),
+							borderRadius: 99,
+							minWidth: rMS(80),
+							paddingHorizontal: rMS(SIZES.h10),
+							backgroundColor:
+								item.priority === "low"
+									? "#FFEEA9"
+									: item.priority === "medium"
+									? "#AEEA94"
+									: item.priority === "high"
+									? "#D84040"
+									: "",
+							justifyContent: "center",
+							alignItems: "center",
+						}}
+					>
+						<Text
+							style={{
+								fontSize: rMS(SIZES.h8),
+								color:
+									item.priority === "low"
+										? COLORS.dark
+										: item.priority === "medium"
+										? COLORS.dark
+										: item.priority === "high"
+										? COLORS.white
+										: "",
+								fontWeight: "600",
+							}}
+						>
+							{item.priority}
+						</Text>
+					</View>
+				</View>
 			</View>
 			{/* CheckBox */}
 			<View
@@ -169,121 +337,8 @@ const LoneTaskItemComponent = ({
 					justifyContent: "space-between",
 					alignItems: "flex-end",
 				}}
-			>
-				<View
-					style={{
-						flexDirection: "row",
-						alignItems: "flex-start",
-						gap: rMS(SIZES.h7),
-					}}
-				>
-					{
-						<>
-							<Popover
-								onRequestClose={() => setShowPopover(false)}
-								mode={PopoverMode.RN_MODAL}
-								backgroundStyle={{
-									backgroundColor: "rgba(0, 0, 0, 0.35)",
-								}}
-								popoverStyle={{
-									width: "auto",
-									borderRadius: 10,
-									padding: rMS(SIZES.h11),
-									gap: rMS(SIZES.h10),
-								}}
-								from={
-									<Pressable>
-										<FontAwesome6 name="ellipsis" size={24} color="black" />
-									</Pressable>
-								}
-							>
-								<TouchableOpacity
-									style={{
-										backgroundColor: COLORS.offWhite,
-										borderRadius: 8,
-										padding: rMS(SIZES.h12),
-										alignItems: "center",
-									}}
-									onPress={() => {
-										setShowPopover(false);
-										// Navigate to edit task screen
-									}}
-								>
-									<Text style={universalStyles.textSm}>Edit</Text>
-								</TouchableOpacity>
-								<TouchableOpacity
-									style={{
-										backgroundColor: COLORS.offWhite,
-										borderRadius: 8,
-										padding: rMS(SIZES.h12),
-										alignItems: "center",
-									}}
-									onPress={() => deleteTask(item.id)}
-								>
-									<Text
-										style={[
-											universalStyles.textSm,
-											{
-												color: COLORS.red,
-											},
-										]}
-									>
-										Delete
-									</Text>
-								</TouchableOpacity>
-							</Popover>
-						</>
-					}
-					{checkBoxVisible && (
-						<Checkbox
-							style={{
-								borderRadius: 6,
-								width: rMS(SIZES.h4),
-								height: rMS(SIZES.h4),
-							}}
-							value={isDone}
-							onValueChange={() => setTaskDone(item.id)}
-							color={COLORS.darkBlue}
-						/>
-					)}
-				</View>
-				<View style={{ flex: 1 }} />
-				<View
-					style={{
-						padding: rMS(SIZES.h12),
-						borderRadius: 99,
-						minWidth: rMS(80),
-						paddingHorizontal: rMS(SIZES.h10),
-						backgroundColor:
-							item.priority === "low"
-								? "#FFEEA9"
-								: item.priority === "medium"
-								? "#AEEA94"
-								: item.priority === "high"
-								? "#D84040"
-								: "",
-						justifyContent: "center",
-						alignItems: "center",
-					}}
-				>
-					<Text
-						style={{
-							fontSize: rMS(SIZES.h8),
-							color:
-								item.priority === "low"
-									? COLORS.dark
-									: item.priority === "medium"
-									? COLORS.dark
-									: item.priority === "high"
-									? COLORS.white
-									: "",
-							fontWeight: "600",
-						}}
-					>
-						{item.priority}
-					</Text>
-				</View>
-			</View>
+			></View>
+			{/* <View style={{ flex: 1 }} /> */}
 		</View>
 	);
 };

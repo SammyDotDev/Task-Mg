@@ -135,6 +135,7 @@ const Tasks = () => {
 					<Loader visible={loading} />
 				) : (
 					<FlatList
+						showsVerticalScrollIndicator={false}
 						contentContainerStyle={{
 							paddingBottom: rMS(100),
 						}}
