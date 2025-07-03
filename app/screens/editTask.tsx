@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SIZES } from "@/constants/SIZES";
 import { rMS } from "@/utils/responsive_size";
@@ -19,7 +19,8 @@ import { formatDate, formatFullDate, isAndroid } from "@/utils";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import { useAuth } from "@/context/AuthContext";
 import { useTasks } from "@/context/TasksContext";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface TaskInfo {
 	taskName: string;
@@ -73,7 +74,7 @@ const editTask = () => {
 				time: new Date(`1970-01-01T${data?.time}`),
 				priority: data?.priority,
 			}));
-            setSelectedPriority(data?.priority || "");
+			setSelectedPriority(data?.priority || "");
 			// return data;
 		} catch (err) {
 			console.error("Error fetching task:", err);
@@ -145,16 +146,16 @@ const editTask = () => {
 		console.log(dayDate, "Supabase Date");
 
 		// 2️⃣ upsert the day
-		// const { data, error: dayErr } = await supabase
-		// 	.from("days")
-		// 	.upsert(
-		// 		{ user_id: session?.user.id, day_date: dayDate },
-		// 		{ onConflict: "user_id,day_date" }
-		// 	)
-		// 	.select();
-		// const [day] = data ?? [];
+		const { data, error: dayErr } = await supabase
+			.from("days")
+			.upsert(
+				{ user_id: session?.user.id, day_date: dayDate },
+				{ onConflict: "user_id,day_date" }
+			)
+			.select();
+		const [day] = data ?? [];
 
-		// if (dayErr) throw dayErr + "DAY ERROR";
+		if (dayErr) throw dayErr + "DAY ERROR";
 
 		// 3️⃣ insert the task
 		const { data: task, error: taskErr } = await supabase
@@ -162,13 +163,14 @@ const editTask = () => {
 			.update([
 				{
 					// user_id: session?.user.id,
-					// day_id: day.id,
+					day_id: day.id,
 					title: title,
 					description: description,
 					priority: priority,
 					time: dayTime,
 				},
 			])
+			.eq("id", taskId as string)
 			.select(); // returns the inserted row
 
 		if (taskErr) throw taskErr;
@@ -214,9 +216,22 @@ const editTask = () => {
 						justifyContent: "center",
 						alignItems: "center",
 						position: "relative",
-						// marginTop: rMS(SIZES.h1),
 					}}
 				>
+					<Pressable onPress={() => router.back()}>
+						<MaterialCommunityIcons
+							name="close"
+							size={rMS(SIZES.h4)}
+							color={COLORS.darkBlue}
+							// style={{
+							// 	position: "absolute",
+							// 	left: rMS(SIZES.h12),
+							// }}
+							onPress={() => {
+								// bottomSheetModalRef.current?.close();
+							}}
+						/>
+					</Pressable>
 					<Text
 						style={{
 							fontSize: rMS(SIZES.h5),

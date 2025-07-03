@@ -1,5 +1,5 @@
 import { View, Text, Pressable, FlatList } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ViewContainer from "@/utils/ViewContainer";
 import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
 import { rMS } from "@/utils/responsive_size";
@@ -8,28 +8,79 @@ import SearchHeader from "@/components/SearchHeader";
 import { getDateStatus, universalStyles } from "@/utils";
 import { COLORS } from "@/constants/COLORS";
 import { agendaItems, DayWithTasks } from "@/assets/data/agendaItems";
-import TaskItem from "@/components/TaskItem";
 import SafeAreaContainer from "@/utils/SafeAreaContainer";
 import { useTasks } from "@/context/TasksContext";
 import Loader from "@/components/Loader";
 import ListEmptyComponent from "@/components/ListEmptyComponent";
 import MultiTaskItem from "@/components/MultiTaskItem";
+import SearchBar from "@/components/SearchBar";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Tasks = () => {
 	const { taskData, loading } = useTasks();
 	const [activeTimeline, setActiveTimeline] = useState("today");
 	const [state, setState] = useState<"active" | "done">("active");
-	console.log(taskData, "TASK DATA");
+	const [search, setSearch] = useState("");
+    const [showSearchBar, setShowSearchBar] = useState<boolean>(true);
+	const [filteredData, setFilteredData] = useState<DayWithTasks[]>(taskData);
+    const filteredTasks = useMemo(() => {
+        if (!taskData) return [];
+
+        return taskData
+            .filter((item) => activeTimeline === getDateStatus(item.title))
+            .filter((item) => item.data.length > 0);
+    }, [taskData, activeTimeline]);
+	useEffect(() => {
+		if (!filteredTasks) return;
+
+		if (search.trim() === "") {
+			setFilteredData(filteredTasks); // reset
+			return;
+		}
+
+		const lowerSearch = search.toLowerCase();
+
+		const filtered = filteredTasks
+			.map((day) => {
+				const matchedTasks = day.data.filter(
+					(task) =>
+						task.title.toLowerCase().includes(lowerSearch) ||
+						task.description.toLowerCase().includes(lowerSearch)
+				);
+
+				if (matchedTasks.length > 0) {
+					return { ...day, data: matchedTasks };
+				}
+
+				return null;
+			})
+
+			.filter(Boolean) as DayWithTasks[];
+
+		setFilteredData(filtered);
+	}, [search, filteredTasks, activeTimeline, state]);
+
 	return (
-		<ViewContainer>
+		<ViewContainer
+			style={{
+				paddingTop: useSafeAreaInsets().top,
+			}}
+		>
 			<View
 				style={{
 					paddingHorizontal: rMS(SIZES.h9),
-					paddingTop: rMS(SIZES.h3),
+					// paddingTop: rMS(SIZES.h3),
 					paddingBottom: rMS(SIZES.h3),
 				}}
 			>
-				<SearchHeader screenTitle="Tasks" handleSearch={() => {}} />
+				<SearchHeader
+					screenTitle="Tasks"
+					setSearch={setSearch}
+					search={search}
+                    showSearchBar={showSearchBar}
+                    setShowSearchBar={setShowSearchBar}
+				/>
+
 				<View
 					style={{
 						flexDirection: "row",
@@ -139,12 +190,7 @@ const Tasks = () => {
 						contentContainerStyle={{
 							paddingBottom: rMS(100),
 						}}
-						data={taskData
-							.filter(
-								(item: DayWithTasks) =>
-									activeTimeline === getDateStatus(item.title)
-							)
-							.filter((item: DayWithTasks) => item.data.length > 0)}
+						data={filteredData}
 						renderItem={({ item }) => (
 							<MultiTaskItem
 								showDateTitle

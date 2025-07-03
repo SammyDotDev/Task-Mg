@@ -1,5 +1,11 @@
 import { View, Text, FlatList, Pressable } from "react-native";
-import React, { Fragment, useCallback, useMemo, useState } from "react";
+import React, {
+	Fragment,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 import ViewContainer from "@/utils/ViewContainer";
 import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
 import { SIZES } from "@/constants/SIZES";
@@ -16,6 +22,7 @@ import ListEmptyComponent from "@/components/ListEmptyComponent";
 import { useTasks } from "@/context/TasksContext";
 import Loader from "@/components/Loader";
 import MultiTaskItem from "@/components/MultiTaskItem";
+import CalendarMultiTaskItem from "@/components/CalendarMultiTaskItem";
 
 const Calender = () => {
 	const INITIAL_DATE = new Date();
@@ -23,6 +30,8 @@ const Calender = () => {
 	const { taskData, loading } = useTasks();
 	const [selected, setSelected] = useState(formatDate(INITIAL_DATE));
 	const [currentMonth, setCurrentMonth] = useState(formatDate(INITIAL_DATE));
+	const [showSearchBar, setShowSearchBar] = useState<boolean>(true);
+	const [search, setSearch] = useState("");
 
 	const getDate = (count: number) => {
 		const date = new Date(formatDate(INITIAL_DATE));
@@ -49,10 +58,19 @@ const Calender = () => {
 			},
 		};
 	}, [selected]);
+	useEffect(() => {
+		console.log(selected, "SELECTED DATE", taskData);
+	}, []);
 	return (
 		<ViewContainer>
 			<SafeAreaScrollView>
-				<SearchHeader screenTitle="Calendar" handleSearch={() => {}} />
+				<SearchHeader
+					search={search}
+                    setSearch={setSearch}
+					screenTitle="Calendar"
+					showSearchBar={showSearchBar}
+					setShowSearchBar={setShowSearchBar}
+				/>
 				<View>
 					<Text
 						style={{
@@ -136,7 +154,9 @@ const Calender = () => {
 							data={taskData.filter(
 								(item: DayWithTasks) => item.title === selected
 							)}
-							renderItem={({ item }) => <MultiTaskItem item={item} />}
+							renderItem={({ item }) => (
+								<CalendarMultiTaskItem dayItem={item} />
+							)}
 							ListEmptyComponent={
 								<ListEmptyComponent
 									title="No Tasks"
