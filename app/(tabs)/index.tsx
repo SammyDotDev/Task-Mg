@@ -61,9 +61,9 @@ const Home = () => {
 	);
 
 	// useEffect
-	useEffect(() => {
-		console.log(taskData, loading);
-	}, []);
+	// useEffect(() => {
+	// 	console.log(taskData, loading);
+	// }, []);
 
 	// calendar config
 
@@ -93,7 +93,7 @@ const Home = () => {
 	// render agenda items
 	const renderItem = useCallback(({ item }: any) => {
 		return <AgendaItem item={item} />;
-	}, []);  
+	}, []);
 
     useEffect(()=>{
         console.log(marked, "MARKED")
@@ -108,7 +108,7 @@ const Home = () => {
 				// scrollEnabled={false}
 				style={{
 					paddingHorizontal: 0,
-					paddingTop: rMS(SIZES.h1 * 1.5),
+					// paddingTop: rMS(SIZES.h1 * 1.5),
 					backgroundColor: COLORS.white,
 					paddingBottom: rMS(100),
 				}}

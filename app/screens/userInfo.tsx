@@ -36,22 +36,8 @@ const userInfo = () => {
 		email: "",
 	});
 
-        const { session, profile } = useAuth();
-
-	const pickImage = async () => {
-		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ["images", "videos"],
-			allowsEditing: true,
-			aspect: [4, 3],
-			quality: 1,
-		});
-
-		console.log(result);
-
-		if (!result.canceled) {
-			setProfileImage(result.assets[0].uri);
-		}
-	};
+	const { session, profile } = useAuth();
+	console.log(profile);
 	return (
 		<KeyboardAvoidingView
 			behavior={isAndroid ? "padding" : undefined}
@@ -71,52 +57,23 @@ const userInfo = () => {
 					<View style={{ alignItems: "center", marginBottom: rMS(SIZES.h10) }}>
 						<View style={{ marginVertical: rMS(SIZES.h5) }}>
 							<View style={{ position: "relative" }}>
-								{profileImage ? (
-									<Image
-										source={{ uri: profileImage }}
-										style={{
-											width: rMS(100),
-											height: rMS(100),
-											borderRadius: 99,
-											backgroundColor: COLORS.lightGray,
-										}}
-									/>
-								) : (
-									<View
-										style={{
-											width: rMS(100),
-											height: rMS(100),
-											borderRadius: 99,
-											backgroundColor: COLORS.lightGray,
-										}}
-									></View>
-								)}
-								<TouchableOpacity
-									onPress={pickImage}
-									activeOpacity={0.7}
+								<View
 									style={{
-										width: rMS(30),
-										height: rMS(30),
+										width: rMS(100),
+										height: rMS(100),
 										borderRadius: 99,
-										backgroundColor: COLORS.dimWhite,
+										backgroundColor: COLORS.lightGray,
 										justifyContent: "center",
 										alignItems: "center",
-										position: "absolute",
-										bottom: 0,
-										right: 0,
 									}}
 								>
-									<Feather
-										name="camera"
-										size={rMS(SIZES.h8)}
-										color={COLORS.darkBlue}
-									/>
-								</TouchableOpacity>
+									<Text style={[universalStyles.headerText]}>
+										{profile?.username && profile?.username.charAt(0)}
+									</Text>
+								</View>
 							</View>
 						</View>
-						<Text style={universalStyles.textL}>
-							{profile.username}
-						</Text>
+						<Text style={universalStyles.textL}>{profile.username}</Text>
 						<Text
 							style={{
 								fontSize: rMS(SIZES.h7),
@@ -130,31 +87,7 @@ const userInfo = () => {
 					<View
 						style={{ paddingHorizontal: rMS(SIZES.h5), gap: rMS(SIZES.h10) }}
 					>
-						<UserInfoTextField
-							title="Username"
-							value={userData.username}
-							onChangeText={(text) =>
-								setUserData((prev) => ({ ...prev, username: text }))
-							}
-							style={{
-								width: "100%",
-								padding: rMS(SIZES.h8),
-							}}
-						/>
-
-						<UserInfoTextField
-							title="Email"
-							value={userData.email}
-							onChangeText={(text) =>
-								setUserData((prev) => ({ ...prev, email: text }))
-							}
-							keyboardType="email-address"
-							style={{
-								width: "100%",
-								padding: rMS(SIZES.h8),
-							}}
-						/>
-						{/* <View
+						<View
 							style={{
 								padding: rMS(SIZES.h8),
 								borderRadius: rMS(SIZES.h10),
@@ -169,47 +102,37 @@ const userInfo = () => {
 						>
 							<Text
 								style={{
-									fontSize: rMS(SIZES.h7),
+									fontSize: rMS(SIZES.h8),
 									fontWeight: "500",
-									color: COLORS.lightPurple,
+									color: COLORS.lightGray,
 								}}
 							>
-								John Doe
+								{profile?.username}
 							</Text>
-						</View> */}
-					</View>
-					<View style={{ flex: 1 }} />
-					<View
-						style={{
-							width: "90%",
-							// gap: rMS(SIZES.h8),
-							flexDirection: "row",
-							alignItems: "center",
-							marginHorizontal: "auto",
-							justifyContent: "space-between",
-						}}
-					>
-						<CustomButton
-							title={"Edit"}
-							onPress={() => {}}
-							extendedStyles={{
+						</View>
+						<View
+							style={{
+								padding: rMS(SIZES.h8),
+								borderRadius: rMS(SIZES.h10),
 								backgroundColor: COLORS.white,
-								marginHorizontal: null,
-								width: "80%",
+								width: "100%",
+								marginHorizontal: "auto",
+								marginVertical: rMS(SIZES.h10),
+								borderWidth: 1,
+								borderColor: COLORS.lightGray,
+								overflow: "hidden",
 							}}
-							titleStyles={{
-								color: COLORS.darkBlue,
-							}}
-						/>
-						<CustomButton
-							title={"Save"}
-							onPress={() => {}}
-							extendedStyles={{
-								marginHorizontal: null,
-								marginLeft: "auto",
-								width: "80%",
-							}}
-						/>
+						>
+							<Text
+								style={{
+									fontSize: rMS(SIZES.h8),
+									fontWeight: "500",
+									color: COLORS.lightGray,
+								}}
+							>
+								{session?.user.email}
+							</Text>
+						</View>
 					</View>
 				</SafeAreaScrollView>
 			</SafeAreaContainer>

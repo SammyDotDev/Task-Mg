@@ -2,6 +2,9 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { Session } from "@supabase/supabase-js";
 import { useAuth } from "./AuthContext";
+import { formatToISOString, scheduleTaskNotification } from "@/utils";
+import * as Notifications from "expo-notifications";
+
 
 const TaskContext = createContext<any>(null);
 
@@ -93,12 +96,38 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
 			.eq("user_id", session?.user.id)
 			.order("day_date", { ascending: true });
 
-		const result = (daysWithTasks || []).map((item) => ({
-			id: item.id,
-			title: item.day_date, // or format this using moment.js or date-fns
-			data: item.tasks,
-		}));
-		// console.log(result[0].data, "FORMATTED RESULT");
+		const result = (daysWithTasks || []).map((item) => {
+			return {
+				id: item.id,
+				title: item.day_date, // or format this using moment.js or date-fns
+				data: item.tasks,
+			};
+		});
+
+
+		const scheduleNotifications = result.map((item: DayWithTasks) => {
+			item.data.forEach(async (task: Task) => {
+				const taskTime = new Date(formatToISOString(item.title, task.time)); // actual task time
+				const now = new Date();
+
+				const timeUntilTask = taskTime.getTime() - now.getTime();
+				const tenMinutesBefore = timeUntilTask - 10 * 60 * 1000;
+
+				// Schedule 10 mins before
+				await scheduleTaskNotification({
+					title: task.title,
+					body: "Your task starts in 10 minutes!",
+					millisecondsFromNow: tenMinutesBefore,
+				});
+
+				// Schedule at the exact time
+				await scheduleTaskNotification({
+					title: `"🚨 ${task.title}"`,
+					body: "It's time to start your task!",
+					millisecondsFromNow: timeUntilTask,
+				});
+			});
+		});
 		setTaskData(result);
 		setLoading(false);
 	};

@@ -11,7 +11,7 @@ const InitialPage = () => {
 	const segments = useSegments();
 
 	useEffect(() => {
-        console.log(session)
+        // console.log(session)
 		supabase.auth.getSession().then(({ data: { session } }) => {
 			setSession(session);
 			setIsLoading(false);
@@ -30,7 +30,7 @@ const InitialPage = () => {
 		if (isLoading) return;
 
 		const inAuthGroup = segments[0] === "(auth)";
-		console.log(session);
+		// console.log(session);
 		if (session && !inAuthGroup) {
 			router.push("/(tabs)");
 			console.log("Redirecting to home");

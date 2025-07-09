@@ -10,11 +10,13 @@ const SearchBar = ({
 	onChangeText,
 	value,
 	style,
+    onBlur,
 	...props
 }: {
 	placeholder?: string;
 	onChangeText?: (text: string) => void;
 	value?: string;
+    onBlur?: () => void;
 	[key: string]: any; // For additional props
 }) => {
 	return (
@@ -23,6 +25,8 @@ const SearchBar = ({
 				onChangeText={onChangeText}
 				value={value}
 				placeholder={placeholder}
+                onBlur={() => {}}
+                placeholderTextColor={COLORS.fadedBlue}
 				style={[
 					{
 						width: "100%",

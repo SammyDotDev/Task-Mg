@@ -18,7 +18,8 @@ export interface TextFieldProps {
 	secureTextEntry?: boolean;
 	keyboardType?: KeyboardTypeOptions;
 	style?: TextStyle;
-    title?: string;
+	title?: string;
+	disabled?: boolean;
 }
 const TextField = ({
 	onChangeText,
@@ -35,6 +36,7 @@ const TextField = ({
 			keyboardType={keyboardType}
 			value={value}
 			placeholder={placeholder}
+
 			style={{
 				padding: rMS(SIZES.h5),
 				borderRadius: rMS(SIZES.h10),

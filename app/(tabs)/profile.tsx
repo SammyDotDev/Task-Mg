@@ -18,7 +18,7 @@ import { router } from "expo-router";
 import LogoutModal from "@/components/LogoutModal";
 import { universalStyles } from "@/utils";
 import { supabase } from "@/lib/supabase";
-import { useSelector } from "react-redux";
+import * as FileSystem from "expo-file-system";
 import { RootState } from "@/store/store";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import { useAuth } from "@/context/AuthContext";
@@ -28,22 +28,7 @@ const Settings = () => {
 	const [logoutModalIsVisible, setLogoutModalIsVisible] =
 		useState<boolean>(false);
 	const { session, profile } = useAuth();
-
-	const pickImage = async () => {
-		// No permissions request is necessary for launching the image library
-		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ["images", "videos"],
-			allowsEditing: true,
-			aspect: [4, 3],
-			quality: 1,
-		});
-
-		console.log(result);
-
-		if (!result.canceled) {
-			setProfileImage(result.assets[0].uri);
-		}
-	};
+	console.log(session.user.id, "USER ID");
 
 	const handleLogout = async () => {
 		await supabase.auth
@@ -61,53 +46,20 @@ const Settings = () => {
 					<View style={{ alignItems: "center", marginBottom: rMS(SIZES.h10) }}>
 						<View style={{ marginVertical: rMS(SIZES.h5) }}>
 							<View style={{ position: "relative" }}>
-								{profileImage ? (
-									<Image
-										source={{ uri: profileImage }}
-										style={{
-											width: rMS(100),
-											height: rMS(100),
-											borderRadius: 99,
-											backgroundColor: COLORS.lightGray,
-										}}
-									/>
-								) : (
-									<View
-										style={{
-											width: rMS(100),
-											height: rMS(100),
-											borderRadius: 99,
-											backgroundColor: COLORS.lightGray,
-											justifyContent: "center",
-											alignItems: "center",
-										}}
-									>
-										<Text style={[universalStyles.headerText]}>
-											{profile?.username && profile?.username.charAt(0)}
-										</Text>
-									</View>
-								)}
-								<TouchableOpacity
-									onPress={pickImage}
-									activeOpacity={0.7}
+								<View
 									style={{
-										width: rMS(30),
-										height: rMS(30),
+										width: rMS(100),
+										height: rMS(100),
 										borderRadius: 99,
-										backgroundColor: COLORS.dimWhite,
+										backgroundColor: COLORS.lightGray,
 										justifyContent: "center",
 										alignItems: "center",
-										position: "absolute",
-										bottom: 0,
-										right: 0,
 									}}
 								>
-									<Feather
-										name="camera"
-										size={rMS(SIZES.h8)}
-										color={COLORS.darkBlue}
-									/>
-								</TouchableOpacity>
+									<Text style={[universalStyles.headerText]}>
+										{profile?.username && profile?.username.charAt(0)}
+									</Text>
+								</View>
 							</View>
 						</View>
 						<Text style={universalStyles.textL}>{profile.username}</Text>

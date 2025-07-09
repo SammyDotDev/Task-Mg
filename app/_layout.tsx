@@ -9,14 +9,60 @@ import BottomSheet, {
 	BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { Stack } from "expo-router";
-import { useCallback, useEffect, useRef } from "react";
-import { StatusBar, Text } from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Platform, StatusBar, Text } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider } from "react-redux";
+import * as Notifications from "expo-notifications";
+import { registerForPushNotificationsAsync } from "@/utils";
+import { Toaster } from "sonner-native";
 
 export default function RootLayout() {
 	const { loading } = useAuthRedirect();
 
+	Notifications.setNotificationHandler({
+		handleNotification: async () => ({
+			shouldPlaySound: false,
+			shouldSetBadge: false,
+			shouldShowBanner: true,
+			shouldShowList: true,
+		}),
+	});
+
+	const [expoPushToken, setExpoPushToken] = useState("");
+	const [channels, setChannels] = useState<Notifications.NotificationChannel[]>(
+		[]
+	);
+	const [notification, setNotification] = useState<
+		Notifications.Notification | undefined
+	>(undefined);
+
+	useEffect(() => {
+		registerForPushNotificationsAsync().then(
+			(token) => token && setExpoPushToken(token)
+		);
+
+		if (Platform.OS === "android") {
+			Notifications.getNotificationChannelsAsync().then((value) =>
+				setChannels(value ?? [])
+			);
+		}
+		const notificationListener = Notifications.addNotificationReceivedListener(
+			(notification) => {
+				setNotification(notification);
+			}
+		);
+
+		const responseListener =
+			Notifications.addNotificationResponseReceivedListener((response) => {
+				console.log(response);
+			});
+
+		return () => {
+			notificationListener.remove();
+			responseListener.remove();
+		};
+	}, []);
 	// if (loading) return <Loader visible={loading} />;
 	return (
 		<>
@@ -26,7 +72,7 @@ export default function RootLayout() {
 					backgroundColor: COLORS.white,
 					flex: 1,
 				}}
-			>   
+			>
 				<AuthProvider>
 					<TaskProvider>
 						<Provider store={store}>
@@ -40,6 +86,16 @@ export default function RootLayout() {
 							</Stack>
 						</Provider>
 					</TaskProvider>
+					<Toaster
+						style={{
+							backgroundColor: COLORS.white,
+						}}
+						styles={{
+							title: {
+								color: COLORS.dark,
+							},
+						}}
+					/>
 				</AuthProvider>
 				<StatusBar barStyle={"dark-content"} />
 			</GestureHandlerRootView>

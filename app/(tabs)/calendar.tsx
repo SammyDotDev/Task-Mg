@@ -32,6 +32,9 @@ const Calender = () => {
 	const [currentMonth, setCurrentMonth] = useState(formatDate(INITIAL_DATE));
 	const [showSearchBar, setShowSearchBar] = useState<boolean>(true);
 	const [search, setSearch] = useState("");
+	const [filteredData, setFilteredData] = useState<DayWithTasks[]>(taskData);
+
+	// filter tasks based on current day
 
 	const getDate = (count: number) => {
 		const date = new Date(formatDate(INITIAL_DATE));
@@ -42,6 +45,39 @@ const Calender = () => {
 	const onDayPress = useCallback((day) => {
 		setSelected(day.dateString);
 	}, []);
+	useEffect(() => {
+		if (!taskData) return;
+
+		if (search.trim() === "") {
+			setFilteredData(
+				taskData.filter((item: DayWithTasks) => item.title === selected)
+			); // reset
+			return;
+		}
+
+		const lowerSearch = search.toLowerCase();
+
+		const filtered = taskData
+			.map((day) => {
+				const matchedTasks = day.data.filter(
+					(task) =>
+						task.title.toLowerCase().includes(lowerSearch) ||
+						task.description.toLowerCase().includes(lowerSearch)
+				);
+
+				if (matchedTasks.length > 0) {
+					return { ...day, data: matchedTasks };
+				}
+
+				return null;
+			})
+
+			.filter(Boolean) as DayWithTasks[];
+
+		setFilteredData(
+			filtered.filter((item: DayWithTasks) => item.title === selected)
+		);
+	}, [search]);
 
 	const marked = useMemo(() => {
 		return {
@@ -66,10 +102,8 @@ const Calender = () => {
 			<SafeAreaScrollView>
 				<SearchHeader
 					search={search}
-                    setSearch={setSearch}
+					setSearch={setSearch}
 					screenTitle="Calendar"
-					showSearchBar={showSearchBar}
-					setShowSearchBar={setShowSearchBar}
 				/>
 				<View>
 					<Text
@@ -151,9 +185,7 @@ const Calender = () => {
 					) : (
 						<FlatList
 							scrollEnabled={false}
-							data={taskData.filter(
-								(item: DayWithTasks) => item.title === selected
-							)}
+							data={filteredData}
 							renderItem={({ item }) => (
 								<CalendarMultiTaskItem dayItem={item} />
 							)}

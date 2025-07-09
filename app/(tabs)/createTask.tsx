@@ -19,6 +19,7 @@ import { formatDate, formatFullDate, isAndroid } from "@/utils";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import { useAuth } from "@/context/AuthContext";
 import { useTasks } from "@/context/TasksContext";
+import { toast } from "sonner-native";
 
 interface TaskInfo {
 	taskName: string;
@@ -96,7 +97,7 @@ const createTask = () => {
 		priority: string,
 		taskDate: Date,
 		time: Date
-	) => {
+	) => { 
 		const dayDate = isAndroid ? taskDate : taskDate.toISOString().slice(0, 10); // → "2025-06-08"
 		const dayTime = isAndroid ? time : time.toTimeString().split(" ")[0];
 		console.log(dayDate, "Supabase Date");
@@ -127,25 +128,8 @@ const createTask = () => {
 				},
 			])
 			.select(); // returns the inserted row
-
+		toast.success("Task created successfully");
 		if (taskErr) throw taskErr;
-		console.log("new task:", task[0]);
-
-		// const res = await supabase
-		// 	.from("tasks")
-		// 	.insert([
-		// 		{
-		// 			tasktitle: title,
-		// 			description: description,
-		// 			priority: priority,
-		// 			time: dayTime,
-		// 			date: isAndroid
-		// 				? new Date(androidDate).toISOString().slice(0, 10)
-		// 				: dayDate,
-		// 		},
-		// 	])
-		// 	.select();
-		console.log(task);
 		refetchTasks();
 		expireOldTasks();
 	};

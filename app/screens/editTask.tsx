@@ -21,6 +21,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useTasks } from "@/context/TasksContext";
 import { router, useLocalSearchParams } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { toast } from "sonner-native";
 
 interface TaskInfo {
 	taskName: string;
@@ -189,9 +190,9 @@ const editTask = () => {
 		// 		},
 		// 	])
 		// 	.select();
-		console.log(task);
 		refetchTasks();
 		expireOldTasks();
+		toast.success("Task updated successfully");
 	};
 
 	return (
@@ -227,9 +228,6 @@ const editTask = () => {
 							// 	position: "absolute",
 							// 	left: rMS(SIZES.h12),
 							// }}
-							onPress={() => {
-								// bottomSheetModalRef.current?.close();
-							}}
 						/>
 					</Pressable>
 					<Text
@@ -474,6 +472,7 @@ const editTask = () => {
 								taskInfo.date,
 								taskInfo.time
 							);
+							router.back();
 						} catch (error) {
 							console.error("ERROR ", error);
 						} finally {

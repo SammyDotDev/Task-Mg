@@ -6,7 +6,6 @@ import {
 	View,
 	Text,
 	TouchableOpacity,
-	Button,
 } from "react-native";
 import testIDs from "../assets/data/testIDs";
 import { COLORS } from "@/constants/COLORS";
@@ -26,7 +25,7 @@ const AgendaItem = (props: ItemProps) => {
 	}, []);
 
 	const itemPressed = useCallback(() => {
-		Alert.alert(item.title);
+		Alert.alert(item.description);
 	}, [item]);
 
 	if (isEmpty(item)) {

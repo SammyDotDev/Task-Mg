@@ -30,6 +30,7 @@ const UserInfoTextField = ({
 					width: "100%",
 					padding: rMS(SIZES.h8),
 				}}
+                
 			/>
 		</View>
 	);

@@ -10,22 +10,18 @@ const SearchHeader = ({
 	screenTitle,
 	setSearch,
 	search,
-	showSearchBar,
-	setShowSearchBar,
 }: {
 	screenTitle: string;
 	setSearch: (text: string) => void;
 	search: string;
-	showSearchBar?: boolean;
-	setShowSearchBar: (value: boolean) => void;
 }) => {
-	// const [showSearchBar, setShowSearchBar] = useState(true);
+	const [showSearchBar, setShowSearchBar] = useState(false);
 
 	const handleOpenSearch = () => {
-		setShowSearchBar(true);
+		setShowSearchBar((prev) => !prev);
 	};
 	const handleCloseSearch = () => {
-		setShowSearchBar(false);
+		setShowSearchBar((prev) => !prev);
 	};
 	return (
 		<View
@@ -38,13 +34,14 @@ const SearchHeader = ({
 		>
 			{showSearchBar ? (
 				<SearchBar
-					placeholder="Type Here..."
+					placeholder="search..."
 					onChangeText={setSearch}
 					value={search}
 					style={{
 						paddingVertical: rMS(SIZES.h8),
 						width: "90%",
 					}}
+					onBlur={() => setShowSearchBar(false)}
 				/>
 			) : (
 				<Text
@@ -56,7 +53,7 @@ const SearchHeader = ({
 					{screenTitle}
 				</Text>
 			)}
-			<Pressable onPress={showSearchBar ? handleCloseSearch : handleOpenSearch}>
+			<Pressable onPress={showSearchBar ? handleOpenSearch : handleCloseSearch}>
 				{showSearchBar ? (
 					<MaterialIcons
 						name="close"
