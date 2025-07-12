@@ -56,7 +56,7 @@ const AgendaItem = (props: ItemProps) => {
 						universalStyles.textSm,
 						{
 							color: "#A0ABC0",
-                            fontSize: rMS(SIZES.h9)
+                            fontSize: rMS(SIZES.h10)
 						},
 					]}
 				>

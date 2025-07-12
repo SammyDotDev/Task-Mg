@@ -15,11 +15,15 @@ import { setPostLoadingTasks } from "@/store/slices/taskSlice";
 import CalendarModal from "@/components/CalendarModal";
 import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { formatDate, formatFullDate, isAndroid } from "@/utils";
-import useAuthRedirect from "@/hooks/useAuthRedirect";
+import {
+	formatDate,
+	formatFullDate,
+	formatToSupabaseTime,
+	isAndroid,
+} from "@/utils";
 import { useAuth } from "@/context/AuthContext";
 import { useTasks } from "@/context/TasksContext";
-import { toast } from "sonner-native";
+// import { toast } from "sonner-native";
 
 interface TaskInfo {
 	taskName: string;
@@ -45,35 +49,18 @@ const createTask = () => {
 	const [selectedPriority, setSelectedPriority] = useState("");
 	const [showCalendar, setShowCalendar] = useState<boolean>(false);
 
-	const postLoadingTasks = useSelector(
-		(state: RootState) => state.tasks.postLoadingTasks
-	);
 
 	const [buttonDisabled, setButtonDisabled] = useState<boolean | undefined>(
 		false
 	);
-
+	const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
 	const isLowPriority = selectedPriority === "low";
 	const isMediumPriority = selectedPriority === "medium";
 	const isHighPriority = selectedPriority === "high";
 
-	const [date, setDate] = useState(new Date());
-	const [mode, setMode] = useState("date");
-	const [show, setShow] = useState(false);
 
 	const [androidDate, setAndroidDate] = useState(formatDate(new Date()));
 
-	// const showMode = (currentMode) => {
-	// 	setShow(true);
-	// 	setMode(currentMode);
-	// };
-
-	// add new task, expand bottomsheet
-	const handleAddTask = () => {
-		// console.log(bottomSheetModalRef.current);
-		// bottomSheetModalRef.current?.snapToIndex(1);
-		// bottomSheetModalRef.current?.present();
-	};
 
 	useEffect(() => {
 		if (
@@ -85,7 +72,6 @@ const createTask = () => {
 		) {
 			setButtonDisabled(true);
 		} else {
-			console.log(taskInfo);
 			setButtonDisabled(false);
 		}
 		console.log(androidDate, "DATE");
@@ -97,9 +83,11 @@ const createTask = () => {
 		priority: string,
 		taskDate: Date,
 		time: Date
-	) => { 
+	) => {
 		const dayDate = isAndroid ? taskDate : taskDate.toISOString().slice(0, 10); // → "2025-06-08"
-		const dayTime = isAndroid ? time : time.toTimeString().split(" ")[0];
+		const dayTime = isAndroid
+			? formatToSupabaseTime(time)
+			: time.toTimeString().split(" ")[0];
 		console.log(dayDate, "Supabase Date");
 
 		// 2️⃣ upsert the day
@@ -127,9 +115,10 @@ const createTask = () => {
 					time: dayTime,
 				},
 			])
+
 			.select(); // returns the inserted row
-		toast.success("Task created successfully");
 		if (taskErr) throw taskErr;
+		toast.success("Task created successfully");
 		refetchTasks();
 		expireOldTasks();
 	};
@@ -277,18 +266,53 @@ const createTask = () => {
 							}}
 						>
 							{isAndroid ? (
-								<TaskInput
-									label="Choose time"
-									onChangeText={(text) => {
-										// console.log(text);
-										setTaskInfo((prev) => ({ ...prev, time: text }));
-									}}
-									value={taskInfo.time}
-									hasIcon
-									onIconPress={() => {}}
-									hasContainer
-									icon={<TimeIcon />}
-								/>
+								<>
+									<View style={{ gap: rMS(SIZES.h11) }}>
+										<Text
+											style={{
+												fontSize: rMS(SIZES.h9),
+												fontWeight: "400",
+												color: COLORS.fadedBlue,
+											}}
+										>
+											Choose time
+										</Text>
+										<PriorityButton
+											priorityText={formatToSupabaseTime(taskInfo.time)}
+											onPress={() => setShowDatePicker(true)}
+											isSelectedPriority={false}
+											style={{
+												width: "100%",
+											}}
+											textStyle={{}}
+										/>
+									</View>
+
+									{showDatePicker && (
+										<DateTimePicker
+											style={{
+												marginRight: 10,
+												padding: 0,
+											}}
+											themeVariant="light"
+											textColor={COLORS.darkBlue}
+											testID="dateTimePicker"
+											value={taskInfo.time}
+											mode={"time"}
+											is24Hour={true}
+											onChange={(_, selectedTime) => {
+												if (selectedTime) {
+													setShowDatePicker(false);
+													console.log(selectedTime);
+													setTaskInfo((prev) => ({
+														...prev,
+														time: selectedTime,
+													}));
+												}
+											}}
+										/>
+									)}
+								</>
 							) : (
 								<>
 									<Text
@@ -404,7 +428,8 @@ const createTask = () => {
 						} catch (error) {
 							console.error("ERROR ", error);
 						} finally {
-							dispatch(setPostLoadingTasks(false));
+							// dispatch(setPostLoadingTasks(false));
+
 							// bottomSheetModalRef.current?.close();
 							// setTaskInfo({
 							// 	taskName: "",

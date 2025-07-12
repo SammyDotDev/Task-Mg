@@ -28,6 +28,7 @@ const Calender = () => {
 	const INITIAL_DATE = new Date();
 
 	const { taskData, loading } = useTasks();
+    
 	const [selected, setSelected] = useState(formatDate(INITIAL_DATE));
 	const [currentMonth, setCurrentMonth] = useState(formatDate(INITIAL_DATE));
 	const [showSearchBar, setShowSearchBar] = useState<boolean>(true);
@@ -44,6 +45,7 @@ const Calender = () => {
 
 	const onDayPress = useCallback((day) => {
 		setSelected(day.dateString);
+
 	}, []);
 	useEffect(() => {
 		if (!taskData) return;

@@ -14,6 +14,7 @@ interface TaskInputProps {
 	isDescription?: boolean;
 	onIconPress?: () => void;
 	hasContainer?: boolean;
+	onFocus?: () => void;
 }
 
 const TaskInput = ({
@@ -25,6 +26,7 @@ const TaskInput = ({
 	isDescription = false,
 	onIconPress,
 	hasContainer = false,
+	onFocus,
 }: TaskInputProps) => {
 	return (
 		<View
@@ -69,6 +71,7 @@ const TaskInput = ({
 					]}
 					multiline={isDescription}
 					numberOfLines={isDescription ? 5 : 1}
+					onFocus={onFocus}
 				/>
 				{hasIcon && (
 					<Pressable

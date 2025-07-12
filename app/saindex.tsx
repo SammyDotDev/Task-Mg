@@ -40,7 +40,7 @@ const InitialPage = () => {
 	}, [session, isLoading, segments]);
 
 	if (isLoading) {
-		return <Loader visible={true} />;
+		return null;
 	}
 	return <Slot />;
 };

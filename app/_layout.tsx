@@ -4,13 +4,9 @@ import { AuthProvider } from "@/context/AuthContext";
 import { TaskProvider } from "@/context/TasksContext";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import { store } from "@/store/store";
-import BottomSheet, {
-	BottomSheetModalProvider,
-	BottomSheetView,
-} from "@gorhom/bottom-sheet";
 import { Stack } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Platform, StatusBar, Text } from "react-native";
+import { useEffect, useState } from "react";
+import { Platform, StatusBar } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider } from "react-redux";
 import * as Notifications from "expo-notifications";
@@ -66,7 +62,7 @@ export default function RootLayout() {
 	// if (loading) return <Loader visible={loading} />;
 	return (
 		<>
-			<Loader visible={loading} />
+			{/* <Loader visible={loading} /> */}
 			<GestureHandlerRootView
 				style={{
 					backgroundColor: COLORS.white,

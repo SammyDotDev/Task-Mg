@@ -38,19 +38,16 @@ import CalendarIcon from "@/assets/svg/navIcons/CalendarIcon";
 import ActiveProfilesIcon from "@/assets/svg/navIcons/ActiveProfilesIcon";
 import ProfilesIcon from "@/assets/svg/navIcons/ProfilesIcon";
 import HomeIcon from "@/assets/svg/navIcons/HomeIcon";
-import { BottomTabBarButtonProps } from "@react-navigation/bottom-tabs";
 import TabBarIcon from "@/components/TabBarIcon";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import { setUser } from "@/store/slices/userSlice";
 
 const Tablayout = () => {
-	const logoutLoading = useSelector((state: RootState) => state.auth.loading);
-	const tabWidth = rS(50 * 4 + 40);
-	const { loading, currentSession, currentProfile } = useAuthRedirect();
+	const { currentSession, currentProfile } = useAuthRedirect();
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		console.log(currentProfile);
+		// console.log(currentProfile);
 		dispatch(
 			setUser({
 				email: currentSession?.user.email,
@@ -63,7 +60,7 @@ const Tablayout = () => {
 	// if (loading) return <Loader visible={loading} />;
 	return (
 		<>
-			<Loader visible={logoutLoading} />
+			{/* <Loader visible={logoutLoading} /> */}
 
 			<Tabs
 				screenOptions={({ route }) => ({

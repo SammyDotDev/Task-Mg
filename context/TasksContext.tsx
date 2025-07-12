@@ -5,11 +5,10 @@ import { useAuth } from "./AuthContext";
 import { formatToISOString, scheduleTaskNotification } from "@/utils";
 import * as Notifications from "expo-notifications";
 
-
 const TaskContext = createContext<any>(null);
 
 export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
-	// const [session, setSession] = useState<Session | null>(null);
+	const [session, setSession] = useState<Session | null>(null);
 	type Task = {
 		title: any;
 		description: any;
@@ -25,7 +24,7 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
 
 	const [taskData, setTaskData] = useState<DayWithTasks[] | null>(null);
 	const [loading, setLoading] = useState(true);
-	const { session } = useAuth();
+	// const { session } = useAuth();
 
 	const expireOldTasks = async () => {
 		const now = new Date();
@@ -70,6 +69,7 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
 
 	const fetchTasks = async () => {
 		setLoading(true);
+
 		const { data: daysWithTasks, error } = await supabase
 			.from("days")
 			.select(
@@ -104,7 +104,6 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
 			};
 		});
 
-
 		const scheduleNotifications = result.map((item: DayWithTasks) => {
 			item.data.forEach(async (task: Task) => {
 				const taskTime = new Date(formatToISOString(item.title, task.time)); // actual task time
@@ -131,6 +130,17 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
 		setTaskData(result);
 		setLoading(false);
 	};
+
+	const fetchSession = async () => {
+		const {
+			data: { session },
+			error: sessionErr,
+		} = await supabase.auth.getSession();
+		setSession(session);
+	};
+	useEffect(() => {
+		fetchSession();
+	}, []);
 	useEffect(() => {
 		if (session?.user?.id) {
 			expireOldTasks();
@@ -145,6 +155,7 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
 				loading,
 				refetchTasks: fetchTasks,
 				expireOldTasks,
+                session
 			}}
 		>
 			{children}

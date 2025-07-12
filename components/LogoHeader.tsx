@@ -21,7 +21,14 @@ const LogoHeader = () => {
 					color: COLORS.darkBlue,
 				}}
 			>
-				To - Do
+				Task
+				<Text
+					style={{
+						color: COLORS.lightGray,
+					}}
+				>
+					Nest
+				</Text>
 			</Text>
 		</View>
 	);

@@ -1,34 +1,24 @@
-import {
-	View,
-	Text,
-	ImageBackground,
-	TouchableOpacity,
-	Image,
-} from "react-native";
+import { View, Text } from "react-native";
 import React, { useState } from "react";
 import ViewContainer from "@/utils/ViewContainer";
 import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
 import { SIZES } from "@/constants/SIZES";
 import { rMS } from "@/utils/responsive_size";
 import ProfileItem from "@/components/ProfileItem";
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { COLORS } from "@/constants/COLORS";
-import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import LogoutModal from "@/components/LogoutModal";
 import { universalStyles } from "@/utils";
 import { supabase } from "@/lib/supabase";
-import * as FileSystem from "expo-file-system";
-import { RootState } from "@/store/store";
-import useAuthRedirect from "@/hooks/useAuthRedirect";
+
 import { useAuth } from "@/context/AuthContext";
 
 const Settings = () => {
-	const [profileImage, setProfileImage] = useState<string | null>(null);
 	const [logoutModalIsVisible, setLogoutModalIsVisible] =
 		useState<boolean>(false);
 	const { session, profile } = useAuth();
-	console.log(session.user.id, "USER ID");
+	console.log(session.user.id ?? "", "USER ID");
 
 	const handleLogout = async () => {
 		await supabase.auth
@@ -57,7 +47,7 @@ const Settings = () => {
 									}}
 								>
 									<Text style={[universalStyles.headerText]}>
-										{profile?.username && profile?.username.charAt(0)}
+										{(profile?.username && profile?.username.charAt(0)) ?? ""}
 									</Text>
 								</View>
 							</View>
@@ -70,7 +60,7 @@ const Settings = () => {
 								color: COLORS.darkBlue,
 							}}
 						>
-							{session?.user.email}
+							{session?.user.email ?? ""}
 						</Text>
 					</View>
 					<View>
@@ -85,18 +75,7 @@ const Settings = () => {
 							}
 							title="User Info"
 						/>
-						<ProfileItem
-							onPress={() => {}}
-							icon={
-								<Ionicons
-									name="language"
-									size={rMS(SIZES.h4)}
-									color={COLORS.darkBlue}
-								/>
-							}
-							title="Language"
-							isLanguage
-						/>
+
 						<ProfileItem
 							onPress={() => setLogoutModalIsVisible(true)}
 							icon={

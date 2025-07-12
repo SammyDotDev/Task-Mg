@@ -31,11 +31,6 @@ const Tasks = () => {
 	const [value, setValue] = useState(null);
 	const [isFocus, setIsFocus] = useState(false);
 
-	const filterData = [
-		{ label: "low", value: "low" },
-		{ label: "medium", value: "medium" },
-		{ label: "high", value: "high" },
-	];
 	const filteredTasks = useMemo(() => {
 		if (!taskData) return [];
 

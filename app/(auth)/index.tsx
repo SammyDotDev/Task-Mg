@@ -145,7 +145,7 @@ const Signin = () => {
 						/>
 					</InputWrapper>
 					{/* <View style={{ flex: 1 }} /> */}
-					<View
+					{/* <View
 						style={{
 							flexDirection: "row",
 							justifyContent: "flex-end",
@@ -165,7 +165,7 @@ const Signin = () => {
 						>
 							Forgot Password?
 						</Link>
-					</View>
+					</View> */}
 					<View
 						style={{
 							flexDirection: "row",

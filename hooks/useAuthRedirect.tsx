@@ -25,7 +25,14 @@ const useAuthRedirect = () => {
 			setLoading(true);
 
 			const network = await NetInfo.fetch();
-            console.log(network)
+			console.log(network);
+
+			if (!network.isInternetReachable) {
+				Alert.alert("No Internet", "You are currently offline.");
+				router.replace("/(auth)");
+				setLoading(false);
+				return;
+			}
 			if (!network.isConnected) {
 				Alert.alert("No Internet", "You are currently offline.");
 				router.replace("/(auth)");
@@ -71,7 +78,7 @@ const useAuthRedirect = () => {
 				);
 				router.replace("/(auth)");
 			}
-            setLoading(false);
+			setLoading(false);
 		};
 		checkSession();
 

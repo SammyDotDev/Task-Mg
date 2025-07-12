@@ -81,7 +81,8 @@ const userInfo = () => {
 								color: COLORS.darkBlue,
 							}}
 						>
-							{session?.user.email}
+							{/* {session?.user.email} */}
+                            devsammy@gmail.com
 						</Text>
 					</View>
 					<View
@@ -130,7 +131,8 @@ const userInfo = () => {
 									color: COLORS.lightGray,
 								}}
 							>
-								{session?.user.email}
+								{/* {session?.user.email} */}
+								devsammy@gmail.com
 							</Text>
 						</View>
 					</View>
