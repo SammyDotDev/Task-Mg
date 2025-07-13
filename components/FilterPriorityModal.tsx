@@ -33,19 +33,19 @@ const FilterPriorityModal = ({
 			statusBarTranslucent
 			// style={{ margin: 0 }}
 		>
-			<StatusBar
+			{/* <StatusBar
 				backgroundColor={showFilter ? "rgba(0, 0, 0, 0.1)" : undefined}
 				barStyle="dark-content"
-			/>
+			/> */}
 			{/* <StatusBar /> */}
 			<SafeAreaView
-				style={
-					{
-						// ...StyleSheet.absoluteFillObject,
-						// justifyContent: "center",
-						// alignItems: "center",
-					}
-				}
+				style={{
+					backgroundColor: "white",
+					borderRadius: 10,
+					// ...StyleSheet.absoluteFillObject,
+					// justifyContent: "center",
+					// alignItems: "center",
+				}}
 			>
 				<Picker
 					selectedValue={selectedPriority}
