@@ -10,7 +10,7 @@ import { supabase } from "@/lib/supabase";
 import Loader from "@/components/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { setLoading } from "@/store/slices/authSlice";
+import * as Notifications from "expo-notifications";
 import {
 	AgendaList,
 	CalendarProvider,
@@ -21,7 +21,7 @@ import { getTheme, themeColor } from "../../assets/data/theme";
 import AgendaItem from "@/components/AgendaItem";
 import testIDs from "@/assets/data/testIDs";
 import dayjs from "dayjs";
-import { Pressable, Text } from "react-native";
+import { Button, Pressable, Text } from "react-native";
 import { View } from "react-native";
 import { formatDate } from "@/utils";
 import { useAuth } from "@/context/AuthContext";
@@ -43,6 +43,17 @@ interface Props {
 	weekView?: boolean;
 }
 const INITIAL_DATE = new Date();
+
+// First, set the handler that will cause the notification
+// to show the alert
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowBanner: true,
+		shouldShowList: true,
+		shouldPlaySound: false,
+		shouldSetBadge: false,
+	}),
+});
 
 const Home = () => {
 	// auth
@@ -94,10 +105,19 @@ const Home = () => {
 	const renderItem = useCallback(({ item }: any) => {
 		return <AgendaItem item={item} />;
 	}, []);
-
-    useEffect(()=>{
-        console.log(marked, "MARKED")
-    },[])
+	async function schedulePushNotification() {
+		await Notifications.scheduleNotificationAsync({
+			content: {
+				title: "Look at that notification",
+				body: "I'm so proud of myself!",
+			},
+			trigger: null,
+		});
+	}
+	useEffect(() => {
+		// Second, call scheduleNotificationAsync()
+		schedulePushNotification();
+	}, []);
 	return (
 		<ViewContainer
 			style={{
@@ -122,6 +142,12 @@ const Home = () => {
 					}}
 				>
 					<Header handleNotification={() => {}} username={profile?.username} />
+					{/* <Button
+						title="Press to schedule a notification"
+						onPress={async () => {
+							await schedulePushNotification();
+						}}
+					/> */}
 				</ViewContainer>
 				{loading ? (
 					<Loader visible={loading} />
@@ -129,15 +155,14 @@ const Home = () => {
 					<CalendarProvider
 						date={ITEMS[1]?.title}
 						style={{
-							backgroundColor: "##f7f9fc",
+							// backgroundColor: "##f7f9fc",
 						}}
 					>
 						<WeekCalendar
-							calendarHeight={rMS(70)}
-							calendarStyle={{
-								elevation: 0,
-								borderRadius: 10,
-							}}
+							calendarHeight={rMS(100)}
+                            calendarStyle={{
+                                elevation:0
+                            }}
 							testID={testIDs.weekCalendar.CONTAINER}
 							firstDay={1}
 							style={{

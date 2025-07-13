@@ -2,23 +2,20 @@ import {
 	View,
 	Text,
 	Alert,
-	Pressable,
 	KeyboardAvoidingView,
 	Platform,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import SafeAreaContainer from "@/utils/SafeAreaContainer";
-import { rMS, rS } from "@/utils/responsive_size";
+import { rMS } from "@/utils/responsive_size";
 import { SIZES } from "@/constants/SIZES";
 import TextField from "@/components/TextField";
 import CustomButton from "@/components/CustomButton";
-import { Link, Redirect, router } from "expo-router";
+import { Link, router } from "expo-router";
 import { COLORS } from "@/constants/COLORS";
 import InputWrapper from "@/components/InputWrapper";
 import { supabase } from "@/lib/supabase";
 import Loader from "@/components/Loader";
 import LogoHeader from "@/components/LogoHeader";
-import { ScrollView } from "react-native";
 import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/slices/userSlice";
@@ -76,11 +73,6 @@ const Signin = () => {
 		} finally {
 			setIsLoading(false);
 		}
-	};
-
-	// forgot password handler
-	const handleForgotPassword = async () => {
-		router.push("/(auth)/other/forgotPassword");
 	};
 
 	return (

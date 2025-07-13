@@ -4,6 +4,7 @@ import { supabase } from "../lib/supabase";
 import { Session } from "@supabase/supabase-js";
 import { Alert } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
+import { isAndroid } from "@/utils";
 
 const useAuthRedirect = () => {
 	const [loading, setLoading] = useState(false);
@@ -27,7 +28,7 @@ const useAuthRedirect = () => {
 			const network = await NetInfo.fetch();
 			console.log(network);
 
-			if (!network.isInternetReachable) {
+			if (isAndroid && !network.isInternetReachable) {
 				Alert.alert("No Internet", "You are currently offline.");
 				router.replace("/(auth)");
 				setLoading(false);

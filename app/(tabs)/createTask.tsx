@@ -23,7 +23,7 @@ import {
 } from "@/utils";
 import { useAuth } from "@/context/AuthContext";
 import { useTasks } from "@/context/TasksContext";
-// import { toast } from "sonner-native";
+import { toast } from "sonner-native";
 
 interface TaskInfo {
 	taskName: string;
@@ -428,7 +428,7 @@ const createTask = () => {
 						} catch (error) {
 							console.error("ERROR ", error);
 						} finally {
-							// dispatch(setPostLoadingTasks(false));
+							dispatch(setPostLoadingTasks(false));
 
 							// bottomSheetModalRef.current?.close();
 							// setTaskInfo({

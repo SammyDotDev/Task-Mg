@@ -16,7 +16,6 @@ import CalendarModal from "@/components/CalendarModal";
 import SafeAreaScrollView from "@/utils/SafeAreaScrollView";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { formatDate, formatFullDate, isAndroid } from "@/utils";
-import useAuthRedirect from "@/hooks/useAuthRedirect";
 import { useAuth } from "@/context/AuthContext";
 import { useTasks } from "@/context/TasksContext";
 import { router, useLocalSearchParams } from "expo-router";
@@ -44,7 +43,6 @@ const editTask = () => {
 		priority: "",
 	});
 
-	console.log(taskId);
 
 	const fetchTaskFromId = async (taskId: string) => {
 		try {

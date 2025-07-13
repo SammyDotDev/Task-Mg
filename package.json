@@ -29,6 +29,7 @@
     "@supabase/supabase-js": "^2.49.1",
     "dayjs": "^1.11.13",
     "expo": "53.0.16",
+    "expo-asset": "~11.1.7",
     "expo-blur": "~14.1.5",
     "expo-checkbox": "~4.1.4",
     "expo-constants": "~17.1.6",

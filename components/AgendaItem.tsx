@@ -1,12 +1,6 @@
 import isEmpty from "lodash/isEmpty";
 import React, { useCallback } from "react";
-import {
-	StyleSheet,
-	Alert,
-	View,
-	Text,
-	TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Alert, View, Text, TouchableOpacity } from "react-native";
 import testIDs from "../assets/data/testIDs";
 import { COLORS } from "@/constants/COLORS";
 import { rMS } from "@/utils/responsive_size";
@@ -25,7 +19,7 @@ const AgendaItem = (props: ItemProps) => {
 	}, []);
 
 	const itemPressed = useCallback(() => {
-		Alert.alert(item.description);
+		Alert.alert("Description", item.description);
 	}, [item]);
 
 	if (isEmpty(item)) {
@@ -56,12 +50,12 @@ const AgendaItem = (props: ItemProps) => {
 						universalStyles.textSm,
 						{
 							color: "#A0ABC0",
-                            fontSize: rMS(SIZES.h10)
+							fontSize: rMS(SIZES.h10),
 						},
 					]}
 				>
 					{/* {item.hour} */}
-                    {formatTimeTo12Hour(item.time)}
+					{formatTimeTo12Hour(item.time)}
 				</Text>
 				<Text style={styles.itemDurationText}>{item.duration}</Text>
 			</View>

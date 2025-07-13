@@ -6,12 +6,12 @@ import {
 	Alert,
 	ActivityIndicator,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { rMS } from "@/utils/responsive_size";
 import { SIZES } from "@/constants/SIZES";
 import { COLORS } from "@/constants/COLORS";
 import Checkbox from "expo-checkbox";
-import { formatTimeTo12Hour, universalStyles } from "@/utils";
+import { formatFullDate, formatTimeTo12Hour, universalStyles } from "@/utils";
 import { Task } from "@/assets/data/agendaItems";
 import { supabase } from "@/lib/supabase";
 import { useTasks } from "@/context/TasksContext";
@@ -19,6 +19,9 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import Popover, { PopoverMode } from "react-native-popover-view";
 import { router } from "expo-router";
 import { toast } from "sonner-native";
+import * as Sharing from "expo-sharing";
+import { Asset } from "expo-asset";
+import { Share } from "react-native";
 
 const LoneTaskItemComponent = ({
 	item,
@@ -36,6 +39,39 @@ const LoneTaskItemComponent = ({
 	const [isDone, setIsDone] = useState(item.is_completed);
 	const [showPopover, setShowPopover] = useState(false);
 	const { refetchTasks, loading } = useTasks();
+
+	const [imageUri, setImageUri] = useState("");
+	const getSharingStatus = async () => {
+		const res = await Sharing.isAvailableAsync();
+		console.log(res);
+	};
+
+	const shareTask = async () => {
+		try {
+			// await Sharing.shareAsync(imageUri);
+			await Share.share({
+				message: `Task title: ${item.title.toUpperCase()} \nTask Description: ${
+					item.description
+				}\nDate: ${formatFullDate(
+					new Date(item.days.day_date)
+				)}\nTime: ${formatTimeTo12Hour(
+					item.time
+				)}\nPriority: ${item.priority.toUpperCase()}`,
+			});
+		} catch (err) {
+			console.log(err, "Unable to share image");
+		}
+	};
+	useEffect(() => {
+		const loadAsset = async () => {
+			const asset = Asset.fromModule(
+				require("@/assets/images/partial-react-logo.png")
+			);
+			await asset.downloadAsync();
+			setImageUri(asset.localUri ?? "");
+		};
+		loadAsset();
+	}, []);
 
 	// console.log(taskData[0].data);
 	const setTaskDone = async (taskId: string) => {
@@ -230,6 +266,26 @@ const LoneTaskItemComponent = ({
 													]}
 												>
 													Delete
+												</Text>
+											</TouchableOpacity>
+											<TouchableOpacity
+												style={{
+													backgroundColor: COLORS.offWhite,
+													borderRadius: 8,
+													padding: rMS(SIZES.h12),
+													alignItems: "center",
+												}}
+												onPress={shareTask}
+											>
+												<Text
+													style={[
+														universalStyles.textSm,
+														{
+															color: COLORS.dark,
+														},
+													]}
+												>
+													Share
 												</Text>
 											</TouchableOpacity>
 										</Popover>

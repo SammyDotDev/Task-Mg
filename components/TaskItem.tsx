@@ -15,7 +15,6 @@ const TaskItem = ({
 	checkBoxVisible?: boolean;
 }) => {
 	const itemData = item.data[0];
-	console.log(item, "TASK ITEM");
 	const [isDone, setIsDone] = useState(false);
 	return (
 		<View
