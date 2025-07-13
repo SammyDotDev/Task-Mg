@@ -28,7 +28,7 @@ const Calender = () => {
 	const INITIAL_DATE = new Date();
 
 	const { taskData, loading } = useTasks();
-    
+
 	const [selected, setSelected] = useState(formatDate(INITIAL_DATE));
 	const [currentMonth, setCurrentMonth] = useState(formatDate(INITIAL_DATE));
 	const [showSearchBar, setShowSearchBar] = useState<boolean>(true);
@@ -43,10 +43,12 @@ const Calender = () => {
 		return CalendarUtils.getCalendarDateString(newDate);
 	};
 
-	const onDayPress = useCallback((day) => {
-		setSelected(day.dateString);
-
-	}, []);
+	const onDayPress = useCallback(
+		(day) => {
+			setSelected(day.dateString);
+		},
+		[selected]
+	);
 	useEffect(() => {
 		if (!taskData) return;
 
@@ -79,7 +81,7 @@ const Calender = () => {
 		setFilteredData(
 			filtered.filter((item: DayWithTasks) => item.title === selected)
 		);
-	}, [search]);
+	}, [search, selected]);
 
 	const marked = useMemo(() => {
 		return {
@@ -96,12 +98,14 @@ const Calender = () => {
 			},
 		};
 	}, [selected]);
-	useEffect(() => {
-		console.log(selected, "SELECTED DATE", taskData);
-	}, []);
+
 	return (
 		<ViewContainer>
-			<SafeAreaScrollView>
+			<SafeAreaScrollView
+				contentContainerStyle={{
+					paddingTop: 0,
+				}}
+			>
 				<SearchHeader
 					search={search}
 					setSearch={setSearch}
@@ -122,7 +126,6 @@ const Calender = () => {
 							testID={testIDs.calendars.FIRST}
 							enableSwipeMonths
 							current={formatDate(INITIAL_DATE)}
-							// style={styles.calendar}
 							onDayPress={onDayPress}
 							markedDates={marked}
 							firstDay={1}

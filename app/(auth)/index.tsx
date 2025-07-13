@@ -28,9 +28,6 @@ const Signin = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const dispatch = useDispatch();
 
-	useEffect(() => {
-		// console.log(userInputDetails);
-	}, [userInputDetails]);
 
 	// sign in handler
 	const handleSignIn = async () => {
@@ -43,7 +40,6 @@ const Signin = () => {
 				email: userInputDetails.emailAddress,
 				password: userInputDetails.password,
 			});
-			console.log(session);
 			const { data: profile, error: err } = await supabase
 				.from("profiles")
 				.select(
@@ -53,7 +49,6 @@ const Signin = () => {
                 `
 				)
 				.eq("id", session?.user.id);
-			console.log(profile, session?.user.id, " USER ID");
 			if (session?.user.aud === "authenticated") {
 				dispatch(
 					setUser({
@@ -65,7 +60,6 @@ const Signin = () => {
 				router.push("/(tabs)");
 			}
 			if (error) Alert.alert(error.message);
-			console.log(session?.user.email);
 			// if (!session)
 			// 	Alert.alert("Please check your inbox for email verification!");
 		} catch (error) {

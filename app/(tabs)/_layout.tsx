@@ -47,7 +47,6 @@ const Tablayout = () => {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		// console.log(currentProfile);
 		dispatch(
 			setUser({
 				email: currentSession?.user.email,

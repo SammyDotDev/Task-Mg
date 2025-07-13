@@ -46,7 +46,6 @@ const Signup = () => {
 		const { data: profile, error: profileError } = await supabase
 			.from("profiles")
 			.insert([{ id: session?.user.id, username: userInputDetails.username }]);
-		console.log(session, profile, profileError);
 		if (!session)
 			Alert.alert("Please check your inbox for email verification!");
 		setIsLoading(false);
